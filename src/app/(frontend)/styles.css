@@ -651,3 +651,65 @@ body.has-player { padding-bottom: 104px; }
 .tl-takeaways { padding: 20px 22px; border-radius: 16px; background: var(--navy-2); color: #fff; }
 .tl-takeaways .tl-label { color: var(--gold-light); }
 .tl-takeaways ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+
+/* ---------- Статьи и разборы вопросов ---------- */
+.seg-link { display: inline-flex; align-items: center; min-height: 42px; padding: 0 16px; border-radius: 9px; font-weight: 700; font-size: 14px; color: var(--royal); text-decoration: none; }
+.seg-link.on { background: var(--navy); color: #fff; }
+.seg-link.on .chip-count { background: rgba(255, 255, 255, 0.18); color: #fff; }
+.tag-q { display: inline-flex; padding: 3px 10px; border-radius: 99px; background: var(--navy-2); color: #fff; font-size: 12px; font-weight: 700; }
+.tag-a { display: inline-flex; padding: 3px 10px; border-radius: 99px; background: var(--ice); color: var(--royal); font-size: 12px; font-weight: 700; }
+.qa-quote { margin: 0; padding: 10px 14px; border-left: 3px solid var(--gold); background: var(--paper); border-radius: 0 10px 10px 0; font-size: 14px; color: var(--ink); font-style: italic; line-height: 1.55; }
+.qa-box { display: grid; gap: 0; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: #fff; }
+.qa-q { padding: 24px 28px; background: var(--paper); border-bottom: 1px solid var(--line); }
+.qa-q p { margin: 6px 0 0; font-size: 18px; line-height: 1.6; font-style: italic; color: var(--ink); }
+.qa-a { padding: 24px 28px; background: var(--navy-2); color: #fff; }
+.qa-a p { margin: 6px 0 0; font-size: 18px; line-height: 1.6; }
+.qa-a .qa-label { color: var(--gold-light); }
+.qa-label { font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--royal); }
+.qa-more { display: inline-block; margin-top: 12px; color: var(--gold-light); font-weight: 700; font-size: 14px; }
+.qa-more:hover { color: #fff; }
+.qa-disclaimer { padding: 16px 20px; border-radius: 14px; background: #f3f5f4; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.ask-cta { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding: 26px 28px; border-radius: 18px; background: var(--ice); border: 1px solid var(--line-2); }
+.ask-cta h2 { margin: 0 0 4px; font-size: 30px; color: var(--navy); }
+
+/* ---------- Связаться с нами ---------- */
+.contact { display: flex; flex-direction: column; gap: 48px; }
+.contact-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 24px; align-items: start; }
+.contact-main { display: flex; flex-direction: column; gap: 16px; }
+.contact-side { display: flex; flex-direction: column; gap: 16px; }
+@media (max-width: 960px) { .contact-grid { grid-template-columns: 1fr; } }
+.qb { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+@media (max-width: 760px) { .qb { grid-template-columns: 1fr; } }
+.qb-form { display: flex; flex-direction: column; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field > span { font-size: 14px; font-weight: 600; color: var(--navy); }
+.qb-preview { display: flex; flex-direction: column; gap: 12px; background: var(--ice); border: 1px solid var(--line-2); border-radius: 16px; padding: 18px; }
+.qb-preview-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.qb-text { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: inherit; font-size: 14px; line-height: 1.6; background: #fff; border-radius: 12px; padding: 14px 16px; border: 1px dashed var(--line-2); min-height: 180px; color: var(--ink); }
+.qb-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn.is-disabled, .btn:disabled { opacity: .5; pointer-events: none; }
+.btn-ghost { background: transparent; color: var(--royal); border: 1px solid transparent; }
+.btn-ghost:hover { background: #fff; }
+.channels { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.channel { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); color: var(--ink); text-decoration: none; transition: background .15s, border-color .15s; }
+.channel:hover { background: var(--ice); border-color: var(--line-2); }
+.channel-ic { width: 40px; height: 40px; border-radius: 10px; background: var(--ice); color: var(--royal); display: grid; place-items: center; flex: none; }
+.channel b { display: block; color: var(--navy); font-size: 15px; word-break: break-all; }
+.channel small { display: block; color: var(--muted); font-size: 13px; }
+.contact-time { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.contact-time svg { flex: none; margin-top: 2px; color: var(--gold-dark); }
+.contact-link { display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: var(--navy); }
+.contact-link:hover { border-color: var(--gold); }
+.contact-steps, .faq { display: flex; flex-direction: column; gap: 18px; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.steps li { padding: 22px; display: flex; flex-direction: column; gap: 8px; }
+.steps .num { font-family: var(--display); font-size: 34px; font-weight: 700; color: var(--gold); line-height: 1; }
+.steps b { color: var(--navy); }
+.steps li > span:last-child { font-size: 14px; line-height: 1.55; color: var(--muted); }
+.faq-list { display: flex; flex-direction: column; gap: 10px; max-width: 900px; }
+.faq-item { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 0 20px; }
+.faq-item summary { cursor: pointer; list-style: none; padding: 18px 28px 18px 0; font-weight: 600; color: var(--navy); position: relative; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: '+'; position: absolute; right: 0; top: 14px; font-size: 22px; color: var(--gold-dark); }
+.faq-item[open] summary::after { content: '−'; }
+.faq-item p { margin: 0 0 18px; color: var(--ink-2, var(--ink)); line-height: 1.65; }

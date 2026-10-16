@@ -52,6 +52,7 @@ export function FilterChips({
   current,
   allLabel = 'Все',
   counts,
+  keep,
 }: {
   base: string
   param: string
@@ -59,12 +60,20 @@ export function FilterChips({
   current?: string
   allLabel?: string
   counts?: Record<string, number>
+  /** Другие параметры адреса, которые нужно сохранить (например, тип материалов). */
+  keep?: Record<string, string>
 }) {
+  const href = (value?: string) => {
+    const p = new URLSearchParams(Object.entries(keep ?? {}).filter(([, v]) => v))
+    if (value) p.set(param, value)
+    const q = p.toString()
+    return q ? `${base}?${q}` : base
+  }
   const total = counts ? Object.values(counts).reduce((a, b) => a + b, 0) : undefined
   const visible = counts ? options.filter((o) => (counts[o.value] ?? 0) > 0 || o.value === current) : options
   return (
     <div className="chips" role="list">
-      <Link role="listitem" className={`chip${!current ? ' active' : ''}`} href={base}>
+      <Link role="listitem" className={`chip${!current ? ' active' : ''}`} href={href()}>
         {allLabel}
         {total !== undefined ? <span className="chip-count">{total}</span> : null}
       </Link>
@@ -73,7 +82,7 @@ export function FilterChips({
           role="listitem"
           key={o.value}
           className={`chip${current === o.value ? ' active' : ''}`}
-          href={`${base}?${param}=${o.value}`}
+          href={href(o.value)}
         >
           {o.label}
           {counts ? <span className="chip-count">{counts[o.value] ?? 0}</span> : null}

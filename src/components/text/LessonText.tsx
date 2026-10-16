@@ -90,15 +90,17 @@ export function LessonText({
   blocks,
   sourceRef,
   readingMinutes,
+  label,
 }: {
   blocks: AnyBlock[]
   sourceRef?: string | null
   readingMinutes?: number | null
+  label?: string
 }) {
   const hasArabic = blocks.some((b) => b.blockType === 'matn')
   let matnIndex = 0
   return (
-    <TextReader hasArabic={hasArabic} readingMinutes={readingMinutes ?? undefined}>
+    <TextReader hasArabic={hasArabic} readingMinutes={readingMinutes ?? undefined} label={label}>
       {sourceRef ? (
         <div className="tl-sourceref">
           <span className="tl-label">Источник</span>

@@ -83,6 +83,18 @@ export async function getArticles(opts: { category?: string; limit?: number } = 
   return res.docs as Record<string, any>[]
 }
 
+export async function getRelatedArticles(category: string, excludeId: string | number, limit = 3) {
+  const payload = await getPayloadClient()
+  const res = await payload.find({
+    collection: 'articles',
+    where: { and: [published, { category: { equals: category } }, { id: { not_equals: excludeId } }] },
+    sort: '-publishedAt',
+    depth: 0,
+    limit,
+  })
+  return res.docs as Record<string, any>[]
+}
+
 export async function getArticleBySlug(slug: string) {
   const payload = await getPayloadClient()
   const res = await payload.find({

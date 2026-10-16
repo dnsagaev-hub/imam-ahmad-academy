@@ -14,10 +14,12 @@ export function TextReader({
   children,
   hasArabic,
   readingMinutes,
+  label = 'Текстовый урок',
 }: {
   children: React.ReactNode
   hasArabic: boolean
   readingMinutes?: number
+  label?: string
 }) {
   const [mode, setMode] = useState<Mode>('both')
   const [size, setSize] = useState(1)
@@ -72,7 +74,7 @@ export function TextReader({
             <path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z" />
             <path d="M4 19V5" />
           </svg>
-          Текстовый урок{readingMinutes ? ` · ≈ ${readingMinutes} мин чтения` : ''}
+          {label}{readingMinutes ? ` · ≈ ${readingMinutes} мин чтения` : ''}
         </span>
         <div className="tl-controls">
           {hasArabic ? (

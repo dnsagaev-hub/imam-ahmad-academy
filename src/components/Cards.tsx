@@ -1,3 +1,5 @@
+import { ArticleCardClient } from './ArticleCardClient'
+import type { ArticleItem } from './ArticlesBrowser'
 import Link from 'next/link'
 
 import { ARTICLE_CATEGORIES, BOOK_CATEGORIES, COURSE_LEVELS, LESSON_CATEGORIES, labelOf } from '@/lib/constants'
@@ -54,22 +56,23 @@ export function TextLessonCard({ lesson }: { lesson: LessonDoc }) {
   )
 }
 
+export function toArticleItem(a: Record<string, any>): ArticleItem {
+  return {
+    id: String(a.id),
+    slug: String(a.slug ?? ''),
+    title: a.title,
+    kind: a.kind ?? 'article',
+    category: a.category,
+    categoryLabel: labelOf(ARTICLE_CATEGORIES, a.category),
+    excerpt: a.excerpt ?? '',
+    question: a.question ?? null,
+    publishedAt: a.publishedAt ?? null,
+    readingMinutes: a.readingMinutes ?? null,
+  }
+}
+
 export function ArticleCard({ article }: { article: Record<string, any> }) {
-  const kind = article.kind === 'question' ? 'Разбор вопроса' : 'Статья'
-  return (
-    <article className="card lift article-card">
-      <span className="tag">
-        {labelOf(ARTICLE_CATEGORIES, article.category)} · {kind}
-      </span>
-      <h3>
-        <Link href={`/articles/${article.slug}`}>{article.title}</Link>
-      </h3>
-      <p>{article.excerpt}</p>
-      <Link href={`/articles/${article.slug}`} style={{ marginTop: 6, fontWeight: 700, fontSize: 14 }}>
-        Читать →
-      </Link>
-    </article>
-  )
+  return <ArticleCardClient a={toArticleItem(article)} />
 }
 
 export function BookCard({ book }: { book: Record<string, any> }) {

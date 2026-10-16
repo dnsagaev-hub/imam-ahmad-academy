@@ -69,10 +69,46 @@ export const Settings: GlobalConfig = {
       ],
     },
     {
-      type: 'row',
+      type: 'collapsible',
+      label: 'Связаться с нами',
       fields: [
-        { name: 'contactEmail', label: 'Email для связи', type: 'email', admin: { width: '50%' } },
-        { name: 'telegram', label: 'Telegram (ссылка)', type: 'text', admin: { width: '50%' } },
+        {
+          type: 'row',
+          fields: [
+            { name: 'contactEmail', label: 'Email для связи', type: 'email', admin: { width: '50%' } },
+            {
+              name: 'telegram',
+              label: 'Telegram для вопросов (ссылка)',
+              type: 'text',
+              admin: { width: '50%', description: 'Например, https://t.me/имя_аккаунта' },
+            },
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
+            { name: 'telegramChannel', label: 'Telegram-канал (ссылка)', type: 'text', admin: { width: '33%' } },
+            { name: 'vk', label: 'ВКонтакте (ссылка)', type: 'text', admin: { width: '33%' } },
+            { name: 'youtube', label: 'YouTube (ссылка)', type: 'text', admin: { width: '33%' } },
+          ],
+        },
+        {
+          name: 'responseTime',
+          label: 'Сколько обычно ждать ответа',
+          type: 'text',
+          defaultValue: 'Обычно отвечаем в течение нескольких дней. На вопросы по фикху — после сверки с книгами.',
+        },
+        {
+          name: 'faq',
+          label: 'Частые вопросы',
+          type: 'array',
+          labels: { singular: 'Вопрос', plural: 'Вопросы' },
+          admin: { description: 'Показываются на странице «Связаться с нами». Если пусто — показываются стандартные.' },
+          fields: [
+            { name: 'q', label: 'Вопрос', type: 'text', required: true },
+            { name: 'a', label: 'Ответ', type: 'textarea', required: true },
+          ],
+        },
       ],
     },
   ],

@@ -6,6 +6,7 @@
 import config from '@payload-config'
 import { getPayload } from 'payload'
 
+import { SAMPLE_ARTICLES } from './sampleArticles'
 import { tayammum, usulAhmad, waterTypes, type SampleLesson } from './sampleLessons'
 
 const text = (t: string) => ({ type: 'text', text: t, version: 1, format: 0, detail: 0, mode: 'normal', style: '' })
@@ -137,6 +138,16 @@ if (exists.totalDocs === 0) {
   payload.logger.info('Демо-курс создан.')
 } else {
   payload.logger.info('Демо-курс уже есть — пропускаю.')
+}
+
+for (const a of SAMPLE_ARTICLES) {
+  const found = await payload.find({ collection: 'articles', where: { slug: { equals: a.slug } }, limit: 1 })
+  if (found.totalDocs > 0) continue
+  await payload.create({
+    collection: 'articles',
+    data: { ...a, isPublished: true, publishedAt: new Date().toISOString() } as any,
+  })
+  payload.logger.info(`Пример «${a.title}» добавлен.`)
 }
 
 payload.logger.info('Готово.')
