@@ -66,8 +66,7 @@ jobs:
       - name: Демо-наполнение
         run: (npm run seed) 2>&1 | tee -a ci.log
 
-      - name: Проверка типов (пока только для отчёта)
-        continue-on-error: true
+      - name: Проверка типов
         run: (npx tsc --noEmit) 2>&1 | tee -a ci.log
 
       - name: Сборка сайта
@@ -84,11 +83,44 @@ jobs:
                       /articles /articles/tayammum-pri-holodnoy-vode /articles/pochemu-u-imama-ahmada-neskolko-mneniy \
                       /library /library/ahsar-al-muhtasarat /library/kashshaf-al-qina /contact /progress /prayer-times /about /admin; do
             code=$(curl -s -o /dev/null -w '%{http_code}' -L "http://127.0.0.1:3000$path")
-            echo "$code  $path"
+            echo "$code  $path" | tee -a ci.log
             [ "$code" = "200" ] || fail=1
           done
           cat server.log >> ci.log
           if [ $fail = 1 ]; then echo "--- server.log ---"; tail -n 200 server.log; exit 1; fi
+
+      - name: Снимки страниц (компьютер и телефон)
+        continue-on-error: true
+        run: |
+          mkdir -p /tmp/shots
+          npx -y playwright@1.56.1 install --with-deps chromium > /dev/null 2>&1
+          cat > /tmp/shots.mjs <<'JS'
+          import { chromium } from 'playwright'
+          const pages = ['/', '/courses/demo-fikh-ochischeniya', '/lessons/pyat-osnov-fetv-imama-ahmada', '/lessons/demo-tayammum', '/text', '/audio', '/video', '/articles',
+            '/articles/tayammum-pri-holodnoy-vode', '/library', '/library/ahsar-al-muhtasarat', '/contact', '/progress', '/prayer-times', '/admin']
+          const browser = await chromium.launch()
+          for (const [name, vp] of [['desk', { width: 1440, height: 900 }], ['phone', { width: 390, height: 844 }]]) {
+            const ctx = await browser.newContext({ viewport: vp, locale: 'ru-RU', timezoneId: 'Europe/Moscow' })
+            const page = await ctx.newPage()
+            const errors = []
+            page.on('pageerror', (e) => errors.push(e.message))
+            page.on('console', (m) => m.type() === 'error' && errors.push(m.text()))
+            for (const p of pages) {
+              errors.length = 0
+              await page.goto('http://127.0.0.1:3000' + p, { waitUntil: 'networkidle' }).catch((e) => errors.push(String(e)))
+              await page.waitForTimeout(500)
+              const file = '/tmp/shots/' + name + (p === '/' ? '_home' : p.replaceAll('/', '_')) + '.png'
+              await page.screenshot({ path: file, fullPage: name === 'desk' })
+              const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1)
+              console.log(name, p, errors.length ? 'ОШИБКИ: ' + errors.join(' | ').slice(0, 500) : 'ok', overflow ? 'ГОРИЗОНТАЛЬНАЯ ПРОКРУТКА' : '')
+            }
+            await ctx.close()
+          }
+          await browser.close()
+          JS
+          (cd /tmp && npm i --no-save --silent playwright@1.56.1 >/dev/null 2>&1)
+          (cd /tmp && node shots.mjs) 2>&1 | tee -a ci.log
+          mv /tmp/shots . 2>/dev/null || true
 
       - name: Сохранить миграцию и package-lock.json в репозиторий
         if: github.ref == 'refs/heads/main'
@@ -104,7 +136,7 @@ jobs:
       - name: Сохранить журнал проверки
         if: always()
         run: |
-          mkdir -p /tmp/logs && cp ci.log /tmp/logs/ci.log 2>/dev/null || echo "нет журнала" > /tmp/logs/ci.log
+          mkdir -p /tmp/logs && cp -r shots /tmp/logs/ 2>/dev/null; cp ci.log /tmp/logs/ci.log 2>/dev/null || echo "нет журнала" > /tmp/logs/ci.log
           echo "${{ job.status }} ${{ github.sha }}" > /tmp/logs/status.txt
           cd /tmp/logs && git init -q -b ci-logs && git add -A
           git -c user.name="github-actions[bot]" -c user.email="41898283+github-actions[bot]@users.noreply.github.com" commit -qm "Журнал проверки ${{ github.sha }}"

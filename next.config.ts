@@ -9,10 +9,6 @@ const dirname = path.dirname(__filename)
 const nextConfig: NextConfig = {
   // Собирает самодостаточный сервер для Docker-образа (см. Dockerfile)
   output: 'standalone',
-  // Код написан без возможности собрать проект в среде разработки (не было доступа к npm).
-  // Пока проект не прошёл первую сборку и проверку типов, не останавливаем сборку из-за них.
-  // TODO: после первой успешной сборки выполнить `npx tsc --noEmit`, исправить ошибки и убрать эту строку.
-  typescript: { ignoreBuildErrors: true },
   images: {
     localPatterns: [{ pathname: '/api/media/file/**' }],
   },
