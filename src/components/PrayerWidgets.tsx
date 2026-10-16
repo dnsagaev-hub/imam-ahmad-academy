@@ -71,9 +71,9 @@ export function TopBar({ defaults }: { defaults: PrayerDefaults }) {
                 ·
               </span>
               <span>{hijri.ru}</span>
-              <span className="ar" lang="ar" dir="rtl">
+              <bdi className="ar topbar-ar" lang="ar" dir="rtl">
                 {hijri.ar}
-              </span>
+              </bdi>
             </>
           ) : null}
         </div>

@@ -90,7 +90,9 @@ jobs:
           if [ $fail = 1 ]; then echo "--- server.log ---"; tail -n 200 server.log; exit 1; fi
 
       - name: Сборка Docker-образа (так же, как на хостинге)
-        run: docker build -t academy . 2>&1 | tail -n 40 | tee -a ci.log
+        run: |
+          docker build --progress=plain -t academy . > docker.log 2>&1 || { tail -n 80 docker.log | tee -a ci.log; exit 1; }
+          tail -n 5 docker.log | tee -a ci.log
 
       - name: Снимки страниц (компьютер и телефон)
         continue-on-error: true
@@ -114,8 +116,20 @@ jobs:
               await page.waitForTimeout(500)
               const file = '/tmp/shots/' + name + (p === '/' ? '_home' : p.replaceAll('/', '_')) + '.png'
               await page.screenshot({ path: file, fullPage: name === 'desk' })
-              const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1)
-              console.log(name, p, errors.length ? 'ОШИБКИ: ' + errors.join(' | ').slice(0, 500) : 'ok', overflow ? 'ГОРИЗОНТАЛЬНАЯ ПРОКРУТКА' : '')
+              const overflow = await page.evaluate(() => {
+                if (document.documentElement.scrollWidth <= window.innerWidth + 1) return ''
+                const wide = [...document.querySelectorAll('body *')].filter((el) => el.getBoundingClientRect().right > window.innerWidth + 1)
+                  .slice(0, 5).map((el) => el.tagName.toLowerCase() + '.' + String(el.className).split(' ').join('.') + ' →' + Math.round(el.getBoundingClientRect().right))
+                return wide.join(', ')
+              })
+              console.log(name, p, errors.length ? 'ОШИБКИ: ' + errors.join(' | ').slice(0, 500) : 'ok', overflow ? 'ГОРИЗОНТАЛЬНАЯ ПРОКРУТКА: ' + overflow : '')
+            }
+            if (name === 'phone') {
+              await page.goto('http://127.0.0.1:3000/', { waitUntil: 'networkidle' })
+              await page.click('.nav-toggle').catch(() => {})
+              await page.click('.nav-item:nth-child(3) .nav-expand').catch(() => {})
+              await page.waitForTimeout(300)
+              await page.screenshot({ path: '/tmp/shots/phone_menu.png' })
             }
             await ctx.close()
           }
@@ -139,7 +153,7 @@ jobs:
       - name: Сохранить журнал проверки
         if: always()
         run: |
-          mkdir -p /tmp/logs && cp -r shots /tmp/logs/ 2>/dev/null; cp ci.log /tmp/logs/ci.log 2>/dev/null || echo "нет журнала" > /tmp/logs/ci.log
+          mkdir -p /tmp/logs && (cp -r shots /tmp/logs/ 2>/dev/null || true); cp ci.log /tmp/logs/ci.log 2>/dev/null || echo "нет журнала" > /tmp/logs/ci.log
           echo "${{ job.status }} ${{ github.sha }}" > /tmp/logs/status.txt
           cd /tmp/logs && git init -q -b ci-logs && git add -A
           git -c user.name="github-actions[bot]" -c user.email="41898283+github-actions[bot]@users.noreply.github.com" commit -qm "Журнал проверки ${{ github.sha }}"

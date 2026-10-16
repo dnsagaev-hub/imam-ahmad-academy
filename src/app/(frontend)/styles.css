@@ -809,3 +809,53 @@ body.has-player { padding-bottom: 104px; }
 .bcourse { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; background: var(--ice); text-decoration: none; color: var(--navy); }
 .bcourse b { display: block; }
 .bcourse small { color: var(--muted); }
+
+/* ---------- Меню и шапка на телефоне ---------- */
+.nav-row { display: flex; align-items: center; }
+.nav-toggle, .nav-expand { display: none; }
+@media (max-width: 900px) {
+  .topbar { font-size: 12.5px; }
+  .topbar-inner { gap: 4px 12px; min-height: 0; }
+  .topbar-ar { display: none; }
+  .topbar-prayer { min-height: 28px; padding: 0 10px; }
+
+  .header-top { padding-top: 12px; padding-right: 56px; gap: 10px 12px; flex-wrap: wrap; }
+  .brand { gap: 10px; }
+  .brand-emblem { width: 30px; }
+  .brand-name { font-size: 16px; }
+  .brand-sub { display: none; }
+  .quote { order: 3; flex: 1 1 100%; justify-content: flex-start; border: 0; padding: 0 0 2px; gap: 2px 12px; }
+  .quote-ar { font-size: 22px; }
+  .quote figcaption { flex-direction: row; align-items: baseline; gap: 10px; }
+  .quote-ru { font-size: 17px; }
+  .quote-by { display: none; }
+
+  .site-header { position: relative; }
+  .main-nav { position: static; margin-top: 8px; padding: 0; border-top: 0; }
+  .nav-toggle {
+    display: inline-flex; align-items: center; justify-content: center; position: absolute; top: 12px; right: 16px; z-index: 30;
+    width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line-2); background: #fff; color: var(--navy); cursor: pointer;
+  }
+  .nav-toggle-icon { display: flex; flex-direction: column; gap: 5px; width: 20px; }
+  .nav-toggle-icon span { display: block; height: 2px; border-radius: 2px; background: currentColor; transition: transform .2s, opacity .2s; }
+  .main-nav.open .nav-toggle-icon span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .main-nav.open .nav-toggle-icon span:nth-child(2) { opacity: 0; }
+  .main-nav.open .nav-toggle-icon span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .main-nav > ul { display: none; }
+  .main-nav.open > ul { display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 6px 0 12px; border-top: 1px solid var(--line-soft); }
+  .nav-item { border-bottom: 1px solid var(--line-soft); }
+  .nav-row { justify-content: space-between; }
+  .nav-link { flex: 1; min-height: 50px; padding: 0 4px; font-size: 16px; }
+  .nav-link svg { display: none; }
+  .nav-link.active { box-shadow: none; color: var(--royal); }
+  .nav-expand { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border: 0; background: transparent; color: var(--royal); cursor: pointer; border-radius: 10px; }
+  .nav-expand svg { width: 18px; height: 18px; transition: transform .2s; }
+  .nav-item.expanded .nav-expand svg { transform: rotate(180deg); }
+  .dropdown { display: none; position: static; min-width: 0; padding: 0 0 10px 12px; box-shadow: none; border-top: 0; border-radius: 0; opacity: 1; visibility: visible; transform: none; transition: none; }
+  .dropdown::before { display: none; }
+  .nav-item.expanded .dropdown { display: block; }
+  .dropdown a { padding: 9px 12px; }
+}
+@media (max-width: 560px) {
+  .pb-text { display: none; }
+}

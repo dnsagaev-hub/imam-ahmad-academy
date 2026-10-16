@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 import { ARTICLE_CATEGORIES, COURSE_LEVELS, MEDIA_CATEGORIES, TEXT_CATEGORIES } from '@/lib/constants'
 
@@ -47,17 +48,54 @@ const items: Item[] = [
 
 export function NavMenu() {
   const pathname = usePathname() || '/'
+  const [open, setOpen] = useState(false)
+  const [expanded, setExpanded] = useState<string | null>(null)
+
+  // На телефоне меню закрывается после перехода на другую страницу
+  useEffect(() => {
+    setOpen(false)
+    setExpanded(null)
+  }, [pathname])
+
   return (
-    <nav className="main-nav" aria-label="Основное меню">
-      <ul>
+    <nav className={`main-nav${open ? ' open' : ''}`} aria-label="Основное меню">
+      <button
+        type="button"
+        className="nav-toggle"
+        aria-expanded={open}
+        aria-controls="main-menu"
+        onClick={() => setOpen(!open)}
+      >
+        <span className="nav-toggle-icon" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </span>
+        <span className="sr-only">{open ? 'Закрыть меню' : 'Открыть меню'}</span>
+      </button>
+      <ul id="main-menu">
         {items.map((item) => {
           const active = pathname.startsWith(item.match) || (item.match === '/courses' && pathname.startsWith('/lessons'))
+          const isOpen = expanded === item.href
           return (
-            <li className="nav-item" key={item.href}>
-              <Link className={`nav-link${active ? ' active' : ''}`} href={item.href}>
-                {item.label}
-                {item.sub ? <ChevronIcon /> : null}
-              </Link>
+            <li className={`nav-item${isOpen ? ' expanded' : ''}`} key={item.href}>
+              <div className="nav-row">
+                <Link className={`nav-link${active ? ' active' : ''}`} href={item.href}>
+                  {item.label}
+                  {item.sub ? <ChevronIcon /> : null}
+                </Link>
+                {item.sub ? (
+                  <button
+                    type="button"
+                    className="nav-expand"
+                    aria-expanded={isOpen}
+                    aria-label={`Рубрики: ${item.label}`}
+                    onClick={() => setExpanded(isOpen ? null : item.href)}
+                  >
+                    <ChevronIcon />
+                  </button>
+                ) : null}
+              </div>
               {item.sub ? (
                 <div className="dropdown">
                   {item.sub.map((s) => (

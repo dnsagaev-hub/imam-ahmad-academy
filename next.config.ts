@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
   // Собирает самодостаточный сервер для Docker-образа (см. Dockerfile)
   output: 'standalone',
   images: {
-    localPatterns: [{ pathname: '/api/media/file/**' }],
+    localPatterns: [{ pathname: '/api/media/file/**' }, { pathname: '/brand/**' }],
   },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
