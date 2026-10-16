@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 import { adminOnly, adminOnlyField, publishedOrAdmin } from '../access'
 import { publishedField } from '../fields/published'
 import { slugField } from '../fields/slug'
+import { LESSON_BLOCKS } from '../blocks/lessonBlocks'
 import { LESSON_CATEGORIES } from '../lib/constants'
 
 export const Lessons: CollectionConfig = {
@@ -21,10 +22,36 @@ export const Lessons: CollectionConfig = {
     update: adminOnly,
     delete: adminOnly,
   },
+  hooks: {
+    beforeChange: [
+      // Отметка «текстовый урок» и примерное время чтения (≈180 слов в минуту)
+      ({ data, originalDoc }) => {
+        const content = data?.content ?? originalDoc?.content
+        const body = data?.body ?? originalDoc?.body
+        const blocks = Array.isArray(content) ? content : []
+        const hasBody = Boolean(body?.root?.children?.length)
+        data.isText = blocks.length > 0 || hasBody
+        const words = JSON.stringify(blocks).split(/\s+/).length + (hasBody ? JSON.stringify(body).split(/\s+/).length / 3 : 0)
+        data.readingMinutes = data.isText ? Math.max(1, Math.round(words / 180)) : null
+        return data
+      },
+    ],
+  },
   fields: [
     { name: 'title', label: 'Название урока', type: 'text', required: true },
     slugField(),
     publishedField,
+    {
+      name: 'isText',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: { hidden: true },
+    },
+    {
+      name: 'readingMinutes',
+      type: 'number',
+      admin: { hidden: true },
+    },
     {
       name: 'category',
       label: 'Раздел',
@@ -68,7 +95,8 @@ export const Lessons: CollectionConfig = {
         },
         {
           label: 'Текст урока',
-          description: 'Заполните, если это текстовый урок — тогда он появится в разделе «Текстовые уроки».',
+          description:
+            'Заполните, если это текстовый урок — тогда он появится в разделе «Текстовые уроки». Урок собирается из блоков: текст книги (арабский + перевод), пояснение, термины, пометка, итоги.',
           fields: [
             {
               name: 'excerpt',
@@ -76,8 +104,20 @@ export const Lessons: CollectionConfig = {
               type: 'textarea',
             },
             {
+              name: 'sourceRef',
+              label: 'Источник урока',
+              type: 'text',
+              admin: { placeholder: 'Ибн Бальбан, «Ахсар аль-Мухтасарат», ред. М. Н. аль-Аджми, т. 1, с. 86–88' },
+            },
+            {
+              name: 'content',
+              label: 'Блоки урока',
+              type: 'blocks',
+              blocks: LESSON_BLOCKS,
+            },
+            {
               name: 'body',
-              label: 'Текст урока',
+              label: 'Свободный текст (если блоки не нужны)',
               type: 'richText',
             },
           ],

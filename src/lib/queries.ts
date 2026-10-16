@@ -63,7 +63,7 @@ export async function getLessons(opts: { kind: 'audio' | 'video' | 'text'; categ
   const payload = await getPayloadClient()
   const and: Where[] = [published]
   if (opts.kind === 'audio') and.push({ audio: { exists: true } })
-  else if (opts.kind === 'text') and.push({ body: { exists: true } })
+  else if (opts.kind === 'text') and.push({ isText: { equals: true } })
   else and.push({ videoUrl: { exists: true } }, { videoUrl: { not_equals: '' } })
   if (opts.category) and.push({ category: { equals: opts.category } })
   const res = await payload.find({

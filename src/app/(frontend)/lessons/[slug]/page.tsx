@@ -7,6 +7,7 @@ import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { FileIcon, LockIcon } from '@/components/Icons'
 import { LessonMedia } from '@/components/LessonMedia'
+import { LessonText } from '@/components/text/LessonText'
 import { MarkComplete } from '@/components/MarkComplete'
 import { Crumbs } from '@/components/PageHead'
 import { LessonGate, LessonNav, ModuleSide } from '@/components/progress/LessonParts'
@@ -150,6 +151,10 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
               categoryLabel={labelOf(LESSON_CATEGORIES, l.category)}
               teacher={l.teacher}
             />
+
+            {Array.isArray(l.content) && l.content.length ? (
+              <LessonText blocks={l.content} sourceRef={l.sourceRef} readingMinutes={l.readingMinutes} />
+            ) : null}
 
             {l.body ? (
               <article className="card prose lesson-text" style={{ padding: 36 }}>

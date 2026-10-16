@@ -6,6 +6,8 @@
 import config from '@payload-config'
 import { getPayload } from 'payload'
 
+import { tayammum, usulAhmad, waterTypes, type SampleLesson } from './sampleLessons'
+
 const text = (t: string) => ({ type: 'text', text: t, version: 1, format: 0, detail: 0, mode: 'normal', style: '' })
 const paragraph = (t: string) => ({
   type: 'paragraph',
@@ -93,59 +95,25 @@ if (exists.totalDocs === 0) {
     } as any,
   })
 
-  const lesson2 = await payload.create({
-    collection: 'lessons',
-    data: {
-      title: 'Таяммум',
-      slug: 'demo-tayammum',
-      category: 'fiqh',
-      duration: '[46:00]',
-      definitionAr: 'التيمم: مسح الوجه واليدين بتراب طهور على وجه مخصوص',
-      definitionRu: 'Таяммум — протирание лица и кистей рук чистой землёй особым образом.',
-      summary: doc(
-        paragraph('[Демо-урок. Замените текст конспекта в админке.]'),
-        bullets([
-          'Таяммум заменяет омовение и гусль при отсутствии воды или невозможности её использовать.',
-          'Совершается чистой, дозволенной землёй (тураб), на которой есть пыль.',
-          'Сунна — один удар по земле; протираются лицо и кисти рук до запястий.',
-          'Нарушается тем же, что нарушает омовение, выходом времени намаза и появлением воды.',
-        ]),
-      ),
-      passingScore: 70,
-      questions: [
-        {
-          question: 'Чем совершается таяммум по ханбалитскому мазхабу?',
-          options: [
-            { text: 'Любой частью земли: камнем, песком, глиной' },
-            { text: 'Чистой землёй (тураб), на которой есть пыль' },
-            { text: 'Водой, смешанной с землёй' },
-          ],
-          correct: 2,
-          explanation:
-            'По мазхабу таяммум действителен только землёй (тураб): чистой, дозволенной, не сожжённой и имеющей пыль, которая пристаёт к рукам.',
-        },
-        {
-          question: 'Сколько ударов по земле — сунна при таяммуме?',
-          options: [{ text: 'Один удар' }, { text: 'Два удара' }, { text: 'Три удара' }],
-          correct: 1,
-          explanation: 'Сунна по мазхабу — один удар для лица и кистей. Если сделать два удара, таяммум также действителен.',
-        },
-        {
-          question: 'До какого места протираются руки при таяммуме?',
-          options: [{ text: 'До локтей' }, { text: 'Кисти рук до запястий' }, { text: 'Только ладони' }],
-          correct: 2,
-          explanation: 'Протираются кисти рук до запястий, как в хадисе ‘Аммара ибн Ясира.',
-        },
-        {
-          question: 'Нарушается ли таяммум с выходом времени намаза?',
-          options: [{ text: 'Да, нарушается' }, { text: 'Нет, сохраняется до осквернения' }],
-          correct: 1,
-          explanation:
-            'По мазхабу таяммум нарушается выходом времени намаза, а также всем, что нарушает омовение, и появлением воды у того, кто совершил его из-за её отсутствия.',
-        },
-      ],
-    } as any,
-  })
+  const createSample = (l: SampleLesson) =>
+    payload.create({
+      collection: 'lessons',
+      data: {
+        title: l.title,
+        slug: l.slug,
+        category: l.category,
+        excerpt: l.excerpt,
+        sourceRef: l.sourceRef,
+        content: l.content,
+        passingScore: 70,
+        questions: l.questions,
+      } as any,
+    })
+
+  const water = await createSample(waterTypes)
+  const lesson2 = await createSample(tayammum)
+  // Отдельный текстовый урок (не входит в курс) — раздел «Введение в мазхаб»
+  await createSample(usulAhmad)
 
   await payload.create({
     collection: 'courses',
@@ -159,9 +127,9 @@ if (exists.totalDocs === 0) {
       description:
         '[Демо-курс, чтобы посмотреть, как работает обучение. Замените или скройте его, когда добавите свои курсы.]',
       teacher: '[Имя преподавателя]',
-      duration: '[≈ 1 час]',
+      duration: '[≈ 1,5 часа]',
       modules: [
-        { title: 'Введение в книгу очищения', lessons: [lesson1.id] },
+        { title: 'Введение в книгу очищения и виды воды', lessons: [lesson1.id, water.id] },
         { title: 'Таяммум', lessons: [lesson2.id] },
       ],
     } as any,

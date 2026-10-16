@@ -27,16 +27,29 @@ export function CourseCard({ course }: { course: CourseDoc }) {
 
 export function TextLessonCard({ lesson }: { lesson: LessonDoc }) {
   const l = lesson as LessonDoc & Record<string, any>
+  const bilingual = Array.isArray(l.content) && l.content.some((b: any) => b?.blockType === 'matn')
   return (
-    <article className="card lift article-card">
-      <span className="tag">{labelOf(LESSON_CATEGORIES, l.category)} · Текстовый урок</span>
+    <article className="card lift article-card text-card">
+      <div className="text-card-top">
+        <span className="tag">{labelOf(LESSON_CATEGORIES, l.category)}</span>
+        {bilingual ? (
+          <span className="tag-soft" title="Арабский текст с переводом">
+            <span lang="ar">ع</span> + рус
+          </span>
+        ) : null}
+        {l.questions?.length ? <span className="tag-test">тест</span> : null}
+      </div>
       <h3>
         <Link href={`/lessons/${l.slug}`}>{l.title}</Link>
       </h3>
       {l.excerpt ? <p>{l.excerpt}</p> : null}
-      <Link href={`/lessons/${l.slug}`} style={{ marginTop: 6, fontWeight: 700, fontSize: 14 }}>
-        Читать урок →
-      </Link>
+      {l.sourceRef ? <p className="text-card-src">{l.sourceRef}</p> : null}
+      <div className="text-card-foot">
+        <span>{l.readingMinutes ? `≈ ${l.readingMinutes} мин чтения` : 'Текстовый урок'}</span>
+        <Link href={`/lessons/${l.slug}`} style={{ fontWeight: 700, fontSize: 14 }}>
+          Читать урок →
+        </Link>
+      </div>
     </article>
   )
 }
