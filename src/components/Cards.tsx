@@ -2,7 +2,9 @@ import { ArticleCardClient } from './ArticleCardClient'
 import type { ArticleItem } from './ArticlesBrowser'
 import Link from 'next/link'
 
-import { ARTICLE_CATEGORIES, BOOK_CATEGORIES, COURSE_LEVELS, LESSON_CATEGORIES, labelOf } from '@/lib/constants'
+import { BookTile } from '@/components/library/BookTile'
+import { toBookItem } from '@/lib/books'
+import { ARTICLE_CATEGORIES, COURSE_LEVELS, LESSON_CATEGORIES, labelOf } from '@/lib/constants'
 import type { CourseDoc, LessonDoc } from '@/lib/learning'
 import { lessonCount, lessonsWord, mediaUrl } from '@/lib/queries'
 
@@ -76,18 +78,5 @@ export function ArticleCard({ article }: { article: Record<string, any> }) {
 }
 
 export function BookCard({ book }: { book: Record<string, any> }) {
-  const url = mediaUrl(book.file)
-  return (
-    <a href={url ?? '#'} target="_blank" rel="noopener" className="card lift book-card">
-      <div className="book-cover">
-        <div>
-          <span lang="ar">{book.titleAr || book.title}</span>
-        </div>
-      </div>
-      <h3>{book.title}</h3>
-      <span style={{ fontSize: 13, color: 'var(--muted)' }}>
-        {[book.author, labelOf(BOOK_CATEGORIES, book.category), 'PDF'].filter(Boolean).join(' · ')}
-      </span>
-    </a>
-  )
+  return <BookTile b={toBookItem(book)} />
 }

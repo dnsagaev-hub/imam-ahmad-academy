@@ -206,7 +206,7 @@ export default async function HomePage() {
             </Link>
           </div>
           {books.length ? (
-            <div className="grid grid-200">
+            <div className="lib-grid">
               {books.map((b) => (
                 <BookCard key={b.id} book={b} />
               ))}

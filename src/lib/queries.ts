@@ -106,11 +106,45 @@ export async function getArticleBySlug(slug: string) {
   return (res.docs[0] as Record<string, any>) ?? null
 }
 
+export type BookDoc = Record<string, any>
+
 export async function getBooks(opts: { category?: string; limit?: number } = {}) {
   const payload = await getPayloadClient()
   const where: Where = opts.category ? { and: [published, { category: { equals: opts.category } }] } : published
   const res = await payload.find({ collection: 'books', where, sort: 'order', depth: 1, limit: opts.limit ?? 100 })
-  return res.docs as Record<string, any>[]
+  return res.docs as BookDoc[]
+}
+
+export async function getBookBySlug(slug: string) {
+  const payload = await getPayloadClient()
+  const res = await payload.find({ collection: 'books', where: { and: [published, { slug: { equals: slug } }] }, depth: 1, limit: 1 })
+  return (res.docs[0] as BookDoc) ?? null
+}
+
+/** Шархи, хашии и переводы, написанные на эту книгу. */
+export async function getCommentaries(bookId: number | string) {
+  const payload = await getPayloadClient()
+  const res = await payload.find({
+    collection: 'books',
+    where: { and: [published, { baseBook: { equals: bookId } }] },
+    sort: 'order',
+    depth: 1,
+    limit: 50,
+  })
+  return res.docs as BookDoc[]
+}
+
+/** Курсы, которые проходят по этой книге. */
+export async function getCoursesByBook(bookId: number | string) {
+  const payload = await getPayloadClient()
+  const res = await payload.find({
+    collection: 'courses',
+    where: { and: [published, { book: { equals: bookId } }] },
+    sort: 'order',
+    depth: 0,
+    limit: 20,
+  })
+  return res.docs as unknown as CourseDoc[]
 }
 
 /** Курс → количество опубликованных уроков. */

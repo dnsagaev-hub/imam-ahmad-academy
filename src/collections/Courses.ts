@@ -49,6 +49,13 @@ export const Courses: CollectionConfig = {
         { name: 'bookAuthor', label: 'Автор книги', type: 'text', admin: { width: '50%' } },
       ],
     },
+    {
+      name: 'book',
+      label: 'Книга из библиотеки',
+      type: 'relationship',
+      relationTo: 'books',
+      admin: { description: 'Тогда на странице книги появится ссылка на этот курс' },
+    },
     { name: 'description', label: 'Краткое описание', type: 'textarea', required: true },
     {
       type: 'row',

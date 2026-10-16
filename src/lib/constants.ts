@@ -33,12 +33,40 @@ export const ARTICLE_CATEGORIES = [
 ] as const
 
 export const BOOK_CATEGORIES = [
+  { label: 'Введение в мазхаб', value: 'madhhab' },
   { label: 'Фикх', value: 'fiqh' },
-  { label: 'Усуль', value: 'usul' },
-  { label: 'Акида', value: 'aqida' },
+  { label: 'Усуль аль-фикх', value: 'usul' },
+  { label: 'Правила фикха', value: 'qawaid' },
+  { label: 'Акыда', value: 'aqida' },
   { label: 'Хадис', value: 'hadith' },
+  { label: 'Сира', value: 'sira' },
+  { label: 'Ахляк и очищение души', value: 'akhlaq' },
   { label: 'Арабский язык', value: 'arabic' },
   { label: 'Другое', value: 'other' },
+] as const
+
+/** Вид книги: матн, шарх и т. д. */
+export const BOOK_KINDS = [
+  { label: 'Матн', value: 'matn', hint: 'Основной текст для заучивания и изучения' },
+  { label: 'Шарх', value: 'sharh', hint: 'Разъяснение матна' },
+  { label: 'Хашия', value: 'hashiya', hint: 'Примечания к шарху' },
+  { label: 'Справочник', value: 'reference', hint: 'Большие книги для сверки' },
+  { label: 'Перевод', value: 'translation', hint: 'Перевод на русский язык' },
+  { label: 'Пособие', value: 'textbook', hint: 'Учебные материалы академии' },
+] as const
+
+/** Ступень, на которой изучают книгу. */
+export const BOOK_LEVELS = [
+  { label: 'Мубтади — начальная ступень', short: 'Мубтади', value: 'beginner' },
+  { label: 'Мутавассит — средняя ступень', short: 'Мутавассит', value: 'intermediate' },
+  { label: 'Мунтахи — продвинутая ступень', short: 'Мунтахи', value: 'advanced' },
+  { label: 'Для сверки (не по ступеням)', short: 'Для сверки', value: 'reference' },
+] as const
+
+export const BOOK_LANGS = [
+  { label: 'Арабский', value: 'ar' },
+  { label: 'Русский', value: 'ru' },
+  { label: 'Арабский + русский', value: 'ar-ru' },
 ] as const
 
 export const COURSE_LEVELS = [
