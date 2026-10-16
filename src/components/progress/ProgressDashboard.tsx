@@ -5,7 +5,7 @@ import { useRef, useState } from 'react'
 
 import { COURSE_LEVELS, STUDENT_LEVELS, labelOf } from '@/lib/constants'
 import { courseState, studentLevel, type CourseDoc } from '@/lib/learning'
-import { clearProgress, exportProgress, importProgress, useLocalProgress } from '@/lib/localProgress'
+import { clearProgress, downloadProgressFile, importProgress, useLocalProgress } from '@/lib/localProgress'
 
 /* Страница «Мой прогресс» (режим без регистрации): всё берётся из браузера ученика. */
 
@@ -66,15 +66,7 @@ export function ProgressBody({ courses }: { courses: CourseDoc[] }) {
   const myCourses = [...started, ...notStarted.slice(0, 3)]
 
   const download = () => {
-    const blob = new Blob([exportProgress()], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `progress-imam-ahmad-${new Date().toISOString().slice(0, 10)}.json`
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-    setTimeout(() => URL.revokeObjectURL(url), 1000)
+    downloadProgressFile()
     setMsg({ ok: true, text: 'Файл сохранён. На другом устройстве откройте эту страницу и нажмите «Загрузить из файла».' })
   }
 

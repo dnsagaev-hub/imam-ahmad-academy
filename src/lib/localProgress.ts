@@ -60,6 +60,19 @@ export function exportProgress(): string {
   return JSON.stringify({ app: 'imam-ahmad-academy', ...read() }, null, 2)
 }
 
+/** Скачать прогресс файлом (для переноса на другое устройство). */
+export function downloadProgressFile() {
+  const blob = new Blob([exportProgress()], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `progress-imam-ahmad-${new Date().toISOString().slice(0, 10)}.json`
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
 export function importProgress(json: string): boolean {
   try {
     const data = JSON.parse(json)

@@ -30,12 +30,12 @@ export async function getPrayerDefaults(): Promise<{ city: string; method: Metho
   }
 }
 
-export async function getCourses(level?: string) {
+export const getCourses = cache(async (level?: string) => {
   const payload = await getPayloadClient()
   const where: Where = level ? { and: [published, { level: { equals: level } }] } : published
   const res = await payload.find({ collection: 'courses', where, sort: 'order', depth: 1, limit: 100 })
   return res.docs as unknown as CourseDoc[]
-}
+})
 
 export async function getCourseBySlug(slug: string) {
   const payload = await getPayloadClient()
