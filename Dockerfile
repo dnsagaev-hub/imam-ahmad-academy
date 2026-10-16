@@ -12,6 +12,10 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+# Временные значения только для сборки (в готовый образ не попадают): настоящие задаются на хостинге
+ARG PAYLOAD_SECRET=build-only-placeholder-secret
+ARG DATABASE_URL=postgres://build:build@127.0.0.1:5432/build
+ENV PAYLOAD_SECRET=$PAYLOAD_SECRET DATABASE_URL=$DATABASE_URL
 RUN npm run build
 
 FROM base AS runner
