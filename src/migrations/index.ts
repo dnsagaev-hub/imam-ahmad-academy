@@ -1,8 +1,9 @@
-// Список миграций базы данных.
-// Первая миграция создаётся командой `npm run migrate:create initial`
-// (Payload сам допишет её в этот файл). См. README.md, раздел «Первый запуск».
-export const migrations: {
-  name: string
-  up: (args: any) => Promise<void>
-  down: (args: any) => Promise<void>
-}[] = []
+import * as migration_20261016_084906_initial from './20261016_084906_initial';
+
+export const migrations = [
+  {
+    up: migration_20261016_084906_initial.up,
+    down: migration_20261016_084906_initial.down,
+    name: '20261016_084906_initial'
+  },
+];
