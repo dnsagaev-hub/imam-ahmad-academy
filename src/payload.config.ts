@@ -2,10 +2,10 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
-import { sharpTransformer } from '@payloadcms/transformer-sharp'
 import { ru } from '@payloadcms/translations/languages/ru'
 import path from 'path'
 import { buildConfig } from 'payload'
+import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
 import { Articles } from './collections/Articles'
@@ -85,8 +85,8 @@ export default buildConfig({
         }),
       ]
     : [],
+  sharp,
   upload: {
-    transformers: [sharpTransformer()],
     limits: { fileSize: 300 * 1024 * 1024 }, // до 300 МБ (аудио, книги)
   },
 })

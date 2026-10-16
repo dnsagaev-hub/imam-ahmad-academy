@@ -12,6 +12,10 @@ on:
 permissions:
   contents: write
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -37,6 +41,12 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 24
+
+      - name: Проверить, что все версии пакетов существуют
+        run: |
+          node -e "const p=require('./package.json');for(const [n,v] of Object.entries({...p.dependencies,...p.devDependencies}))console.log(n+'@'+v)" | while read spec; do
+            v=$(npm view "$spec" version 2>/dev/null | tail -1); echo "${v:-НЕТ ТАКОЙ ВЕРСИИ}  $spec"
+          done 2>&1 | tee -a ci.log
 
       - name: Установка зависимостей
         run: (if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi) 2>&1 | tee -a ci.log
