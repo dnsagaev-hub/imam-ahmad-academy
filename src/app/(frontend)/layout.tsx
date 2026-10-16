@@ -12,6 +12,9 @@ import { AudioPlayerProvider } from '@/components/audio/AudioPlayer'
 
 import './styles.css'
 
+// Все страницы берут данные из базы при каждом открытии (в том числе страница 404 с шапкой сайта)
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'),
   title: {

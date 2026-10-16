@@ -859,3 +859,7 @@ body.has-player { padding-bottom: 104px; }
 @media (max-width: 560px) {
   .pb-text { display: none; }
 }
+@media (max-width: 900px) {
+  .pb-panel { position: fixed; left: 12px; right: 12px; top: 72px; width: auto; max-height: calc(100vh - 90px); overflow-y: auto; }
+  .pb:not(.open) .pb-panel { display: none; }
+}
