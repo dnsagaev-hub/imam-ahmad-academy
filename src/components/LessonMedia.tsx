@@ -39,7 +39,7 @@ export function LessonMedia({ videoUrl, audioUrl, title }: { videoUrl?: string |
           <audio controls preload="metadata" src={audioUrl}>
             Ваш браузер не поддерживает аудио.
           </audio>
-          <a href={audioUrl} download style={{ color: '#dce8f6', fontSize: 14, fontWeight: 600 }}>
+          <a href={audioUrl} download style={{ color: '#E6F5EE', fontSize: 14, fontWeight: 600 }}>
             Скачать MP3
           </a>
         </div>

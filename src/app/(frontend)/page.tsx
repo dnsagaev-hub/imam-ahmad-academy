@@ -1,21 +1,24 @@
 import Link from 'next/link'
 
-import { ArticleCard, AudioRow, BookCard, CourseCard, VideoCard } from '@/components/Cards'
+import { ArticleCard, AudioRow, BookCard, CourseCard, TextLessonCard, VideoCard } from '@/components/Cards'
 import { ContactForm } from '@/components/ContactForm'
 import { ContactLinks } from '@/components/ContactLinks'
 import { REGISTRATION_ENABLED } from '@/lib/config'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { StarIcon } from '@/components/Icons'
-import { LESSON_CATEGORIES } from '@/lib/constants'
-import { getArticles, getBooks, getCourses, getLessons, getSettings } from '@/lib/queries'
+import { MEDIA_CATEGORIES, TEXT_CATEGORIES } from '@/lib/constants'
+import { PrayerTimesPanel } from '@/components/PrayerWidgets'
+import { getArticles, getBooks, getCourses, getLessons, getPrayerDefaults, getSettings } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
-  const [settings, courses, audios, videos, articles, books] = await Promise.all([
+  const [settings, prayerDefaults, courses, texts, audios, videos, articles, books] = await Promise.all([
     getSettings(),
+    getPrayerDefaults(),
     getCourses(),
+    getLessons({ kind: 'text', limit: 3 }),
     getLessons({ kind: 'audio', limit: 4 }),
     getLessons({ kind: 'video', limit: 3 }),
     getArticles({ limit: 3 }),
@@ -68,6 +71,19 @@ export default async function HomePage() {
           </div>
         </section>
 
+        <section className="container section" id="prayer">
+          <div className="section-head">
+            <div>
+              <p className="eyebrow">Время намазов</p>
+              <h2 className="h2">Расписание на сегодня</h2>
+            </div>
+            <Link href="/prayer-times" style={{ fontWeight: 700 }}>
+              Подробнее →
+            </Link>
+          </div>
+          <PrayerTimesPanel defaults={prayerDefaults} compact />
+        </section>
+
         <section className="container section" id="courses">
           <div className="section-head">
             <div>
@@ -89,11 +105,39 @@ export default async function HomePage() {
           )}
         </section>
 
+        <section className="container section" id="text">
+          <div className="section-head">
+            <div>
+              <p className="eyebrow">Текстовые уроки</p>
+              <h2 className="h2">Уроки для чтения</h2>
+            </div>
+            <Link href="/text" style={{ fontWeight: 700 }}>
+              Все текстовые уроки →
+            </Link>
+          </div>
+          <div className="chips">
+            {TEXT_CATEGORIES.map((c) => (
+              <Link key={c.value} className="chip" href={`/text?category=${c.value}`}>
+                {c.label}
+              </Link>
+            ))}
+          </div>
+          {texts.length ? (
+            <div className="grid grid-320">
+              {texts.map((l) => (
+                <TextLessonCard key={l.id} lesson={l} />
+              ))}
+            </div>
+          ) : (
+            <p className="empty">Текстовые уроки скоро появятся.</p>
+          )}
+        </section>
+
         <section className="container section" id="audio">
           <p className="eyebrow">Аудиоуроки</p>
           <h2 className="h2">Слушайте в дороге</h2>
           <div className="chips">
-            {LESSON_CATEGORIES.map((c) => (
+            {MEDIA_CATEGORIES.map((c) => (
               <Link key={c.value} className="chip" href={`/audio?category=${c.value}`}>
                 {c.label}
               </Link>
@@ -114,7 +158,7 @@ export default async function HomePage() {
           <p className="eyebrow">Видеоуроки</p>
           <h2 className="h2">Занятия с разбором текста</h2>
           <div className="chips">
-            {LESSON_CATEGORIES.map((c) => (
+            {MEDIA_CATEGORIES.map((c) => (
               <Link key={c.value} className="chip" href={`/video?category=${c.value}`}>
                 {c.label}
               </Link>

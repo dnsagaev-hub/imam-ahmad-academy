@@ -1,7 +1,9 @@
 // Справочники, которые используются и в админке, и на сайте.
 
+/** Все рубрики уроков (для выбора в админке и для текстовых уроков). */
 export const LESSON_CATEGORIES = [
   { label: 'Введение в мазхаб', value: 'madhhab' },
+  { label: 'Акыда', value: 'aqida' },
   { label: 'Фикх', value: 'fiqh' },
   { label: 'Хадис', value: 'hadith' },
   { label: 'Усуль аль-фикх', value: 'usul' },
@@ -9,7 +11,15 @@ export const LESSON_CATEGORIES = [
   { label: 'Арабский язык', value: 'arabic' },
   { label: 'Наука о хадисах', value: 'mustalah' },
   { label: 'Наука о Коране', value: 'quran' },
+  { label: 'Сира', value: 'sira' },
+  { label: 'Ахляк и очищение души', value: 'akhlaq' },
 ] as const
+
+/** Рубрики аудио- и видеоуроков (без «Акыды» — она только в текстовых уроках). */
+export const MEDIA_CATEGORIES = LESSON_CATEGORIES.filter((c) => c.value !== 'aqida')
+
+/** Рубрики текстовых уроков. */
+export const TEXT_CATEGORIES = LESSON_CATEGORIES
 
 export const ARTICLE_CATEGORIES = [
   { label: 'Введение в мазхаб', value: 'madhhab' },

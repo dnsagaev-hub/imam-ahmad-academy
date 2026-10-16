@@ -113,7 +113,7 @@ export function LessonNav({ course, lessonId, source }: { course: CourseDoc; les
             Урок {next.number}. {next.lesson.title} →
           </Link>
         ) : (
-          <span className="btn" style={{ background: '#eef2f7', color: 'var(--muted-2)', cursor: 'default' }}>
+          <span className="btn" style={{ background: '#EDF3F0', color: 'var(--muted-2)', cursor: 'default' }}>
             Урок {next.number} откроется после теста →
           </span>
         )

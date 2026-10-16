@@ -51,11 +51,11 @@ export default async function CabinetPage({ searchParams }: { searchParams: Prom
           <div style={{ flex: '1 1 460px', minWidth: 0, display: 'flex', alignItems: 'center', gap: 22 }}>
             <span className="big-avatar">{name.charAt(0).toUpperCase()}</span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <span style={{ fontSize: 15, color: '#a9c6e8' }}>Ас-саляму ‘алейкум,</span>
+              <span style={{ fontSize: 15, color: '#A8DCC6' }}>Ас-саляму ‘алейкум,</span>
               <h1 className="display" style={{ margin: 0, fontSize: 48, lineHeight: 1, fontWeight: 700 }}>
                 {name}
               </h1>
-              <span style={{ fontSize: 14, color: '#dce8f6' }}>
+              <span style={{ fontSize: 14, color: '#E6F5EE' }}>
                 {since ? `Ученик с ${since} · ` : ''}Уровень:{' '}
                 <strong style={{ color: 'var(--gold-light)' }}>{STUDENT_LEVELS[level.index].name}</strong>
               </span>
@@ -130,7 +130,7 @@ export default async function CabinetPage({ searchParams }: { searchParams: Prom
                       </div>
                       <div className="nm">{lv.name}</div>
                       <div style={{ fontSize: 14, lineHeight: 1.55, opacity: 0.85 }}>{LEVEL_RULES[i]}</div>
-                      <div className="bar" style={{ height: 6, background: 'rgba(127,150,180,.25)' }}>
+                      <div className="bar" style={{ height: 6, background: 'rgba(0,112,79,.15)' }}>
                         <div style={{ width: `${barWidth}%`, background: i === level.index ? 'var(--gold-light)' : 'var(--royal)' }} />
                       </div>
                     </div>

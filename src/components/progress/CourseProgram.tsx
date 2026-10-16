@@ -41,7 +41,7 @@ export function CourseProgram({ course, source }: { course: CourseDoc; source: P
                 </span>
               ) : null}
               <span className="chev">
-                <ChevronIcon size={20} color="#1F4E8C" />
+                <ChevronIcon size={20} color="#00704F" />
               </span>
             </summary>
             <ol className="lesson-list">
@@ -58,7 +58,7 @@ export function CourseProgram({ course, source }: { course: CourseDoc; source: P
                       </span>
                     ) : isCurrent ? (
                       <span className="st st-current">
-                        <PlayIcon size={12} color="#9A7A35" />
+                        <PlayIcon size={12} color="#00805F" />
                       </span>
                     ) : (
                       <span className="st st-locked">
@@ -111,17 +111,17 @@ export function CourseProgressCard({ course, source, registerHref }: { course: C
   if (guestLimited) {
     return (
       <div className="dark-card">
-        <span className="side-label" style={{ color: 'var(--gold)' }}>
+        <span className="side-label" style={{ color: 'var(--gold-light)' }}>
           Начните обучение
         </span>
-        <p style={{ margin: 0, color: '#b9cee6' }}>
+        <p style={{ margin: 0, color: '#CFE9DE' }}>
           Зарегистрируйтесь, чтобы проходить уроки по порядку, сдавать тесты и видеть прогресс.
         </p>
         <Link href={registerHref ?? '/register'} className="btn btn-white btn-block">
           Регистрация
         </Link>
         {first ? (
-          <Link href={`/lessons/${first.lesson.slug}`} style={{ color: '#dce8f6', textAlign: 'center' }}>
+          <Link href={`/lessons/${first.lesson.slug}`} style={{ color: '#E6F5EE', textAlign: 'center' }}>
             Посмотреть первый урок
           </Link>
         ) : null}
@@ -132,12 +132,12 @@ export function CourseProgressCard({ course, source, registerHref }: { course: C
   const current = state.currentLesson
   return (
     <div className="dark-card">
-      <span className="side-label" style={{ color: 'var(--gold)' }}>
+      <span className="side-label" style={{ color: 'var(--gold-light)' }}>
         Ваш прогресс
       </span>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
         <span className="big-num">{ready ? `${state.percent}%` : '—'}</span>
-        <span style={{ color: '#b9cee6' }}>
+        <span style={{ color: '#CFE9DE' }}>
           {state.doneCount} из {state.total}
         </span>
       </div>
@@ -162,8 +162,8 @@ export function CourseProgressCard({ course, source, registerHref }: { course: C
         <span style={{ color: 'var(--gold-light)', fontWeight: 700 }}>Курс пройден, ма ша Аллах!</span>
       ) : null}
       {source.mode === 'local' ? (
-        <span style={{ fontSize: 13, color: '#a9c6e8' }}>
-          Прогресс хранится на этом устройстве. <Link href="/progress" style={{ color: '#dce8f6' }}>Подробнее</Link>
+        <span style={{ fontSize: 13, color: '#A8DCC6' }}>
+          Прогресс хранится на этом устройстве. <Link href="/progress" style={{ color: '#E6F5EE' }}>Подробнее</Link>
         </span>
       ) : null}
     </div>

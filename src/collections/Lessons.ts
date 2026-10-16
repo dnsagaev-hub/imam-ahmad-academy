@@ -32,7 +32,7 @@ export const Lessons: CollectionConfig = {
       required: true,
       defaultValue: 'fiqh',
       options: [...LESSON_CATEGORIES],
-      admin: { position: 'sidebar', description: 'В каком разделе аудио- и видеоуроков показывать' },
+      admin: { position: 'sidebar', description: 'В какой рубрике показывать урок (аудио, видео, текстовые уроки)' },
     },
     {
       name: 'duration',
@@ -56,6 +56,22 @@ export const Lessons: CollectionConfig = {
               },
             },
             { name: 'audio', label: 'Аудиофайл (MP3)', type: 'upload', relationTo: 'media' },
+          ],
+        },
+        {
+          label: 'Текст урока',
+          description: 'Заполните, если это текстовый урок — тогда он появится в разделе «Текстовые уроки».',
+          fields: [
+            {
+              name: 'excerpt',
+              label: 'Краткое описание (для карточки в списке)',
+              type: 'textarea',
+            },
+            {
+              name: 'body',
+              label: 'Текст урока',
+              type: 'richText',
+            },
           ],
         },
         {

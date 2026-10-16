@@ -8,13 +8,13 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
       <section className="auth-side">
         <Pattern id="star8-auth" />
         <div style={{ position: 'relative' }}>
-          <Brand />
+          <Brand light />
         </div>
         <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <p className="ar" lang="ar" dir="rtl" style={{ margin: 0, fontSize: 52, fontWeight: 700, lineHeight: 1.4, textAlign: 'left' }}>
             مع المحبرة إلى المقبرة
           </p>
-          <p className="display" style={{ margin: 0, fontStyle: 'italic', fontWeight: 600, fontSize: 32, color: '#dce8f6' }}>
+          <p className="display" style={{ margin: 0, fontStyle: 'italic', fontWeight: 600, fontSize: 32, color: '#E6F5EE' }}>
             «С пером — до могилы»
           </p>
           <p className="quote-by" style={{ margin: 0 }}>
@@ -36,7 +36,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
               </span>
               <span>
                 <b style={{ display: 'block' }}>{t}</b>
-                <span style={{ fontSize: 14, color: '#b9cee6' }}>{d}</span>
+                <span style={{ fontSize: 14, color: '#CFE9DE' }}>{d}</span>
               </span>
             </li>
           ))}

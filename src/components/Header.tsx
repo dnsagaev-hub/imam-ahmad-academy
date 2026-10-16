@@ -1,19 +1,25 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { REGISTRATION_ENABLED } from '@/lib/config'
 import { getCurrentUser } from '@/lib/payload'
+import { getPrayerDefaults } from '@/lib/queries'
 
 import { Pattern } from './Icons'
 import { NavMenu } from './NavMenu'
+import { TopBar } from './PrayerWidgets'
 
-export function Brand() {
+/** Значок и название академии. `light` — для тёмного фона. */
+export function Brand({ light = false }: { light?: boolean }) {
   return (
-    <Link href="/" className="brand">
-      <span className="brand-mark">
-        <span lang="ar">أحمد</span>
-      </span>
+    <Link href="/" className={`brand${light ? ' light' : ''}`} aria-label="Академия имама Ахмада — на главную">
+      <Image src="/brand/emblem.png" alt="" width={191} height={391} className="brand-emblem" priority />
       <span>
-        <span className="brand-name">Академия имама Ахмада</span>
+        <span className="brand-name">
+          Академия
+          <br />
+          имама Ахмада
+        </span>
         <span className="brand-sub">Онлайн-школа ханбалитского фикха</span>
       </span>
     </Link>
@@ -34,47 +40,57 @@ export function Quote() {
   )
 }
 
-/** Шапка сайта. `children` — содержимое под меню (например, главный экран или шапка кабинета). */
+/**
+ * Шапка сайта: полоса с датой и намазом, белая шапка с меню.
+ * `children` — тёмно-зелёный блок под шапкой (главный экран, шапка кабинета).
+ */
 export async function Header({ children }: { children?: React.ReactNode }) {
-  const user = REGISTRATION_ENABLED ? await getCurrentUser() : null
+  const [user, prayerDefaults] = await Promise.all([REGISTRATION_ENABLED ? getCurrentUser() : null, getPrayerDefaults()])
   const initial = (user?.name || user?.email || '?').trim().charAt(0).toUpperCase()
   return (
-    <header className="site-header">
-      <Pattern />
-      <div className="container header-top">
-        <Brand />
-        <Quote />
-        <div className="header-actions">
-          {!REGISTRATION_ENABLED ? (
-            <Link href="/progress" className="user-pill">
-              <span className="avatar" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B1F3A" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />
-                </svg>
-              </span>
-              Мой прогресс
-            </Link>
-          ) : user ? (
-            <Link href="/cabinet" className="user-pill">
-              <span className="avatar">{initial}</span>
-              Личный кабинет
-            </Link>
-          ) : (
-            <>
-              <Link href="/login" className="btn-ghost-light">
-                Войти
+    <>
+      <TopBar defaults={prayerDefaults} />
+      <header className="site-header">
+        <div className="container header-top">
+          <Brand />
+          <Quote />
+          <div className="header-actions">
+            {!REGISTRATION_ENABLED ? (
+              <Link href="/progress" className="user-pill">
+                <span className="avatar" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#003D2C" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />
+                  </svg>
+                </span>
+                Мой прогресс
               </Link>
-              <Link href="/register" className="btn-sky">
-                Регистрация
+            ) : user ? (
+              <Link href="/cabinet" className="user-pill">
+                <span className="avatar">{initial}</span>
+                Личный кабинет
               </Link>
-            </>
-          )}
+            ) : (
+              <>
+                <Link href="/login" className="btn-ghost-light">
+                  Войти
+                </Link>
+                <Link href="/register" className="btn-sky">
+                  Регистрация
+                </Link>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="container">
-        <NavMenu />
-      </div>
-      {children}
-    </header>
+        <div className="container">
+          <NavMenu />
+        </div>
+      </header>
+      {children ? (
+        <div className="header-band">
+          <Pattern />
+          {children}
+        </div>
+      ) : null}
+    </>
   )
 }

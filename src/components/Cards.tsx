@@ -57,7 +57,7 @@ export function VideoCard({ lesson }: { lesson: LessonDoc }) {
     <Link href={`/lessons/${lesson.slug}`} className="card lift video-card">
       <div className="video-thumb">
         <span className="play">
-          <PlayIcon size={24} color="#0B1F3A" />
+          <PlayIcon size={24} color="#003D2C" />
         </span>
         {lesson.duration ? <span className="dur">{lesson.duration}</span> : null}
       </div>
@@ -67,6 +67,22 @@ export function VideoCard({ lesson }: { lesson: LessonDoc }) {
         {testCount ? <span style={{ fontSize: 13, color: 'var(--muted)' }}>После урока: тест из {testCount} вопросов</span> : null}
       </div>
     </Link>
+  )
+}
+
+export function TextLessonCard({ lesson }: { lesson: LessonDoc }) {
+  const l = lesson as LessonDoc & Record<string, any>
+  return (
+    <article className="card lift article-card">
+      <span className="tag">{labelOf(LESSON_CATEGORIES, l.category)} · Текстовый урок</span>
+      <h3>
+        <Link href={`/lessons/${l.slug}`}>{l.title}</Link>
+      </h3>
+      {l.excerpt ? <p>{l.excerpt}</p> : null}
+      <Link href={`/lessons/${l.slug}`} style={{ marginTop: 6, fontWeight: 700, fontSize: 14 }}>
+        Читать урок →
+      </Link>
+    </article>
   )
 }
 

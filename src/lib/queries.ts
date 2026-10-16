@@ -1,7 +1,9 @@
 import type { Where } from 'payload'
+import { cache } from 'react'
 
 import type { CourseDoc, LessonDoc } from './learning'
 import { getPayloadClient } from './payload'
+import { METHODS, type MethodKey } from './prayerTimes'
 
 /* Запросы к базе для страниц сайта. Скрытые (неопубликованные) материалы не показываются. */
 
@@ -12,9 +14,20 @@ export type MediaDoc = { id: number | string; url?: string | null; filename?: st
 export const mediaUrl = (m: unknown): string | null =>
   m && typeof m === 'object' && 'url' in m ? ((m as MediaDoc).url ?? null) : null
 
-export async function getSettings() {
+export const getSettings = cache(async () => {
   const payload = await getPayloadClient()
   return (await payload.findGlobal({ slug: 'settings', depth: 0 })) as Record<string, any>
+})
+
+/** Настройки даты и намазов для верхней полосы. */
+export async function getPrayerDefaults(): Promise<{ city: string; method: MethodKey; hijriOffset: number }> {
+  try {
+    const s = await getSettings()
+    const method = s.prayerMethod && s.prayerMethod in METHODS ? (s.prayerMethod as MethodKey) : 'MWL'
+    return { city: s.defaultCity || 'Москва', method, hijriOffset: Number(s.hijriOffset) || 0 }
+  } catch {
+    return { city: 'Москва', method: 'MWL', hijriOffset: 0 }
+  }
 }
 
 export async function getCourses(level?: string) {
@@ -46,10 +59,11 @@ export async function getLessonBySlug(slug: string) {
   return (res.docs[0] as unknown as LessonDoc) ?? null
 }
 
-export async function getLessons(opts: { kind: 'audio' | 'video'; category?: string; limit?: number }) {
+export async function getLessons(opts: { kind: 'audio' | 'video' | 'text'; category?: string; limit?: number }) {
   const payload = await getPayloadClient()
   const and: Where[] = [published]
   if (opts.kind === 'audio') and.push({ audio: { exists: true } })
+  else if (opts.kind === 'text') and.push({ body: { exists: true } })
   else and.push({ videoUrl: { exists: true } }, { videoUrl: { not_equals: '' } })
   if (opts.category) and.push({ category: { equals: opts.category } })
   const res = await payload.find({

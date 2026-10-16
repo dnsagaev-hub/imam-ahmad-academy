@@ -142,6 +142,12 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
 
             <LessonMedia videoUrl={l.videoUrl} audioUrl={mediaUrl(l.audio)} title={l.title} />
 
+            {l.body ? (
+              <article className="card prose lesson-text" style={{ padding: 36 }}>
+                <RichText data={l.body} />
+              </article>
+            ) : null}
+
             {l.definitionAr || l.summary || (l.files ?? []).length ? (
               <section className="card" style={{ padding: 32, display: 'flex', flexDirection: 'column', gap: 18 }}>
                 <h2 className="h2" style={{ margin: 0, fontSize: 34 }}>

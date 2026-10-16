@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { ARTICLE_CATEGORIES, COURSE_LEVELS, LESSON_CATEGORIES } from '@/lib/constants'
+import { ARTICLE_CATEGORIES, COURSE_LEVELS, MEDIA_CATEGORIES, TEXT_CATEGORIES } from '@/lib/constants'
 
 import { ChevronIcon } from './Icons'
 
@@ -18,16 +18,22 @@ const items: Item[] = [
     sub: COURSE_LEVELS.map((l) => ({ label: l.label, href: `/courses?level=${l.value}` })),
   },
   {
+    label: 'Текстовые уроки',
+    href: '/text',
+    match: '/text',
+    sub: TEXT_CATEGORIES.map((c) => ({ label: c.label, href: `/text?category=${c.value}` })),
+  },
+  {
     label: 'Аудиоуроки',
     href: '/audio',
     match: '/audio',
-    sub: LESSON_CATEGORIES.map((c) => ({ label: c.label, href: `/audio?category=${c.value}` })),
+    sub: MEDIA_CATEGORIES.map((c) => ({ label: c.label, href: `/audio?category=${c.value}` })),
   },
   {
     label: 'Видеоуроки',
     href: '/video',
     match: '/video',
-    sub: LESSON_CATEGORIES.map((c) => ({ label: c.label, href: `/video?category=${c.value}` })),
+    sub: MEDIA_CATEGORIES.map((c) => ({ label: c.label, href: `/video?category=${c.value}` })),
   },
   {
     label: 'Статьи и вопросы',

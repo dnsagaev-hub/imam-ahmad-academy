@@ -4,7 +4,7 @@ import { AudioRow } from '@/components/Cards'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { FilterChips, PageHead } from '@/components/PageHead'
-import { LESSON_CATEGORIES, labelOf } from '@/lib/constants'
+import { LESSON_CATEGORIES, MEDIA_CATEGORIES, labelOf } from '@/lib/constants'
 import { getLessons } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
@@ -23,7 +23,7 @@ export default async function AudioPage({ searchParams }: { searchParams: Promis
         title={valid ? labelOf(LESSON_CATEGORIES, valid) : 'Слушайте в дороге'}
       />
       <main className="container section">
-        <FilterChips base="/audio" param="category" options={LESSON_CATEGORIES} current={valid} />
+        <FilterChips base="/audio" param="category" options={MEDIA_CATEGORIES} current={valid} />
         {lessons.length ? (
           <div className="card audio-list">
             {lessons.map((l) => (
