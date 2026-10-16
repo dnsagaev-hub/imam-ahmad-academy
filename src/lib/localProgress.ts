@@ -144,5 +144,5 @@ function getSnapshot() {
 
 /** Прогресс из браузера. `ready` = false, пока страница не загрузилась в браузере. */
 export function useLocalProgress(): { progress: Progress; ready: boolean } {
-  return useSyncExternalStore(subscribe, getSnapshot, () => serverSnapshot)
+  return useSyncExternalStore<{ progress: Progress; ready: boolean }>(subscribe, getSnapshot, () => serverSnapshot)
 }
