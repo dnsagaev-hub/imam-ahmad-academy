@@ -69,6 +69,29 @@ export function flattenCourse(course: CourseDoc): FlatLesson[] {
   return out
 }
 
+/** Облегчённая копия курса для браузера: только порядок, названия и адреса уроков (без ответов тестов). */
+export function toLeanCourse(course: CourseDoc): CourseDoc {
+  return {
+    id: course.id,
+    title: course.title,
+    slug: course.slug,
+    level: course.level,
+    order: course.order,
+    modules: (course.modules ?? []).map((m) => ({
+      id: m.id,
+      title: m.title,
+      lessons: (m.lessons ?? []).filter(isPopulated).map((l) => ({
+        id: l.id,
+        title: l.title,
+        slug: l.slug,
+        duration: l.duration ?? null,
+        isPublished: l.isPublished,
+        hasTest: Boolean(l.questions?.length),
+      })),
+    })),
+  }
+}
+
 export const emptyProgress = (): Progress => ({
   passed: new Set(),
   bestScore: new Map(),

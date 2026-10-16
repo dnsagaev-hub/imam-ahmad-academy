@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
+import { REGISTRATION_ENABLED } from '@/lib/config'
 import { canOpenLesson, findCourseForLesson, getProgress, type LessonDoc } from '@/lib/learning'
 import { getCurrentUser, getPayloadClient } from '@/lib/payload'
 
@@ -38,7 +39,8 @@ export async function checkAnswer(lessonId: string | number, questionIndex: numb
 /** Итог теста: считает балл, сохраняет результат в кабинет ученика. */
 export async function submitQuiz(lessonId: string | number, answers: number[]) {
   const payload = await getPayloadClient()
-  const user = await getCurrentUser()
+  // Без регистрации результаты хранит браузер ученика, сервер только проверяет ответы
+  const user = REGISTRATION_ENABLED ? await getCurrentUser() : null
   const lesson = await loadLesson(lessonId)
   if (!lesson) return { ok: false as const, error: 'Урок не найден' }
 
@@ -90,6 +92,7 @@ export async function submitQuiz(lessonId: string | number, answers: number[]) {
 
 /** Для уроков без теста: «Отметить урок пройденным». */
 export async function markLessonComplete(lessonId: string | number) {
+  if (!REGISTRATION_ENABLED) return { ok: false as const, error: 'Прогресс сохраняется в браузере' }
   const user = await getCurrentUser()
   if (!user) return { ok: false as const, error: 'Войдите, чтобы сохранять прогресс' }
   return submitQuiz(lessonId, [])
@@ -97,6 +100,7 @@ export async function markLessonComplete(lessonId: string | number) {
 
 /** Настройки профиля в личном кабинете. */
 export async function updateProfile(_prev: unknown, formData: FormData) {
+  if (!REGISTRATION_ENABLED) return { ok: false, message: 'Регистрация выключена.' }
   const user = await getCurrentUser()
   if (!user) return { ok: false, message: 'Войдите заново.' }
   const name = String(formData.get('name') ?? '').trim().slice(0, 80)
@@ -114,6 +118,8 @@ export async function updateProfile(_prev: unknown, formData: FormData) {
 
 /** Форма «Связаться с нами». */
 export async function sendMessage(_prev: unknown, formData: FormData) {
+  // Без регистрации сайт не собирает персональные данные — форма выключена
+  if (!REGISTRATION_ENABLED) return { ok: false, message: 'Форма выключена. Напишите нам в Telegram или на почту.' }
   const name = String(formData.get('name') ?? '').trim()
   const email = String(formData.get('email') ?? '').trim()
   const topic = String(formData.get('topic') ?? '').trim()

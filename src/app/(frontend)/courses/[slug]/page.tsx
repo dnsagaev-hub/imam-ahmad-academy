@@ -1,19 +1,19 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
-import { CheckIcon, ChevronIcon, FileIcon, LockIcon, PlayIcon } from '@/components/Icons'
+import { FileIcon } from '@/components/Icons'
 import { Crumbs } from '@/components/PageHead'
+import { CourseProgram, CourseProgressCard } from '@/components/progress/CourseProgram'
+import { serverSource, type ProgressSource } from '@/components/progress/useProgress'
+import { REGISTRATION_ENABLED } from '@/lib/config'
 import { COURSE_LEVELS, labelOf } from '@/lib/constants'
-import { courseState, getProgress } from '@/lib/learning'
+import { flattenCourse, getProgress, toLeanCourse } from '@/lib/learning'
 import { getCurrentUser, getPayloadClient } from '@/lib/payload'
 import { getCourseBySlug, lessonsWord, mediaUrl } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
-
-const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
@@ -27,13 +27,15 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
   if (!course) notFound()
   const c = course as typeof course & Record<string, any>
 
-  const payload = await getPayloadClient()
-  const user = await getCurrentUser()
-  const progress = await getProgress(payload, user?.id)
-  const state = courseState(course, progress)
+  let source: ProgressSource = { mode: 'local' }
+  if (REGISTRATION_ENABLED) {
+    const payload = await getPayloadClient()
+    const user = await getCurrentUser()
+    source = serverSource(Boolean(user), await getProgress(payload, user?.id))
+  }
+  const lean = toLeanCourse(course)
+  const total = flattenCourse(course).length
   const moduleCount = (course.modules ?? []).length
-  const current = state.currentLesson
-  const firstLesson = state.lessons[0]
 
   return (
     <>
@@ -68,7 +70,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
               </p>
               <div className="facts">
                 <span>
-                  <strong>{lessonsWord(state.total)}</strong>
+                  <strong>{lessonsWord(total)}</strong>
                 </span>
                 {moduleCount ? (
                   <span>
@@ -92,140 +94,11 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
           <h2 className="h2" style={{ margin: '0 0 4px', fontSize: 36 }}>
             Программа курса
           </h2>
-          {(course.modules ?? []).map((m, mi) => {
-            const lessons = state.lessons.filter((l) => l.moduleIndex === mi)
-            const done = lessons.filter((l) => l.state === 'done').length
-            const hasCurrent = lessons.some((l) => l.state === 'current')
-            return (
-              <details key={m.id ?? mi} className="card module" open={hasCurrent || undefined}>
-                <summary>
-                  <span className="num">{ROMAN[mi] ?? mi + 1}</span>
-                  <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 3 }}>
-                    <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--navy)' }}>
-                      Модуль {mi + 1}. {m.title}
-                    </span>
-                    {lessons.length ? (
-                      <span style={{ fontSize: 14, color: 'var(--muted)' }}>
-                        Уроки {lessons[0].number}–{lessons[lessons.length - 1].number}
-                      </span>
-                    ) : null}
-                  </span>
-                  {user ? (
-                    <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--royal)', whiteSpace: 'nowrap' }}>
-                      {done} из {lessons.length}
-                    </span>
-                  ) : null}
-                  <span className="chev">
-                    <ChevronIcon size={20} color="#1F4E8C" />
-                  </span>
-                </summary>
-                <ol className="lesson-list">
-                  {lessons.map((l) => {
-                    // Гостю открыт только первый урок курса
-                    const locked = user ? l.state === 'locked' : l.number > 1
-                    const isDone = Boolean(user) && l.state === 'done'
-                    const isCurrent = user ? l.state === 'current' : l.number === 1
-                    return (
-                      <li key={String(l.lesson.id)} className={`lesson-row${locked ? ' locked' : ''}`}>
-                        {isDone ? (
-                          <span className="st st-done">
-                            <CheckIcon />
-                          </span>
-                        ) : isCurrent ? (
-                          <span className="st st-current">
-                            <PlayIcon size={12} color="#9A7A35" />
-                          </span>
-                        ) : (
-                          <span className="st st-locked">
-                            <LockIcon />
-                          </span>
-                        )}
-                        <span className="t">
-                          {locked ? (
-                            <span className="name">
-                              Урок {l.number}. {l.lesson.title}
-                            </span>
-                          ) : (
-                            <Link href={`/lessons/${l.lesson.slug}`}>
-                              Урок {l.number}. {l.lesson.title}
-                            </Link>
-                          )}
-                          <span style={{ fontSize: 13, color: 'var(--muted)' }}>
-                            {[l.lesson.duration, l.lesson.questions?.length ? 'тест' : null].filter(Boolean).join(' · ')}
-                          </span>
-                        </span>
-                        {isDone && typeof l.score === 'number' ? <span className="score-pill">Тест: {l.score}%</span> : null}
-                        {isCurrent ? (
-                          <Link href={`/lessons/${l.lesson.slug}`} className="btn" style={{ minHeight: 40, padding: '0 16px', fontSize: 14 }}>
-                            {user ? 'Продолжить' : 'Начать'}
-                          </Link>
-                        ) : null}
-                        {locked ? (
-                          <span style={{ fontSize: 13, color: 'var(--muted-2)' }}>
-                            {user ? 'Откроется после теста' : 'Нужен вход'}
-                          </span>
-                        ) : null}
-                      </li>
-                    )
-                  })}
-                </ol>
-              </details>
-            )
-          })}
-          {!state.total ? <p className="empty">Уроки курса скоро появятся.</p> : null}
+          <CourseProgram course={lean} source={source} />
         </main>
 
         <aside className="col-side">
-          {user ? (
-            <div className="dark-card">
-              <span className="side-label" style={{ color: 'var(--gold)' }}>
-                Ваш прогресс
-              </span>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-                <span className="big-num">{state.percent}%</span>
-                <span style={{ color: '#b9cee6' }}>
-                  {state.doneCount} из {state.total}
-                </span>
-              </div>
-              <div className="bar">
-                <div style={{ width: `${state.percent}%` }} />
-              </div>
-              <div className="mini-stats">
-                <div>
-                  <small>Средний балл</small>
-                  <b>{state.averageScore !== null ? `${state.averageScore}%` : '—'}</b>
-                </div>
-                <div>
-                  <small>Тестов сдано</small>
-                  <b>{state.doneCount}</b>
-                </div>
-              </div>
-              {current ? (
-                <Link href={`/lessons/${current.lesson.slug}`} className="btn btn-white btn-block">
-                  Продолжить: урок {current.number}
-                </Link>
-              ) : state.completed ? (
-                <span style={{ color: 'var(--gold-light)', fontWeight: 700 }}>Курс пройден, ма ша Аллах!</span>
-              ) : null}
-            </div>
-          ) : (
-            <div className="dark-card">
-              <span className="side-label" style={{ color: 'var(--gold)' }}>
-                Начните обучение
-              </span>
-              <p style={{ margin: 0, color: '#b9cee6' }}>
-                Зарегистрируйтесь, чтобы проходить уроки по порядку, сдавать тесты и видеть прогресс.
-              </p>
-              <Link href="/register" className="btn btn-white btn-block">
-                Регистрация
-              </Link>
-              {firstLesson ? (
-                <Link href={`/lessons/${firstLesson.lesson.slug}`} style={{ color: '#dce8f6', textAlign: 'center' }}>
-                  Посмотреть первый урок
-                </Link>
-              ) : null}
-            </div>
-          )}
+          <CourseProgressCard course={lean} source={source} />
 
           {c.teacher ? (
             <div className="card card-pad" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>

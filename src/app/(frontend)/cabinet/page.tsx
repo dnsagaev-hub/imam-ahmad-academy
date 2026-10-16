@@ -6,6 +6,7 @@ import { LogoutButton } from '@/components/AuthForms'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { ProfileForm } from '@/components/ProfileForm'
+import { REGISTRATION_ENABLED } from '@/lib/config'
 import { COURSE_LEVELS, STUDENT_LEVELS, labelOf } from '@/lib/constants'
 import { courseState, getProgress, studentLevel } from '@/lib/learning'
 import { getCurrentUser, getPayloadClient } from '@/lib/payload'
@@ -27,6 +28,7 @@ const LEVEL_RULES = [
 ]
 
 export default async function CabinetPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
+  if (!REGISTRATION_ENABLED) redirect('/progress')
   const user = await getCurrentUser()
   if (!user) redirect('/login')
   const { tab: rawTab } = await searchParams

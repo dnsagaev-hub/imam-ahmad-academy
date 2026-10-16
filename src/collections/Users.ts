@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { adminOnly, adminOnlyField, isAdminUser } from '../access'
+import { REGISTRATION_ENABLED } from '../lib/config'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -27,8 +28,9 @@ export const Users: CollectionConfig = {
   access: {
     // В админку попадают только администраторы
     admin: ({ req: { user } }) => isAdminUser(user),
-    // Регистрироваться может любой посетитель
-    create: () => true,
+    // Регистрироваться может любой посетитель — только если регистрация включена.
+    // Первого администратора Payload создаёт отдельно (экран «Создать первого пользователя» в /admin).
+    create: ({ req: { user } }) => REGISTRATION_ENABLED || isAdminUser(user),
     read: ({ req: { user } }) => {
       if (!user) return false
       if (isAdminUser(user)) return true

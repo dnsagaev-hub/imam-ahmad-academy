@@ -2,6 +2,8 @@ import Link from 'next/link'
 
 import { ArticleCard, AudioRow, BookCard, CourseCard, VideoCard } from '@/components/Cards'
 import { ContactForm } from '@/components/ContactForm'
+import { ContactLinks } from '@/components/ContactLinks'
+import { REGISTRATION_ENABLED } from '@/lib/config'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { StarIcon } from '@/components/Icons'
@@ -32,7 +34,7 @@ export default async function HomePage() {
           <h1>{settings.heroTitle || 'Изучайте ханбалитский фикх последовательно — урок за уроком'}</h1>
           <p>{settings.heroText}</p>
           <div className="hero-actions">
-            <Link href="/register" className="btn btn-lg btn-white">
+            <Link href={REGISTRATION_ENABLED ? '/register' : '/courses'} className="btn btn-lg btn-white">
               Начать обучение
             </Link>
             <Link href="/courses" className="btn btn-lg btn-gold-outline">
@@ -177,12 +179,11 @@ export default async function HomePage() {
               <p className="eyebrow">Связаться с нами</p>
               <h2 className="h2">Задать вопрос</h2>
               <p className="lead">
-                Вопросы по урокам, фикху или работе сайта. Ответ придёт на почту, а полезные разборы публикуются в
-                разделе «Статьи и вопросы».
+                Вопросы по урокам, фикху или работе сайта. Полезные разборы публикуются в разделе «Статьи и вопросы».
               </p>
             </div>
             <div className="card card-pad" style={{ flex: '1 1 460px', minWidth: 0 }}>
-              <ContactForm />
+              {REGISTRATION_ENABLED ? <ContactForm /> : <ContactLinks email={settings.contactEmail} telegram={settings.telegram} />}
             </div>
           </div>
         </section>

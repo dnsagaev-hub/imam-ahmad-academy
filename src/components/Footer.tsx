@@ -21,7 +21,7 @@ export function Footer() {
       </div>
       <div className="container footer-legal">
         <span>© {year} Академия имама Ахмада</span>
-        <Link href="/privacy">Политика конфиденциальности</Link>
+        <Link href="/privacy">Конфиденциальность</Link>
       </div>
     </footer>
   )

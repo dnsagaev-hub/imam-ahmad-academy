@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 
 import { checkAnswer, submitQuiz } from '@/app/(frontend)/actions'
+import { addAttempt, useLocalProgress } from '@/lib/localProgress'
 
 type Q = { question: string; options: string[] }
 
@@ -20,7 +21,10 @@ export function Quiz({
   loggedIn,
   nextHref,
   nextLabel,
-  previousAttempts,
+  previousAttempts: serverAttempts,
+  mode = 'server',
+  lessonTitle = '',
+  courseTitle,
 }: {
   lessonId: string | number
   lessonNumber?: number
@@ -30,8 +34,17 @@ export function Quiz({
   nextHref?: string
   nextLabel?: string
   previousAttempts: number
+  /** local — результат сохраняется в браузере ученика (регистрация выключена) */
+  mode?: 'server' | 'local'
+  lessonTitle?: string
+  courseTitle?: string
 }) {
   const router = useRouter()
+  const local = useLocalProgress()
+  const isLocal = mode === 'local'
+  const previousAttempts = isLocal ? (local.progress.attempts.get(String(lessonId)) ?? 0) : serverAttempts
+  // В режиме без регистрации следующий урок открывается сразу после сдачи
+  const canGoNext = loggedIn || isLocal
   const [pending, start] = useTransition()
   const [q, setQ] = useState(0)
   const [sel, setSel] = useState<number | null>(null)
@@ -69,8 +82,13 @@ export function Quiz({
     start(async () => {
       const r = await submitQuiz(lessonId, nextAnswers)
       if (!r.ok) return setError(r.error)
-      setResult(r)
-      router.refresh()
+      if (isLocal) {
+        addAttempt({ lessonId: String(lessonId), lessonTitle, courseTitle, score: r.score, passed: r.passed })
+        setResult({ ...r, attempt: previousAttempts + 1 })
+      } else {
+        setResult(r)
+        router.refresh()
+      }
     })
   }
 
@@ -178,18 +196,20 @@ export function Quiz({
               </div>
               <div style={{ fontSize: 16, color: 'var(--muted)' }}>
                 {result.passed
-                  ? result.saved
-                    ? 'Результат сохранён в личном кабинете. Тест можно пройти ещё раз, чтобы улучшить балл.'
-                    : 'Войдите или зарегистрируйтесь, чтобы результаты сохранялись и открывались следующие уроки.'
+                  ? isLocal
+                    ? 'Результат сохранён на этом устройстве — его видно на странице «Мой прогресс». Тест можно пройти ещё раз, чтобы улучшить балл.'
+                    : result.saved
+                      ? 'Результат сохранён в личном кабинете. Тест можно пройти ещё раз, чтобы улучшить балл.'
+                      : 'Войдите или зарегистрируйтесь, чтобы результаты сохранялись и открывались следующие уроки.'
                   : `Нужно набрать не меньше ${result.passing}%. Пересмотрите урок и конспект, затем попробуйте снова.`}
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 6 }}>
-                {result.passed && nextHref && loggedIn ? (
+                {result.passed && nextHref && canGoNext ? (
                   <Link href={nextHref} className="btn">
                     {nextLabel ?? 'Следующий урок'} →
                   </Link>
                 ) : null}
-                {!loggedIn ? (
+                {!loggedIn && !isLocal ? (
                   <Link href="/register" className="btn">
                     Зарегистрироваться
                   </Link>
