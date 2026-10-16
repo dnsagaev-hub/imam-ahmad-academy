@@ -63,6 +63,8 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
+    // При разработке таблицы подстраиваются под код автоматически; в проверке сборки (CI) — только миграциями
+    push: process.env.PAYLOAD_DB_PUSH !== 'false',
     // На хостинге (production) таблицы базы создаются и обновляются миграциями при запуске
     prodMigrations: migrations,
   }),
