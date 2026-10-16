@@ -1,32 +1,16 @@
 import type { Metadata } from 'next'
-import { Amiri, Cormorant_Garamond, Manrope } from 'next/font/google'
 import React from 'react'
+
+// Шрифты лежат вместе с сайтом (без обращения к Google Fonts при сборке и у посетителей)
+import '@fontsource-variable/cormorant-garamond'
+import '@fontsource-variable/cormorant-garamond/wght-italic.css'
+import '@fontsource-variable/manrope'
+import '@fontsource/amiri/400.css'
+import '@fontsource/amiri/700.css'
 
 import { AudioPlayerProvider } from '@/components/audio/AudioPlayer'
 
 import './styles.css'
-
-const display = Cormorant_Garamond({
-  subsets: ['latin', 'cyrillic'],
-  weight: ['500', '600', '700'],
-  style: ['normal', 'italic'],
-  variable: '--font-display',
-  display: 'swap',
-})
-
-const body = Manrope({
-  subsets: ['latin', 'cyrillic'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-body',
-  display: 'swap',
-})
-
-const arabic = Amiri({
-  subsets: ['arabic', 'latin'],
-  weight: ['400', '700'],
-  variable: '--font-arabic',
-  display: 'swap',
-})
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'),
@@ -40,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={`${display.variable} ${body.variable} ${arabic.variable}`}>
+    <html lang="ru">
       <body>
         <AudioPlayerProvider>{children}</AudioPlayerProvider>
       </body>

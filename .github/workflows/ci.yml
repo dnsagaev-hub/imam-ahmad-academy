@@ -49,7 +49,7 @@ jobs:
           done 2>&1 | tee -a ci.log
 
       - name: Установка зависимостей
-        run: (if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi) 2>&1 | tee -a ci.log
+        run: (npm install --no-audit --no-fund) 2>&1 | tee -a ci.log
 
       - name: Создать первую миграцию базы (если её ещё нет)
         run: |

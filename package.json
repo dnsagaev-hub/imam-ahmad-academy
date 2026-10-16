@@ -17,6 +17,9 @@
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint ."
   },
   "dependencies": {
+    "@fontsource-variable/cormorant-garamond": "^5.2.0",
+    "@fontsource-variable/manrope": "^5.2.0",
+    "@fontsource/amiri": "^5.2.0",
     "@payloadcms/db-postgres": "3.82.1",
     "@payloadcms/email-nodemailer": "3.82.1",
     "@payloadcms/next": "3.82.1",

@@ -21,9 +21,9 @@
   --muted-2: #7d9188;
   --red: #b4472e;
   --red-bg: #fbede9;
-  --display: var(--font-display), 'Cormorant Garamond', Georgia, serif;
-  --body: var(--font-body), Manrope, system-ui, sans-serif;
-  --arabic: var(--font-arabic), Amiri, 'Times New Roman', serif;
+  --display: 'Cormorant Garamond Variable', 'Cormorant Garamond', Georgia, serif;
+  --body: 'Manrope Variable', Manrope, system-ui, sans-serif;
+  --arabic: Amiri, 'Times New Roman', serif;
 }
 
 * { box-sizing: border-box; }
