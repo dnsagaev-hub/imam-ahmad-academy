@@ -4,7 +4,6 @@ import { ARTICLE_CATEGORIES, BOOK_CATEGORIES, COURSE_LEVELS, LESSON_CATEGORIES, 
 import type { CourseDoc, LessonDoc } from '@/lib/learning'
 import { lessonCount, lessonsWord, mediaUrl } from '@/lib/queries'
 
-import { PlayIcon } from './Icons'
 
 export function CourseCard({ course }: { course: CourseDoc }) {
   const c = course as CourseDoc & Record<string, any>
@@ -21,50 +20,6 @@ export function CourseCard({ course }: { course: CourseDoc }) {
           <span>{lessonsWord(lessonCount(course))}</span>
           {c.teacher ? <span>{c.teacher}</span> : null}
         </div>
-      </div>
-    </Link>
-  )
-}
-
-export function AudioRow({ lesson }: { lesson: LessonDoc }) {
-  const url = mediaUrl(lesson.audio)
-  return (
-    <div className="audio-row">
-      <span className="round-play" aria-hidden="true">
-        <PlayIcon />
-      </span>
-      <div className="info">
-        <Link className="title" href={`/lessons/${lesson.slug}`}>
-          {lesson.title}
-        </Link>
-        <div style={{ fontSize: 13, color: 'var(--muted)' }}>
-          {labelOf(LESSON_CATEGORIES, lesson.category)}
-          {lesson.duration ? ` · ${lesson.duration}` : ''}
-        </div>
-      </div>
-      {url ? (
-        <audio controls preload="none" src={url} aria-label={`Слушать: ${lesson.title}`}>
-          <a href={url}>Скачать MP3</a>
-        </audio>
-      ) : null}
-    </div>
-  )
-}
-
-export function VideoCard({ lesson }: { lesson: LessonDoc }) {
-  const testCount = lesson.questions?.length ?? 0
-  return (
-    <Link href={`/lessons/${lesson.slug}`} className="card lift video-card">
-      <div className="video-thumb">
-        <span className="play">
-          <PlayIcon size={24} color="#003D2C" />
-        </span>
-        {lesson.duration ? <span className="dur">{lesson.duration}</span> : null}
-      </div>
-      <div className="video-body">
-        <span className="tag">{labelOf(LESSON_CATEGORIES, lesson.category)}</span>
-        <h3>{lesson.title}</h3>
-        {testCount ? <span style={{ fontSize: 13, color: 'var(--muted)' }}>После урока: тест из {testCount} вопросов</span> : null}
       </div>
     </Link>
   )

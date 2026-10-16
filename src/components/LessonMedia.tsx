@@ -2,11 +2,35 @@
 
 import { useState } from 'react'
 
-/** Плеер урока с переключателем «Видео / Аудио». */
-export function LessonMedia({ videoUrl, audioUrl, title }: { videoUrl?: string | null; audioUrl?: string | null; title: string }) {
+import { fmtClock, useListenMap } from '@/lib/listenStore'
+
+import { ListenButton } from './audio/AudioBrowser'
+
+/** Плеер урока: видео (встроенный Kinescope / VK / Rutube) и аудио через общий плеер сайта. */
+export function LessonMedia({
+  videoUrl,
+  audioUrl,
+  title,
+  lessonId,
+  slug,
+  courseTitle,
+  categoryLabel,
+  teacher,
+}: {
+  videoUrl?: string | null
+  audioUrl?: string | null
+  title: string
+  lessonId: string | number
+  slug: string
+  courseTitle?: string | null
+  categoryLabel?: string
+  teacher?: string | null
+}) {
   const safeVideo = videoUrl && /^https:\/\//.test(videoUrl) ? videoUrl : null
   const [mode, setMode] = useState<'video' | 'audio'>(safeVideo ? 'video' : 'audio')
+  const listen = useListenMap()
   if (!safeVideo && !audioUrl) return null
+  const l = listen[String(lessonId)]
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -35,13 +59,28 @@ export function LessonMedia({ videoUrl, audioUrl, title }: { videoUrl?: string |
 
       {mode === 'audio' && audioUrl ? (
         <div className="audio-player">
-          <div style={{ fontWeight: 700, fontSize: 17 }}>{title} — аудио</div>
-          <audio controls preload="metadata" src={audioUrl}>
-            Ваш браузер не поддерживает аудио.
-          </audio>
-          <a href={audioUrl} download style={{ color: '#E6F5EE', fontSize: 14, fontWeight: 600 }}>
-            Скачать MP3
-          </a>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 17 }}>{title}</div>
+              <div style={{ fontSize: 14, color: 'var(--gold-light)' }}>
+                {l ? (l.done ? 'Прослушано' : `Вы остановились на ${fmtClock(l.t)}`) : 'Аудиозапись урока'}
+              </div>
+            </div>
+            <ListenButton
+              item={{ id: String(lessonId), title, audioUrl, slug, courseTitle: courseTitle ?? null, categoryLabel: categoryLabel ?? '', teacher: teacher ?? null }}
+            />
+          </div>
+          {l ? (
+            <div className="bar thin" style={{ background: 'rgba(255,255,255,.15)' }}>
+              <div style={{ width: `${l.done ? 100 : Math.round((l.t / Math.max(l.d, 1)) * 100)}%`, background: 'var(--sky)' }} />
+            </div>
+          ) : null}
+          <div style={{ fontSize: 13, color: '#CFE9DE' }}>
+            Плеер продолжит играть внизу экрана, даже если перейти на другую страницу.{' '}
+            <a href={audioUrl} download style={{ color: '#E6F5EE', fontWeight: 600 }}>
+              Скачать MP3
+            </a>
+          </div>
         </div>
       ) : null}
     </div>

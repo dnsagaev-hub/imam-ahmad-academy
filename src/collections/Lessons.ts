@@ -56,6 +56,14 @@ export const Lessons: CollectionConfig = {
               },
             },
             { name: 'audio', label: 'Аудиофайл (MP3)', type: 'upload', relationTo: 'media' },
+            {
+              name: 'thumbnail',
+              label: 'Обложка видео (картинка 16:9)',
+              type: 'upload',
+              relationTo: 'media',
+              admin: { description: 'Если не загрузить, обложка нарисуется сама — зелёная, с названием рубрики.' },
+            },
+            { name: 'teacher', label: 'Преподаватель', type: 'text' },
           ],
         },
         {

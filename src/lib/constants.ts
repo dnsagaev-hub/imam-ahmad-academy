@@ -59,3 +59,18 @@ export function labelOf(
 ): string {
   return list.find((i) => i.value === value)?.label ?? ''
 }
+
+/** Арабские названия рубрик — для обложек видео без картинки. */
+export const CATEGORY_AR: Record<string, string> = {
+  madhhab: 'المذهب الحنبلي',
+  aqida: 'العقيدة',
+  fiqh: 'الفقه',
+  hadith: 'الحديث',
+  usul: 'أصول الفقه',
+  qawaid: 'القواعد الفقهية',
+  arabic: 'اللغة العربية',
+  mustalah: 'مصطلح الحديث',
+  quran: 'علوم القرآن',
+  sira: 'السيرة النبوية',
+  akhlaq: 'الأخلاق والتزكية',
+}

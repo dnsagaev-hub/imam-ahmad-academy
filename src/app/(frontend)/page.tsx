@@ -1,6 +1,9 @@
 import Link from 'next/link'
 
-import { ArticleCard, AudioRow, BookCard, CourseCard, TextLessonCard, VideoCard } from '@/components/Cards'
+import { AudioBrowser } from '@/components/audio/AudioBrowser'
+import { ArticleCard, BookCard, CourseCard, TextLessonCard } from '@/components/Cards'
+import { VideoTile } from '@/components/video/VideoBrowser'
+import { getMediaItems } from '@/lib/media'
 import { ContactForm } from '@/components/ContactForm'
 import { ContactLinks } from '@/components/ContactLinks'
 import { REGISTRATION_ENABLED } from '@/lib/config'
@@ -19,8 +22,8 @@ export default async function HomePage() {
     getPrayerDefaults(),
     getCourses(),
     getLessons({ kind: 'text', limit: 3 }),
-    getLessons({ kind: 'audio', limit: 4 }),
-    getLessons({ kind: 'video', limit: 3 }),
+    getMediaItems('audio').then((r) => r.items.slice(0, 4)),
+    getMediaItems('video').then((r) => r.items.slice(0, 3)),
     getArticles({ limit: 3 }),
     getBooks({ limit: 5 }),
   ])
@@ -144,11 +147,7 @@ export default async function HomePage() {
             ))}
           </div>
           {audios.length ? (
-            <div className="card audio-list">
-              {audios.map((l) => (
-                <AudioRow key={l.id} lesson={l} />
-              ))}
-            </div>
+            <AudioBrowser items={audios} compact />
           ) : (
             <p className="empty">Аудиоуроки скоро появятся.</p>
           )}
@@ -166,8 +165,8 @@ export default async function HomePage() {
           </div>
           {videos.length ? (
             <div className="grid grid-320">
-              {videos.map((l) => (
-                <VideoCard key={l.id} lesson={l} />
+              {videos.map((v) => (
+                <VideoTile key={v.id} item={v} />
               ))}
             </div>
           ) : (

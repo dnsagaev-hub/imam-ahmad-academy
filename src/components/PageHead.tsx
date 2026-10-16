@@ -44,26 +44,31 @@ export function PageHead({
   )
 }
 
-/** Ряд фильтров-«таблеток». */
+/** Ряд фильтров-«таблеток». С `counts` показывает число материалов и скрывает пустые рубрики. */
 export function FilterChips({
   base,
   param,
   options,
   current,
   allLabel = 'Все',
+  counts,
 }: {
   base: string
   param: string
   options: readonly { label: string; value: string }[]
   current?: string
   allLabel?: string
+  counts?: Record<string, number>
 }) {
+  const total = counts ? Object.values(counts).reduce((a, b) => a + b, 0) : undefined
+  const visible = counts ? options.filter((o) => (counts[o.value] ?? 0) > 0 || o.value === current) : options
   return (
     <div className="chips" role="list">
       <Link role="listitem" className={`chip${!current ? ' active' : ''}`} href={base}>
         {allLabel}
+        {total !== undefined ? <span className="chip-count">{total}</span> : null}
       </Link>
-      {options.map((o) => (
+      {visible.map((o) => (
         <Link
           role="listitem"
           key={o.value}
@@ -71,6 +76,7 @@ export function FilterChips({
           href={`${base}?${param}=${o.value}`}
         >
           {o.label}
+          {counts ? <span className="chip-count">{counts[o.value] ?? 0}</span> : null}
         </Link>
       ))}
     </div>

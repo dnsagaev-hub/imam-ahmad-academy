@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Amiri, Cormorant_Garamond, Manrope } from 'next/font/google'
 import React from 'react'
 
+import { AudioPlayerProvider } from '@/components/audio/AudioPlayer'
+
 import './styles.css'
 
 const display = Cormorant_Garamond({
@@ -39,7 +41,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru" className={`${display.variable} ${body.variable} ${arabic.variable}`}>
-      <body>{children}</body>
+      <body>
+        <AudioPlayerProvider>{children}</AudioPlayerProvider>
+      </body>
     </html>
   )
 }

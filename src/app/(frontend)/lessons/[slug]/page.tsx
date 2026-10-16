@@ -140,7 +140,16 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
               ) : null}
             </div>
 
-            <LessonMedia videoUrl={l.videoUrl} audioUrl={mediaUrl(l.audio)} title={l.title} />
+            <LessonMedia
+              videoUrl={l.videoUrl}
+              audioUrl={mediaUrl(l.audio)}
+              title={l.title}
+              lessonId={lesson.id}
+              slug={String(l.slug ?? '')}
+              courseTitle={course?.title}
+              categoryLabel={labelOf(LESSON_CATEGORIES, l.category)}
+              teacher={l.teacher}
+            />
 
             {l.body ? (
               <article className="card prose lesson-text" style={{ padding: 36 }}>
