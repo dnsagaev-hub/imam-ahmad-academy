@@ -18,6 +18,7 @@ import { QuizAttempts } from './collections/QuizAttempts'
 import { Users } from './collections/Users'
 import { Settings } from './globals/Settings'
 import { migrations } from './migrations'
+import { seedStarter } from './seed/starter'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -86,6 +87,10 @@ export default buildConfig({
       ]
     : [],
   sharp,
+  // Стартовое наполнение на хостинге: включается переменной SEED_STARTER=true
+  onInit: async (payload) => {
+    if (process.env.SEED_STARTER === 'true') await seedStarter(payload)
+  },
   upload: {
     limits: { fileSize: 300 * 1024 * 1024 }, // до 300 МБ (аудио, книги)
   },
