@@ -65,7 +65,8 @@ jobs:
 
       - name: Новая миграция, если изменилась структура базы
         run: |
-          (timeout 600 npm run migrate:create -- update --skip-empty < /dev/null) 2>&1 | tee -a ci.log
+          (timeout 600 npm run migrate:create -- update --skip-empty < /dev/null) 2>&1 | tee mc.log | tee -a ci.log
+          if grep -q "renamed from" mc.log; then echo "::error::Миграция требует ответа на вопрос о переименовании столбца"; exit 1; fi
           ls src/migrations | tee -a ci.log
           (npm run migrate < /dev/null) 2>&1 | tee -a ci.log
 

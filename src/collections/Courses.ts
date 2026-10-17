@@ -64,6 +64,13 @@ export const Courses: CollectionConfig = {
         { name: 'bookAuthor', label: 'Автор книги', type: 'text', admin: { width: '50%' } },
       ],
     },
+    // Старое поле (одна книга) — оставлено, чтобы не терять данные при обновлении базы; заменено полем «Учебники»
+    {
+      name: 'book',
+      type: 'relationship',
+      relationTo: 'books',
+      admin: { hidden: true },
+    },
     {
       name: 'books',
       label: 'Учебники из библиотеки',
