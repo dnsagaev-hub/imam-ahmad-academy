@@ -25,7 +25,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   if (!a) notFound()
   const related = await getRelatedArticles(a.category, a.id, 3)
   const isQ = a.kind === 'question'
-  const date = a.publishedAt ? new Date(a.publishedAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) : null
+  const date = a.publishedAt ? new Date(a.publishedAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Moscow' }) : null
   const blocks = Array.isArray(a.blocks) ? a.blocks : []
 
   return (

@@ -19,7 +19,7 @@ export function ArticleCardClient({ a }: { a: ArticleItem }) {
       <p>{a.excerpt}</p>
       <div className="text-card-foot">
         <span>
-          {a.publishedAt ? new Date(a.publishedAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
+          {a.publishedAt ? new Date(a.publishedAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Moscow' }) : ''}
           {a.readingMinutes ? ` · ≈ ${a.readingMinutes} мин` : ''}
         </span>
         <Link href={`/articles/${a.slug}`} style={{ fontWeight: 700, fontSize: 14 }}>
