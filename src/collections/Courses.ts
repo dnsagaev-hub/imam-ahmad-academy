@@ -31,7 +31,6 @@ export const Courses: CollectionConfig = {
       label: 'Ступень',
       type: 'select',
       required: true,
-      defaultValue: 'prep',
       options: COURSE_LEVELS.map(({ label, value }) => ({ label, value })),
       admin: { position: 'sidebar' },
     },
