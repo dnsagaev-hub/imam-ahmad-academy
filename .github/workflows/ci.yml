@@ -96,6 +96,16 @@ jobs:
           cat server.log >> ci.log
           if [ $fail = 1 ]; then echo "--- server.log ---"; tail -n 200 server.log; exit 1; fi
 
+      - name: Статическая копия сайта для просмотра без интернета
+        continue-on-error: true
+        run: |
+          mkdir -p /tmp/preview && cd /tmp/preview
+          wget -q -e robots=off --recursive --level=4 --page-requisites --convert-links --adjust-extension --no-host-directories \
+            --reject-regex '/(admin|api)(/|$)|\?' --domains 127.0.0.1 http://127.0.0.1:3000/ || true
+          find . -name '*.html' | wc -l | sed 's/^/static pages: /' | tee -a $GITHUB_WORKSPACE/ci.log
+          cd /tmp && mv preview imam-ahmad-academy-preview && zip -qr /tmp/site-preview.zip imam-ahmad-academy-preview
+          ls -la /tmp/site-preview.zip | tee -a $GITHUB_WORKSPACE/ci.log
+
       - name: Снимки страниц (компьютер и телефон)
         continue-on-error: true
         run: |
@@ -143,8 +153,19 @@ jobs:
 
       - name: Сборка Docker-образа (так же, как на хостинге)
         run: |
-          docker build --progress=plain -t academy . > docker.log 2>&1 || { tail -n 80 docker.log | tee -a ci.log; exit 1; }
+          docker build --progress=plain -t imam-ahmad-academy-site . > docker.log 2>&1 || { tail -n 80 docker.log | tee -a ci.log; exit 1; }
           tail -n 5 docker.log | tee -a ci.log
+
+      - name: Локальная версия (docker compose) запускается
+        run: |
+          SITE_PORT=3100 docker compose up -d --no-build
+          for i in $(seq 1 90); do curl -s -o /dev/null http://127.0.0.1:3100/ && break; sleep 2; done
+          for path in / /courses /library /admin; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' -L "http://127.0.0.1:3100$path"); echo "compose $code $path" | tee -a ci.log
+            [ "$code" = "200" ] || { docker compose logs site | tail -n 80 | tee -a ci.log; exit 1; }
+          done
+          curl -s http://127.0.0.1:3100/courses | grep -q 'Тамхиди' && echo "compose: программа на месте" | tee -a ci.log
+          docker compose down -v
 
       - name: Сохранить миграцию и package-lock.json в репозиторий
         if: github.ref == 'refs/heads/main'
@@ -160,7 +181,7 @@ jobs:
       - name: Сохранить журнал проверки
         if: always()
         run: |
-          mkdir -p /tmp/logs && (cp -r shots /tmp/logs/ 2>/dev/null || true); cp ci.log /tmp/logs/ci.log 2>/dev/null || echo "нет журнала" > /tmp/logs/ci.log
+          mkdir -p /tmp/logs && (cp -r shots /tmp/logs/ 2>/dev/null || true); (cp /tmp/site-preview.zip /tmp/logs/ 2>/dev/null || true); cp ci.log /tmp/logs/ci.log 2>/dev/null || echo "нет журнала" > /tmp/logs/ci.log
           echo "${{ job.status }} ${{ github.sha }}" > /tmp/logs/status.txt
           cd /tmp/logs && git init -q -b ci-logs && git add -A
           git -c user.name="github-actions[bot]" -c user.email="41898283+github-actions[bot]@users.noreply.github.com" commit -qm "Журнал проверки ${{ github.sha }}"

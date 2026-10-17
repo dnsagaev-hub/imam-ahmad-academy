@@ -1,0 +1,44 @@
+# Локальная версия сайта на своём компьютере: сайт + база данных.
+# Нужен Docker Desktop (docker.com). Запуск: двойной щелчок по «Запустить сайт» или `docker compose up -d --build`.
+# Сайт: http://localhost:3000   Админка: http://localhost:3000/admin
+name: imam-ahmad-academy
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: academy
+      POSTGRES_PASSWORD: academy
+      POSTGRES_DB: academy
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U academy']
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  site:
+    image: imam-ahmad-academy-site
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://academy:academy@db:5432/academy
+      # Только для локальной версии; на хостинге задаётся свой секрет
+      PAYLOAD_SECRET: local-only-secret-change-on-hosting
+      NEXT_PUBLIC_SERVER_URL: http://localhost:${SITE_PORT:-3000}
+      NEXT_PUBLIC_REGISTRATION_ENABLED: 'false'
+      # Стартовое наполнение: программа (44 курса), библиотека, текстовые уроки и примеры статей
+      SEED_STARTER: 'true'
+    ports:
+      - '${SITE_PORT:-3000}:3000'
+    volumes:
+      - media:/app/media
+
+volumes:
+  db-data:
+  media:
