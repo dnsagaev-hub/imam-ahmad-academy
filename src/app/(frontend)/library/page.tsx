@@ -70,7 +70,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
                     <span className="path-num">{COURSE_LEVELS.find((l) => l.value === step.level)?.roman ?? i + 1}</span>
                     <span>
                       <b>{COURSE_LEVELS.find((l) => l.value === step.level)?.name}</b>
-                      <small>{COURSE_LEVELS.find((l) => l.value === step.level)?.label.toLowerCase()} ступень</small>
+                      <small>{COURSE_LEVELS.find((l) => l.value === step.level)?.stage} ступень</small>
                     </span>
                   </div>
                   {step.matns.map(({ matn, commentaries, translations }) => (

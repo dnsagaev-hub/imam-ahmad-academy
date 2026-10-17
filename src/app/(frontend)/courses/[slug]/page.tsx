@@ -51,7 +51,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             items={[
               { label: 'Главная', href: '/' },
               { label: 'Курсы', href: '/courses' },
-              { label: stage ? `${stage.roman}. ${stage.label} ступень` : 'Ступень', href: `/courses?level=${c.level}` },
+              { label: stage ? `${stage.roman}. ${stage.stage[0].toUpperCase()}${stage.stage.slice(1)} ступень` : 'Ступень', href: `/courses?level=${c.level}` },
               { label: c.title },
             ]}
           />

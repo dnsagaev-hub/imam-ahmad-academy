@@ -77,6 +77,7 @@ export const BOOK_LANGS = [
 export const COURSE_LEVELS = [
   {
     label: 'Подготовительный',
+    stage: 'подготовительная',
     value: 'prep',
     roman: 'I',
     ar: 'التمهيدي',
@@ -87,6 +88,7 @@ export const COURSE_LEVELS = [
   },
   {
     label: 'Начальный',
+    stage: 'начальная',
     value: 'beginner',
     roman: 'II',
     ar: 'المبتدئ',
@@ -97,6 +99,7 @@ export const COURSE_LEVELS = [
   },
   {
     label: 'Средний',
+    stage: 'средняя',
     value: 'intermediate',
     roman: 'III',
     ar: 'المتوسط',
@@ -107,6 +110,7 @@ export const COURSE_LEVELS = [
   },
   {
     label: 'Продвинутый',
+    stage: 'продвинутая',
     value: 'advanced',
     roman: 'IV',
     ar: 'المتقدم',

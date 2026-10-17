@@ -28,10 +28,10 @@ export default async function CoursesPage({ searchParams }: { searchParams: Prom
         crumbs={[
           { label: 'Главная', href: '/' },
           { label: 'Курсы', href: stage ? '/courses' : undefined },
-          ...(stage ? [{ label: `${stage.roman}. ${stage.label} ступень` }] : []),
+          ...(stage ? [{ label: `${stage.roman}. ${stage.stage} ступень` }] : []),
         ]}
         eyebrow="Курсы · единая учебная программа"
-        title={stage ? `${stage.name} — ${stage.label.toLowerCase()} ступень` : 'Четыре ступени изучения мазхаба'}
+        title={stage ? `${stage.name} — ${stage.stage} ступень` : 'Четыре ступени изучения мазхаба'}
         lead={
           stage
             ? stage.about

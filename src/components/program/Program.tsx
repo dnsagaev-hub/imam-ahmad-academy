@@ -64,7 +64,7 @@ export function StageSection({ stage, courses }: { stage: (typeof COURSE_LEVELS)
             Ступень {stage.roman} · {courses.length} дисциплин
           </p>
           <h2 className="h2" id={`h-${stage.value}`} style={{ margin: '4px 0 6px' }}>
-            {stage.name} — {stage.label.toLowerCase()} ступень
+            {stage.name} — {stage.stage} ступень
           </h2>
           <p className="muted" style={{ margin: 0, maxWidth: 760 }}>
             {stage.about}
@@ -90,9 +90,9 @@ export function StageSection({ stage, courses }: { stage: (typeof COURSE_LEVELS)
                       <span className="disc-label">{labelOf(DISCIPLINES, c.discipline) || 'Курс'}</span>
                       {status ? <span className={`disc-status disc-status-${c.status}`}>◆ {status.toLowerCase()}</span> : null}
                     </span>
-                    {books.length ? (
+                    {books.some((b: any) => b.titleAr) ? (
                       <span className="disc-books" lang="ar" dir="rtl">
-                        {books.map((b: any) => b.titleAr || b.title).join(' · ')}
+                        {books.filter((b: any) => b.titleAr).map((b: any) => b.titleAr).join(' · ')}
                       </span>
                     ) : null}
                     <span className="disc-title">{c.title}</span>
