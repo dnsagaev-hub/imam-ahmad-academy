@@ -139,7 +139,7 @@ export async function getCoursesByBook(bookId: number | string) {
   const payload = await getPayloadClient()
   const res = await payload.find({
     collection: 'courses',
-    where: { and: [published, { book: { equals: bookId } }] },
+    where: { and: [published, { books: { in: [bookId] } }] },
     sort: 'order',
     depth: 0,
     limit: 20,

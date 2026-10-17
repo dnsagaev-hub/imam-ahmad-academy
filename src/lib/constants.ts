@@ -38,10 +38,13 @@ export const BOOK_CATEGORIES = [
   { label: 'Усуль аль-фикх', value: 'usul' },
   { label: 'Правила фикха', value: 'qawaid' },
   { label: 'Акыда', value: 'aqida' },
+  { label: 'Коран и тафсир', value: 'quran' },
   { label: 'Хадис', value: 'hadith' },
   { label: 'Сира', value: 'sira' },
+  { label: 'Адаб и азкары', value: 'adab' },
   { label: 'Ахляк и очищение души', value: 'akhlaq' },
   { label: 'Арабский язык', value: 'arabic' },
+  { label: 'Логика (мантык)', value: 'mantiq' },
   { label: 'Другое', value: 'other' },
 ] as const
 
@@ -57,10 +60,11 @@ export const BOOK_KINDS = [
 
 /** Ступень, на которой изучают книгу. */
 export const BOOK_LEVELS = [
-  { label: 'Мубтади — начальная ступень', short: 'Мубтади', value: 'beginner' },
-  { label: 'Мутавассит — средняя ступень', short: 'Мутавассит', value: 'intermediate' },
-  { label: 'Мунтахи — продвинутая ступень', short: 'Мунтахи', value: 'advanced' },
-  { label: 'Для сверки (не по ступеням)', short: 'Для сверки', value: 'reference' },
+  { label: 'I. Подготовительная ступень', short: 'I ступень', value: 'prep' },
+  { label: 'II. Начальная ступень', short: 'II ступень', value: 'beginner' },
+  { label: 'III. Средняя ступень', short: 'III ступень', value: 'intermediate' },
+  { label: 'IV. Продвинутая ступень', short: 'IV ступень', value: 'advanced' },
+  { label: 'Для сверки (вне программы)', short: 'Для сверки', value: 'reference' },
 ] as const
 
 export const BOOK_LANGS = [
@@ -69,16 +73,89 @@ export const BOOK_LANGS = [
   { label: 'Арабский + русский', value: 'ar-ru' },
 ] as const
 
+/** Четыре ступени учебной программы академии (сводная редакция от 17.10.2026). */
 export const COURSE_LEVELS = [
-  { label: 'Начальный', value: 'beginner' },
-  { label: 'Средний', value: 'intermediate' },
-  { label: 'Продвинутый', value: 'advanced' },
+  {
+    label: 'Подготовительный',
+    value: 'prep',
+    roman: 'I',
+    ar: 'التمهيدي',
+    stageAr: 'المرحلة التمهيدية',
+    name: 'Тамхиди',
+    task: 'Введение в исламские науки, арабский язык и основы поклонения',
+    about: 'Первое знакомство с исламскими науками, чтением Корана, арабским языком, поклонением и нравственным воспитанием.',
+  },
+  {
+    label: 'Начальный',
+    value: 'beginner',
+    roman: 'II',
+    ar: 'المبتدئ',
+    stageAr: 'المرحلة المبتدئة',
+    name: 'Мубтади',
+    task: 'Начальные систематические матны и языковая база',
+    about: 'Систематическое освоение небольших матнов, закрепление поклонения, знакомство с прочими разделами фикха и укрепление языка.',
+  },
+  {
+    label: 'Средний',
+    value: 'intermediate',
+    roman: 'III',
+    ar: 'المتوسط',
+    stageAr: 'المرحلة المتوسطة',
+    name: 'Мутавассит',
+    task: 'Освоение основных дисциплин и терминологии классических текстов',
+    about: 'Первое цельное освоение классического ханбалитского матна и фундаментальных дисциплин, необходимых для углублённого чтения.',
+  },
+  {
+    label: 'Продвинутый',
+    value: 'advanced',
+    roman: 'IV',
+    ar: 'المتقدم',
+    stageAr: 'المرحلة المتقدمة',
+    name: 'Мутакаддим',
+    task: 'Углублённые комментарии и подготовка к последующей специализации',
+    about: 'Углублённое изучение классических комментариев, взаимосвязи правовых источников и методов самостоятельной работы с арабской научной литературой.',
+  },
 ] as const
 
+/** Дисциплины программы. */
+export const DISCIPLINES = [
+  { label: 'Фикх', value: 'fiqh' },
+  { label: 'Фикх поклонения', value: 'fiqh-ibadat' },
+  { label: 'Усуль аль-фикх', value: 'usul' },
+  { label: 'Правовые правила', value: 'qawaid' },
+  { label: 'Коран и таджвид', value: 'tajwid' },
+  { label: 'Тафсир', value: 'tafsir' },
+  { label: 'Хадисы', value: 'hadith' },
+  { label: 'Хадисы законоположений', value: 'ahkam' },
+  { label: 'Науки о хадисах', value: 'mustalah' },
+  { label: 'Акыда', value: 'aqida' },
+  { label: 'Введение в мазхаб', value: 'madhhab' },
+  { label: 'Методология мазхаба', value: 'madhhab-method' },
+  { label: 'Арабский язык', value: 'arabic' },
+  { label: 'Нахв', value: 'nahw' },
+  { label: 'Сарф', value: 'sarf' },
+  { label: 'Балага', value: 'balagha' },
+  { label: 'Чтение и словарь', value: 'reading' },
+  { label: 'Мантык', value: 'mantiq' },
+  { label: 'Сира', value: 'sira' },
+  { label: 'Адаб', value: 'adab' },
+  { label: 'Азкары', value: 'adhkar' },
+  { label: 'Тазкия', value: 'tazkiya' },
+] as const
+
+/** Статус позиции в программе. */
+export const COURSE_STATUSES = [
+  { label: 'Утверждено', value: 'approved' },
+  { label: 'Рабочий выбор', value: 'working' },
+  { label: 'Пособие в разработке', value: 'draft' },
+] as const
+
+/** Шкала успеха ученика — по ступеням программы. */
 export const STUDENT_LEVELS = [
+  { key: 'tamhidi', name: 'Тамхиди', ar: 'تمهيدي', desc: 'Подготовительный' },
   { key: 'mubtadi', name: 'Мубтади', ar: 'مبتدئ', desc: 'Начинающий' },
   { key: 'mutawassit', name: 'Мутавассит', ar: 'متوسط', desc: 'Средний' },
-  { key: 'muntahi', name: 'Мунтахи', ar: 'منتهٍ', desc: 'Продвинутый' },
+  { key: 'mutaqaddim', name: 'Мутакаддим', ar: 'متقدم', desc: 'Продвинутый' },
 ] as const
 
 export function labelOf(

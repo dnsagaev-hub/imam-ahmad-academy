@@ -10,10 +10,11 @@ export type SampleBook = {
   titleAr: string
   author: string
   authorAr: string
-  authorDeath: number
+  authorDeath?: number
+  language?: 'ar' | 'ru' | 'ar-ru'
   category: string
   kind: 'matn' | 'sharh' | 'hashiya' | 'reference' | 'translation' | 'textbook'
-  level?: 'beginner' | 'intermediate' | 'advanced' | 'reference'
+  level?: 'prep' | 'beginner' | 'intermediate' | 'advanced' | 'reference'
   isMutamad?: boolean
   base?: string
   order: number
@@ -40,11 +41,11 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     authorDeath: 1083,
     category: 'fiqh',
     kind: 'matn',
-    level: 'beginner',
+    level: 'intermediate',
     order: 10,
-    description: 'Один из самых кратких матнов ханбалитского фикха — первый шаг в изучении мазхаба.',
+    description: 'Один из самых кратких матнов ханбалитского фикха. В программе академии изучается на III ступени вместе с шархом «аш-Шазарат».',
     about:
-      'Как видно из названия («Кратчайшее из кратких»), автор стремился изложить главы фикха как можно короче. Поэтому книгу часто выбирают первой: её можно выучить наизусть и пройти целиком с преподавателем.\n\nПо этому матну построены демо-уроки академии о видах воды и таяммуме.',
+      'Как видно из названия («Кратчайшее из кратких»), автор стремился изложить главы фикха как можно короче. Её можно выучить наизусть и пройти целиком с преподавателем. На IV ступени к ней возвращаются через шарх «Кашф аль-мухаддарат».\n\nПо этому матну построены демо-уроки академии о видах воды и таяммуме.',
     edition: 'Тахкик Мухаммада Насира аль-Аджми',
   },
   {
@@ -56,7 +57,7 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     authorDeath: 1192,
     category: 'fiqh',
     kind: 'sharh',
-    level: 'beginner',
+    level: 'advanced',
     base: 'ahsar-al-muhtasarat',
     order: 11,
     description: 'Шарх на «Ахсар аль-Мухтасарат»: раскрывает краткие выражения матна.',
@@ -68,7 +69,6 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     ...IBN_QUDAMA,
     category: 'fiqh',
     kind: 'matn',
-    level: 'beginner',
     order: 20,
     description: 'Матн Ибн Кудамы для начинающих; главы открываются хадисами.',
     about:
@@ -83,7 +83,6 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     authorDeath: 624,
     category: 'fiqh',
     kind: 'sharh',
-    level: 'beginner',
     base: 'umdat-al-fiqh',
     order: 21,
     description: 'Шарх на «Умдат аль-Фикх» с доводами.',
@@ -95,7 +94,6 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     ...HAJJAWI,
     category: 'fiqh',
     kind: 'matn',
-    level: 'intermediate',
     order: 30,
     description: 'Сокращение «аль-Мукни‘» Ибн Кудамы — один из самых изучаемых матнов мазхаба.',
     about:
@@ -108,7 +106,6 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     ...BUHUTI,
     category: 'fiqh',
     kind: 'sharh',
-    level: 'intermediate',
     base: 'zad-al-mustaqni',
     order: 31,
     description: 'Шарх аль-Бухути на «Зад аль-Мустакни‘».',
@@ -120,7 +117,6 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     ...KARMI,
     category: 'fiqh',
     kind: 'matn',
-    level: 'intermediate',
     order: 40,
     description: 'Ясный по языку матн для средней ступени.',
   },
@@ -133,7 +129,6 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     authorDeath: 1353,
     category: 'fiqh',
     kind: 'sharh',
-    level: 'intermediate',
     base: 'dalil-at-talib',
     order: 41,
     description: 'Шарх на «Далиль ат-Талиб» с доводами из Корана и Сунны.',
@@ -145,7 +140,6 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     ...IBN_NAJJAR,
     category: 'fiqh',
     kind: 'matn',
-    level: 'advanced',
     order: 50,
     description: 'Один из двух главных матнов поздних ханбалитов; по нему выносятся решения в мазхабе.',
   },
@@ -156,7 +150,7 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     ...BUHUTI,
     category: 'fiqh',
     kind: 'sharh',
-    level: 'advanced',
+    level: 'reference',
     isMutamad: true,
     base: 'muntaha-al-iradat',
     order: 51,
@@ -169,7 +163,6 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     ...HAJJAWI,
     category: 'fiqh',
     kind: 'matn',
-    level: 'advanced',
     order: 55,
     description: 'Второй из главных матнов поздних ханбалитов, наряду с «аль-Мунтаха».',
   },
@@ -180,7 +173,7 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     ...BUHUTI,
     category: 'fiqh',
     kind: 'sharh',
-    level: 'advanced',
+    level: 'reference',
     isMutamad: true,
     base: 'al-iqna',
     order: 56,
@@ -195,7 +188,6 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     ...KARMI,
     category: 'fiqh',
     kind: 'matn',
-    level: 'advanced',
     order: 60,
     description: 'Матн, объединивший «аль-Икна‘» и «аль-Мунтаха».',
   },
@@ -208,7 +200,7 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     authorDeath: 1243,
     category: 'fiqh',
     kind: 'sharh',
-    level: 'advanced',
+    level: 'reference',
     isMutamad: true,
     base: 'ghayat-al-muntaha',
     order: 61,
@@ -251,7 +243,7 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     authorDeath: 1346,
     category: 'madhhab',
     kind: 'reference',
-    level: 'beginner',
+    level: 'reference',
     order: 5,
     description: 'Введение в мазхаб: основы фетв имама Ахмада, термины мазхаба, его книги и учёные.',
     about:
@@ -267,7 +259,6 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     ...IBN_NAJJAR,
     category: 'usul',
     kind: 'matn',
-    level: 'intermediate',
     order: 100,
     description: 'Матн по усуль аль-фикх в ханбалитском мазхабе.',
   },
@@ -291,7 +282,7 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     authorDeath: 795,
     category: 'qawaid',
     kind: 'reference',
-    level: 'advanced',
+    level: 'reference',
     order: 110,
     description: 'Правила фикха с множеством частных вопросов мазхаба.',
   },
@@ -304,14 +295,13 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     ...AHMAD,
     category: 'aqida',
     kind: 'matn',
-    level: 'beginner',
     order: 120,
     description: 'Краткое изложение основ убеждений ахлю-с-сунна от самого имама Ахмада.',
   },
   {
     slug: 'lumat-al-itiqad',
     title: 'Лум‘ат аль-И‘тикад',
-    titleAr: 'لمعة الاعتقاد',
+    titleAr: 'لمعة الاعتقاد الهادي إلى سبيل الرشاد',
     ...IBN_QUDAMA,
     category: 'aqida',
     kind: 'matn',
@@ -328,7 +318,6 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     authorDeath: 728,
     category: 'aqida',
     kind: 'matn',
-    level: 'intermediate',
     order: 122,
     description: 'Известный матн по вероучению, который изучают на средней ступени.',
   },
@@ -337,13 +326,13 @@ export const SAMPLE_BOOKS: SampleBook[] = [
   {
     slug: 'umdat-al-ahkam',
     title: 'Умдат аль-Ахкам',
-    titleAr: 'عمدة الأحكام',
+    titleAr: 'عمدة الأحكام من كلام خير الأنام',
     author: 'Абд аль-Гани аль-Макдиси',
     authorAr: 'عبد الغني المقدسي',
     authorDeath: 600,
     category: 'hadith',
     kind: 'matn',
-    level: 'beginner',
+    level: 'intermediate',
     order: 130,
     description: 'Хадисы о законоположениях, отобранные из двух «Сахихов».',
   },
@@ -365,7 +354,6 @@ export const SAMPLE_BOOKS: SampleBook[] = [
     ...IBN_QUDAMA,
     category: 'akhlaq',
     kind: 'matn',
-    level: 'beginner',
     order: 140,
     description: 'Сокращение Ибн Кудамой книги Ибн аль-Джаузи «Минхадж аль-Касидин»: поклонение, нравы и очищение души.',
   },

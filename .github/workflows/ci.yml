@@ -63,6 +63,12 @@ jobs:
       - name: Применить миграции
         run: (npm run migrate) 2>&1 | tee -a ci.log
 
+      - name: Новая миграция, если изменилась структура базы
+        run: |
+          (timeout 600 npm run migrate:create -- update --skip-empty < /dev/null) 2>&1 | tee -a ci.log
+          ls src/migrations | tee -a ci.log
+          (npm run migrate < /dev/null) 2>&1 | tee -a ci.log
+
       - name: Демо-наполнение
         run: (npm run seed) 2>&1 | tee -a ci.log
 
@@ -79,7 +85,7 @@ jobs:
           (cd .next/standalone && NODE_ENV=production PORT=3000 HOSTNAME=127.0.0.1 node server.js > ../../server.log 2>&1 &)
           for i in $(seq 1 60); do curl -s -o /dev/null http://127.0.0.1:3000/ && break; sleep 2; done
           fail=0
-          for path in / /courses /courses/demo-fikh-ochischeniya /lessons/demo-tayammum /text /audio /video \
+          for path in / /courses "/courses?level=prep" /courses/stupen-1-03-fiqh-ibadat /courses/demo-fikh-ochischeniya /lessons/demo-tayammum /text /audio /video \
                       /articles /articles/tayammum-pri-holodnoy-vode /articles/pochemu-u-imama-ahmada-neskolko-mneniy \
                       /library /library/ahsar-al-muhtasarat /library/kashshaf-al-qina /contact /progress /prayer-times /about /admin; do
             code=$(curl -s -o /dev/null -w '%{http_code}' -L "http://127.0.0.1:3000$path")
@@ -96,7 +102,7 @@ jobs:
           npx -y playwright@1.56.1 install --with-deps chromium > /dev/null 2>&1
           cat > /tmp/shots.mjs <<'JS'
           import { chromium } from 'playwright'
-          const pages = ['/', '/courses/demo-fikh-ochischeniya', '/lessons/pyat-osnov-fetv-imama-ahmada', '/lessons/demo-tayammum', '/text', '/audio', '/video', '/articles',
+          const pages = ['/', '/courses/demo-fikh-ochischeniya', '/lessons/pyat-osnov-fetv-imama-ahmada', '/lessons/demo-tayammum', '/courses', '/courses?level=beginner', '/courses/stupen-3-01-fiqh', '/text', '/audio', '/video', '/articles',
             '/articles/tayammum-pri-holodnoy-vode', '/library', '/library/ahsar-al-muhtasarat', '/contact', '/progress', '/prayer-times', '/admin']
           const browser = await chromium.launch()
           for (const [name, vp] of [['desk', { width: 1440, height: 900 }], ['phone', { width: 390, height: 844 }]]) {

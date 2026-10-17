@@ -3,14 +3,14 @@ import type { CollectionConfig } from 'payload'
 import { adminOnly, publishedOrAdmin } from '../access'
 import { publishedField } from '../fields/published'
 import { slugField } from '../fields/slug'
-import { COURSE_LEVELS } from '../lib/constants'
+import { COURSE_LEVELS, COURSE_STATUSES, DISCIPLINES } from '../lib/constants'
 
 export const Courses: CollectionConfig = {
   slug: 'courses',
   labels: { singular: 'Курс', plural: 'Курсы' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'level', 'order', 'isPublished'],
+    defaultColumns: ['title', 'level', 'discipline', 'order', 'isPublished'],
     group: 'Обучение',
     description:
       'Курс состоит из модулей, модуль — из уроков. Ученик проходит уроки по порядку: следующий открывается после сдачи теста.',
@@ -28,19 +28,34 @@ export const Courses: CollectionConfig = {
     publishedField,
     {
       name: 'level',
-      label: 'Уровень',
+      label: 'Ступень',
       type: 'select',
       required: true,
-      defaultValue: 'beginner',
-      options: [...COURSE_LEVELS],
+      defaultValue: 'prep',
+      options: COURSE_LEVELS.map(({ label, value }) => ({ label, value })),
+      admin: { position: 'sidebar' },
+    },
+    {
+      name: 'discipline',
+      label: 'Дисциплина',
+      type: 'select',
+      options: DISCIPLINES.map(({ label, value }) => ({ label, value })),
+      admin: { position: 'sidebar' },
+    },
+    {
+      name: 'status',
+      label: 'Статус в программе',
+      type: 'select',
+      defaultValue: 'approved',
+      options: COURSE_STATUSES.map(({ label, value }) => ({ label, value })),
       admin: { position: 'sidebar' },
     },
     {
       name: 'order',
-      label: 'Порядок в списке',
+      label: 'Номер в ступени',
       type: 'number',
       defaultValue: 10,
-      admin: { position: 'sidebar', description: 'Чем меньше число, тем выше курс в списке' },
+      admin: { position: 'sidebar', description: 'Номер дисциплины в программе ступени (01, 02…)' },
     },
     {
       type: 'row',
@@ -50,11 +65,18 @@ export const Courses: CollectionConfig = {
       ],
     },
     {
-      name: 'book',
-      label: 'Книга из библиотеки',
+      name: 'books',
+      label: 'Учебники из библиотеки',
       type: 'relationship',
       relationTo: 'books',
-      admin: { description: 'Тогда на странице книги появится ссылка на этот курс' },
+      hasMany: true,
+      admin: { description: 'Матн и шарх (или несколько учебников). На странице книги появится ссылка на курс' },
+    },
+    {
+      name: 'scope',
+      label: 'Объём изучения',
+      type: 'textarea',
+      admin: { description: 'Например: «Полностью», «Суры 103–114», «Избранные главы»' },
     },
     { name: 'description', label: 'Краткое описание', type: 'textarea', required: true },
     {

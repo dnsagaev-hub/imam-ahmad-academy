@@ -7,7 +7,7 @@ import { PageHead } from '@/components/PageHead'
 import { BookCover } from '@/components/library/BookCover'
 import { LibraryBrowser } from '@/components/library/LibraryBrowser'
 import { deathLabel, studyPath, toBookItem } from '@/lib/books'
-import { BOOK_CATEGORIES, labelOf } from '@/lib/constants'
+import { BOOK_CATEGORIES, COURSE_LEVELS, labelOf } from '@/lib/constants'
 import { getBooks, plural } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
@@ -60,18 +60,17 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
                 </h2>
               </div>
               <p className="muted" style={{ maxWidth: 520, margin: 0 }}>
-                В мазхабе учатся по ступеням: короткий матн и его шарх, затем более полный матн. Переходите дальше, когда
-                освоили предыдущую ступень.
+                Книги фикха по четырём ступеням программы академии. Переходите дальше, когда освоили предыдущую ступень.
               </p>
             </div>
             <ol className="path-steps">
               {path.map((step, i) => (
                 <li key={step.level} className="path-step">
                   <div className="path-head">
-                    <span className="path-num">{i + 1}</span>
+                    <span className="path-num">{COURSE_LEVELS.find((l) => l.value === step.level)?.roman ?? i + 1}</span>
                     <span>
-                      <b>{step.label}</b>
-                      <small>{['начальная ступень', 'средняя ступень', 'продвинутая ступень'][i]}</small>
+                      <b>{COURSE_LEVELS.find((l) => l.value === step.level)?.name}</b>
+                      <small>{COURSE_LEVELS.find((l) => l.value === step.level)?.label.toLowerCase()} ступень</small>
                     </span>
                   </div>
                   {step.matns.map(({ matn, commentaries, translations }) => (
@@ -82,6 +81,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
                         </span>
                         <span className="path-ru">{matn.title}</span>
                         <span className="path-author">{[matn.author, deathLabel(matn.authorDeath)].filter(Boolean).join(', ')}</span>
+                        {matn.baseTitle ? <span className="path-author">шарх на «{matn.baseTitle}»</span> : null}
                       </Link>
                       {commentaries.length || translations.length ? (
                         <ul className="path-sub">

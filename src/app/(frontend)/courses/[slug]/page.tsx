@@ -8,7 +8,9 @@ import { Crumbs } from '@/components/PageHead'
 import { CourseProgram, CourseProgressCard } from '@/components/progress/CourseProgram'
 import { serverSource, type ProgressSource } from '@/components/progress/useProgress'
 import { REGISTRATION_ENABLED } from '@/lib/config'
-import { COURSE_LEVELS, labelOf } from '@/lib/constants'
+import { BookTile } from '@/components/library/BookTile'
+import { toBookItem } from '@/lib/books'
+import { COURSE_LEVELS, COURSE_STATUSES, DISCIPLINES, labelOf } from '@/lib/constants'
 import { flattenCourse, getProgress, toLeanCourse } from '@/lib/learning'
 import { getCurrentUser, getPayloadClient } from '@/lib/payload'
 import { getCourseBySlug, lessonsWord, mediaUrl } from '@/lib/queries'
@@ -36,6 +38,9 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
   const lean = toLeanCourse(course)
   const total = flattenCourse(course).length
   const moduleCount = (course.modules ?? []).length
+  const stage = COURSE_LEVELS.find((l) => l.value === c.level)
+  const books = (Array.isArray(c.books) ? c.books : []).filter((b: any) => b && typeof b === 'object')
+  const status = c.status && c.status !== 'approved' ? labelOf(COURSE_STATUSES, c.status) : null
 
   return (
     <>
@@ -46,7 +51,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             items={[
               { label: 'Главная', href: '/' },
               { label: 'Курсы', href: '/courses' },
-              { label: labelOf(COURSE_LEVELS, c.level), href: `/courses?level=${c.level}` },
+              { label: stage ? `${stage.roman}. ${stage.label} ступень` : 'Ступень', href: `/courses?level=${c.level}` },
               { label: c.title },
             ]}
           />
@@ -61,16 +66,26 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
               </div>
             </div>
             <div style={{ flex: '1 1 460px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <span className="badge" style={{ background: '#fff', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                {labelOf(COURSE_LEVELS, c.level)} уровень
+              <span style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                <span className="badge" style={{ background: '#fff', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  Ступень {stage?.roman} · {stage?.name}
+                </span>
+                {c.discipline ? <span className="badge">{labelOf(DISCIPLINES, c.discipline)}</span> : null}
+                {status ? <span className={`disc-status disc-status-${c.status}`}>◆ {status.toLowerCase()}</span> : null}
               </span>
               <h1 className="page-title">{c.title}</h1>
-              <p className="lead" style={{ maxWidth: 620 }}>
-                {c.description}
-              </p>
+              {c.scope ? (
+                <p className="lead" style={{ maxWidth: 620 }}>
+                  <b style={{ color: 'var(--navy)' }}>Объём изучения:</b> {c.scope}
+                </p>
+              ) : (
+                <p className="lead" style={{ maxWidth: 620 }}>
+                  {c.description}
+                </p>
+              )}
               <div className="facts">
                 <span>
-                  <strong>{lessonsWord(total)}</strong>
+                  <strong>{total ? lessonsWord(total) : 'Уроки готовятся'}</strong>
                 </span>
                 {moduleCount ? (
                   <span>
@@ -94,7 +109,26 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
           <h2 className="h2" style={{ margin: '0 0 4px', fontSize: 36 }}>
             Программа курса
           </h2>
-          <CourseProgram course={lean} source={source} />
+          {total ? (
+            <CourseProgram course={lean} source={source} />
+          ) : (
+            <div className="empty" style={{ textAlign: 'left' }}>
+              Уроки этого курса ещё готовятся. Пока можно познакомиться с учебником в библиотеке.
+            </div>
+          )}
+
+          {books.length ? (
+            <section style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 36 }}>
+              <h2 className="h2" style={{ margin: 0, fontSize: 30 }}>
+                {books.length > 1 ? 'Учебники курса' : 'Учебник курса'}
+              </h2>
+              <div className="lib-grid">
+                {books.map((b: any) => (
+                  <BookTile key={b.id} b={toBookItem(b)} />
+                ))}
+              </div>
+            </section>
+          ) : null}
         </main>
 
         <aside className="col-side">

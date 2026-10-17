@@ -198,11 +198,13 @@ export async function findCourseForLesson(payload: Payload, lessonId: Id): Promi
   return null
 }
 
+/** Порядок ступеней программы. */
+export const STAGE_ORDER = ['prep', 'beginner', 'intermediate', 'advanced'] as const
+
 /**
- * Уровень ученика:
- * — Мубтади: с самого начала;
- * — Мутавассит: пройдены все курсы начального уровня и средний балл не ниже 80%;
- * — Мунтахи: пройдены также все курсы среднего уровня и хотя бы один продвинутый.
+ * Уровень ученика по ступеням программы (Тамхиди → Мубтади → Мутавассит → Мутакаддим):
+ * следующий уровень присваивается, когда пройдены все курсы (с уроками) текущей ступени
+ * и средний балл тестов не ниже 80%. Ступень, где ещё нет курсов с уроками, дальше не пускает.
  */
 export function studentLevel(courses: CourseDoc[], progress: Progress) {
   const states = courses.map((c) => ({ c, s: courseState(c, progress) })).filter((x) => x.s.total > 0)
@@ -214,27 +216,19 @@ export function studentLevel(courses: CourseDoc[], progress: Progress) {
   const scores = [...progress.bestScore.values()]
   const avg = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : 0
 
-  const beginnerList = byLevel('beginner')
-  const beginnerDone = beginnerList.filter((x) => x.s.completed).length
-  const beginnerParts = beginnerList.reduce((a, x) => a + x.s.percent, 0) / Math.max(beginnerList.length, 1)
+  let index = 0
+  while (index < STAGE_ORDER.length - 1 && allDone(STAGE_ORDER[index]) && avg >= 80) index += 1
 
-  const isMutawassit = allDone('beginner') && avg >= 80
-  const intermediateList = byLevel('intermediate')
-  const advancedDone = byLevel('advanced').some((x) => x.s.completed)
-  const isMuntahi = isMutawassit && allDone('intermediate') && advancedDone
-
-  const index = isMuntahi ? 2 : isMutawassit ? 1 : 0
-  let toNext = 100
-  if (index === 0) toNext = Math.round(beginnerParts)
-  else if (index === 1) {
-    const parts = intermediateList.reduce((a, x) => a + x.s.percent, 0) / Math.max(intermediateList.length, 1)
-    toNext = Math.round(parts)
-  }
+  const current = byLevel(STAGE_ORDER[index])
+  const toNext =
+    index === STAGE_ORDER.length - 1
+      ? 100
+      : Math.round(current.reduce((a, x) => a + x.s.percent, 0) / Math.max(current.length, 1))
   return {
     index,
     toNextPercent: toNext,
     averageScore: scores.length ? Math.round(avg) : null,
-    beginnerDone,
+    beginnerDone: byLevel(STAGE_ORDER[index]).filter((x) => x.s.completed).length,
     completedCourses: states.filter((x) => x.s.completed).length,
   }
 }

@@ -62,20 +62,26 @@ export function toBookItem(b: Record<string, any>): BookItem {
 /** «ум. 1083 г. х.» */
 export const deathLabel = (y: number | null | undefined) => (y ? `ум. ${y} г. х.` : '')
 
-/** Путь изучения: для каждой ступени — матны и их шархи. */
+/**
+ * Путь изучения по ступеням программы: книги раздела (по умолчанию — фикх) на каждой ступени.
+ * Шарх, изучаемый на той же ступени, что и его матн, показывается под матном;
+ * шарх к матну с прошлой ступени — отдельной строкой («шарх на …»).
+ */
 export function studyPath(items: BookItem[], category = 'fiqh') {
-  const levels = ['beginner', 'intermediate', 'advanced'] as const
+  const levels = ['prep', 'beginner', 'intermediate', 'advanced'] as const
   return levels
     .map((level) => {
-      const matns = items
-        .filter((b) => b.category === category && b.level === level && b.kind === 'matn')
+      const here = items
+        .filter((b) => b.category === category && b.level === level && b.kind !== 'translation')
         .sort((a, b) => a.order - b.order)
+      const matnIds = new Set(here.filter((b) => b.kind === 'matn').map((b) => b.id))
+      const main = here.filter((b) => !(b.baseId && matnIds.has(b.baseId)))
       return {
         level,
         label: BOOK_LEVELS.find((l) => l.value === level)!.short,
-        matns: matns.map((m) => ({
+        matns: main.map((m) => ({
           matn: m,
-          commentaries: items.filter((c) => c.baseId === m.id && c.kind !== 'translation').sort((a, b) => a.order - b.order),
+          commentaries: here.filter((c) => c.baseId === m.id),
           translations: items.filter((c) => c.baseId === m.id && c.kind === 'translation'),
         })),
       }

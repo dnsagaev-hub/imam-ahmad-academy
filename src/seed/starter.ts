@@ -1,6 +1,7 @@
 import type { Payload } from 'payload'
 
 import { SAMPLE_ARTICLES } from './sampleArticles'
+import { PROGRAM_BOOKS, PROGRAM_COURSES, programCourseSlug } from './program'
 import { SAMPLE_BOOKS } from './sampleBooks'
 import { SAMPLE_LESSONS } from './sampleLessons'
 
@@ -11,24 +12,31 @@ import { SAMPLE_LESSONS } from './sampleLessons'
  * На хостинге включается переменной SEED_STARTER=true (после первого запуска её можно удалить).
  */
 
+export const ALL_BOOKS = [...SAMPLE_BOOKS, ...PROGRAM_BOOKS]
+
 export async function seedLibrary(payload: Payload) {
   const ids: Record<string, number | string> = {}
-  for (const b of SAMPLE_BOOKS) {
+  for (const b of ALL_BOOKS) {
     const found = await payload.find({ collection: 'books', where: { slug: { equals: b.slug } }, limit: 1, depth: 0 })
     if (found.totalDocs > 0) {
-      ids[b.slug] = found.docs[0].id
+      const doc = found.docs[0] as Record<string, any>
+      ids[b.slug] = doc.id
+      // Ступень книги следует учебной программе
+      if ((doc.level ?? null) !== (b.level ?? null)) {
+        await payload.update({ collection: 'books', id: doc.id, data: { level: b.level ?? null } as any })
+      }
       continue
     }
     const { base: _base, ...data } = b
-    const doc = await payload.create({ collection: 'books', data: { ...data, language: 'ar', isPublished: true } as any })
+    const doc = await payload.create({ collection: 'books', data: { language: 'ar', ...data, isPublished: true } as any })
     ids[b.slug] = doc.id
   }
-  for (const b of SAMPLE_BOOKS) {
+  for (const b of ALL_BOOKS) {
     if (b.base && ids[b.base]) {
       await payload.update({ collection: 'books', id: ids[b.slug], data: { baseBook: ids[b.base] } as any })
     }
   }
-  payload.logger.info(`Библиотека: ${SAMPLE_BOOKS.length} книг.`)
+  payload.logger.info(`Библиотека: ${ALL_BOOKS.length} книг.`)
   return ids
 }
 
@@ -71,8 +79,40 @@ export async function seedTextLessons(payload: Payload) {
   return ids
 }
 
+/** Курсы учебной программы (4 ступени, 44 дисциплины) — пока без уроков. */
+export async function seedProgram(payload: Payload, bookIds: Record<string, number | string>) {
+  let created = 0
+  for (const c of PROGRAM_COURSES) {
+    const slug = programCourseSlug(c)
+    const found = await payload.find({ collection: 'courses', where: { slug: { equals: slug } }, limit: 1, depth: 0 })
+    if (found.totalDocs > 0) continue
+    const first = ALL_BOOKS.find((b) => b.slug === c.books[0])
+    await payload.create({
+      collection: 'courses',
+      data: {
+        title: c.title,
+        slug,
+        level: c.level,
+        order: c.no,
+        discipline: c.discipline,
+        status: c.status ?? 'approved',
+        description: c.scope,
+        scope: c.scope,
+        books: c.books.map((s) => bookIds[s]).filter(Boolean),
+        bookTitleAr: first?.titleAr || '',
+        bookAuthor: first?.author || '',
+        modules: [],
+        isPublished: true,
+      } as any,
+    })
+    created += 1
+  }
+  payload.logger.info(`Программа: создано курсов — ${created} из ${PROGRAM_COURSES.length}.`)
+}
+
 export async function seedStarter(payload: Payload) {
-  await seedLibrary(payload)
+  const bookIds = await seedLibrary(payload)
+  await seedProgram(payload, bookIds)
   await seedTextLessons(payload)
   await seedArticles(payload)
   payload.logger.info('Стартовое наполнение готово.')

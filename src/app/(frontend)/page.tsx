@@ -1,7 +1,8 @@
 import Link from 'next/link'
 
 import { AudioBrowser } from '@/components/audio/AudioBrowser'
-import { ArticleCard, BookCard, CourseCard, TextLessonCard } from '@/components/Cards'
+import { ArticleCard, BookCard, TextLessonCard } from '@/components/Cards'
+import { StageCards } from '@/components/program/Program'
 import { VideoTile } from '@/components/video/VideoBrowser'
 import { getMediaItems } from '@/lib/media'
 import { ContactForm } from '@/components/ContactForm'
@@ -91,21 +92,13 @@ export default async function HomePage() {
           <div className="section-head">
             <div>
               <p className="eyebrow">Курсы</p>
-              <h2 className="h2">Три ступени обучения</h2>
+              <h2 className="h2">Четыре ступени обучения</h2>
             </div>
             <Link href="/courses" style={{ fontWeight: 700 }}>
-              Все курсы →
+              Вся программа →
             </Link>
           </div>
-          {courses.length ? (
-            <div className="grid grid-280">
-              {courses.slice(0, 6).map((c) => (
-                <CourseCard key={c.id} course={c} />
-              ))}
-            </div>
-          ) : (
-            <p className="empty">Курсы скоро появятся.</p>
-          )}
+          <StageCards courses={courses} />
         </section>
 
         <section className="container section" id="text">

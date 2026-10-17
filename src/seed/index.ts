@@ -6,7 +6,7 @@
 import config from '@payload-config'
 import { getPayload } from 'payload'
 
-import { seedArticles, seedLibrary, seedTextLessons } from './starter'
+import { seedArticles, seedLibrary, seedProgram, seedTextLessons } from './starter'
 
 const text = (t: string) => ({ type: 'text', text: t, version: 1, format: 0, detail: 0, mode: 'normal', style: '' })
 const paragraph = (t: string) => ({
@@ -56,6 +56,7 @@ await payload.updateGlobal({
 
 const bookIds = await seedLibrary(payload)
 const lessonIds = await seedTextLessons(payload)
+await seedProgram(payload, bookIds)
 
 const exists = await payload.find({ collection: 'courses', where: { slug: { equals: 'demo-fikh-ochischeniya' } }, limit: 1 })
 
@@ -106,11 +107,12 @@ if (exists.totalDocs === 0) {
     data: {
       title: 'Фикх очищения (демо-курс)',
       slug: 'demo-fikh-ochischeniya',
-      level: 'beginner',
-      order: 1,
+      level: 'intermediate',
+      discipline: 'fiqh',
+      order: 0,
       bookTitleAr: 'أخصر المختصرات',
       bookAuthor: 'Ибн Бальбан',
-      book: bookIds['ahsar-al-muhtasarat'],
+      books: [bookIds['ahsar-al-muhtasarat']],
       description:
         '[Демо-курс, чтобы посмотреть, как работает обучение. Замените или скройте его, когда добавите свои курсы.]',
       teacher: '[Имя преподавателя]',
