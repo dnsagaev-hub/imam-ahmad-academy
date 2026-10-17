@@ -15,7 +15,7 @@ import { ProgressButton } from './progress/ProgressButton'
 export function Brand({ light = false }: { light?: boolean }) {
   return (
     <Link href="/" className={`brand${light ? ' light' : ''}`} aria-label="Академия имама Ахмада — на главную">
-      <Image src="/brand/emblem.png" alt="" width={191} height={391} className="brand-emblem" priority />
+      <Image src="/brand/emblem.png" alt="" width={191} height={391} className="brand-emblem" priority unoptimized />
       <span>
         <span className="brand-name">
           Академия

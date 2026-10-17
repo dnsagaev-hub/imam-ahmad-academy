@@ -7,7 +7,7 @@ export function Footer() {
     <footer className="site-footer">
       <div className="container footer-inner">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <Image src="/brand/emblem.png" alt="" width={191} height={391} className="footer-emblem" />
+          <Image src="/brand/emblem.png" alt="" width={191} height={391} className="footer-emblem" unoptimized />
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           <span className="name">Академия имама Ахмада</span>
           <span className="ar" lang="ar" style={{ fontSize: 22, fontWeight: 700, color: 'var(--gold-light)', textAlign: 'left' }}>
