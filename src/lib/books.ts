@@ -21,6 +21,7 @@ export type BookItem = {
   description: string
   coverUrl: string | null
   hasPdf: boolean
+  volumeCount: number
   hasLinks: boolean
   baseId: string | null
   baseTitle: string
@@ -51,7 +52,8 @@ export function toBookItem(b: Record<string, any>): BookItem {
     isMutamad: Boolean(b.isMutamad),
     description: b.description ?? '',
     coverUrl: url(b.cover),
-    hasPdf: Boolean(url(b.file)),
+    hasPdf: Boolean(url(b.file)) || (Array.isArray(b.volumes) && b.volumes.some((v: any) => url(v?.file))),
+    volumeCount: Array.isArray(b.volumes) ? b.volumes.filter((v: any) => url(v?.file)).length : 0,
     hasLinks: Array.isArray(b.links) && b.links.length > 0,
     baseId: b.baseBook ? String(base ? base.id : b.baseBook) : null,
     baseTitle: base?.title ?? '',

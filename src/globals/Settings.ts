@@ -111,5 +111,7 @@ export const Settings: GlobalConfig = {
         },
       ],
     },
+    // Служебное: стартовое наполнение уже выполнено (чтобы не повторять его при каждом запуске)
+    { name: 'starterSeeded', type: 'checkbox', admin: { hidden: true } },
   ],
 }

@@ -16,23 +16,21 @@ export const ALL_BOOKS = [...SAMPLE_BOOKS, ...PROGRAM_BOOKS]
 
 export async function seedLibrary(payload: Payload) {
   const ids: Record<string, number | string> = {}
+  const createdNow = new Set<string>()
   for (const b of ALL_BOOKS) {
     const found = await payload.find({ collection: 'books', where: { slug: { equals: b.slug } }, limit: 1, depth: 0 })
     if (found.totalDocs > 0) {
-      const doc = found.docs[0] as Record<string, any>
-      ids[b.slug] = doc.id
-      // Ступень книги следует учебной программе
-      if ((doc.level ?? null) !== (b.level ?? null)) {
-        await payload.update({ collection: 'books', id: doc.id, data: { level: b.level ?? null } as any })
-      }
+      // Уже есть — не трогаем: её могли отредактировать в админке
+      ids[b.slug] = found.docs[0].id
       continue
     }
     const { base: _base, ...data } = b
     const doc = await payload.create({ collection: 'books', data: { language: 'ar', ...data, isPublished: true } as any })
     ids[b.slug] = doc.id
+    createdNow.add(b.slug)
   }
   for (const b of ALL_BOOKS) {
-    if (b.base && ids[b.base]) {
+    if (b.base && ids[b.base] && createdNow.has(b.slug)) {
       await payload.update({ collection: 'books', id: ids[b.slug], data: { baseBook: ids[b.base] } as any })
     }
   }
@@ -110,10 +108,24 @@ export async function seedProgram(payload: Payload, bookIds: Record<string, numb
   payload.logger.info(`Программа: создано курсов — ${created} из ${PROGRAM_COURSES.length}.`)
 }
 
+/**
+ * Стартовое наполнение выполняется ОДИН раз. Потом сайт принадлежит админке:
+ * удалённые или изменённые материалы не восстанавливаются при перезапуске.
+ */
 export async function seedStarter(payload: Payload) {
+  const settings = (await payload.findGlobal({ slug: 'settings', depth: 0 })) as Record<string, any>
+  if (settings.starterSeeded) return
+  const already = await payload.count({ collection: 'books' })
+  if (already.totalDocs > 0) {
+    // База уже наполнялась прежней версией сайта — только запоминаем это
+    await payload.updateGlobal({ slug: 'settings', data: { starterSeeded: true } as any })
+    payload.logger.info('Стартовое наполнение уже было — пропускаю.')
+    return
+  }
   const bookIds = await seedLibrary(payload)
   await seedProgram(payload, bookIds)
   await seedTextLessons(payload)
   await seedArticles(payload)
+  await payload.updateGlobal({ slug: 'settings', data: { starterSeeded: true } as any })
   payload.logger.info('Стартовое наполнение готово.')
 }

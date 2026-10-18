@@ -25,7 +25,7 @@ export function BookTile({ b }: { b: BookItem }) {
         {b.baseTitle ? <span className="btile-base">на «{b.baseTitle}»</span> : null}
         <span className="btile-foot">
           <span>{b.languageLabel}</span>
-          <span>{b.hasPdf ? 'PDF' : b.hasLinks ? 'онлайн' : 'описание'}</span>
+          <span>{b.volumeCount > 1 ? `PDF · ${b.volumeCount} файла` : b.hasPdf ? 'PDF' : b.hasLinks ? 'онлайн' : 'описание'}</span>
         </span>
       </div>
     </Link>

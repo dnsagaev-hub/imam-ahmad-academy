@@ -34,6 +34,9 @@ export default async function BookPage({ params }: { params: Promise<{ slug: str
   const base = doc.baseBook && typeof doc.baseBook === 'object' ? toBookItem(doc.baseBook) : null
   const pdf = mediaUrl(doc.file)
   const links: { label: string; url: string }[] = Array.isArray(doc.links) ? doc.links : []
+  const volumes = (Array.isArray(doc.volumes) ? doc.volumes : [])
+    .map((v: any) => ({ label: v?.label as string, pages: v?.pages as number | null, url: mediaUrl(v?.file) }))
+    .filter((v: { url: string | null }) => v.url) as { label: string; pages: number | null; url: string }[]
   const levelFull = BOOK_LEVELS.find((l) => l.value === b.level)?.label
   const kindHint = BOOK_KINDS.find((k) => k.value === b.kind)?.hint
 
@@ -103,8 +106,40 @@ export default async function BookPage({ params }: { params: Promise<{ slug: str
                   {l.label} ↗
                 </a>
               ))}
-              {!pdf && !links.length ? <span className="muted">Файл книги пока не добавлен.</span> : null}
+              {volumes.length && !pdf ? (
+                <a href="#volumes" className="btn btn-lg">
+                  {volumes.length > 1 ? `Тома и файлы (${volumes.length})` : 'Читать PDF'} ↓
+                </a>
+              ) : null}
+              {!pdf && !volumes.length && !links.length ? <span className="muted">Файл книги пока не добавлен.</span> : null}
             </div>
+            {volumes.length ? (
+              <section id="volumes" className="volumes" aria-label="Тома и файлы">
+                <span className="tl-label">Тома и файлы · {volumes.length}</span>
+                <ol>
+                  {volumes.map((v, i) => (
+                    <li key={i}>
+                      <span className="vol-name">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                          <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+                          <path d="M14 3v5h5" />
+                        </svg>
+                        <b>{v.label}</b>
+                        {v.pages ? <small>{v.pages} с.</small> : null}
+                      </span>
+                      <span className="vol-actions">
+                        <a href={v.url} target="_blank" rel="noopener">
+                          Читать
+                        </a>
+                        <a href={v.url} download>
+                          Скачать
+                        </a>
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            ) : null}
           </div>
         </section>
 

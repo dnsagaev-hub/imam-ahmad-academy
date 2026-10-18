@@ -111,10 +111,30 @@ export const Books: CollectionConfig = {
         { name: 'cover', label: 'Обложка (необязательно)', type: 'upload', relationTo: 'media', admin: { width: '50%' } },
         {
           name: 'file',
-          label: 'Файл книги (PDF)',
+          label: 'Основной файл книги (PDF)',
           type: 'upload',
           relationTo: 'media',
-          admin: { width: '50%', description: 'Можно не загружать, если есть ссылка ниже' },
+          admin: { width: '50%', description: 'Для однотомной книги. Тома — в списке ниже' },
+        },
+      ],
+    },
+    {
+      name: 'volumes',
+      label: 'Тома и файлы',
+      type: 'array',
+      labels: { singular: 'Файл', plural: 'Тома и файлы' },
+      admin: {
+        description: 'Сколько угодно PDF: «Том 1», «Том 2», «Приложение»… Порядок меняется перетаскиванием',
+        initCollapsed: false,
+      },
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            { name: 'label', label: 'Подпись', type: 'text', required: true, admin: { width: '40%', placeholder: 'Том 1' } },
+            { name: 'file', label: 'PDF', type: 'upload', relationTo: 'media', required: true, admin: { width: '45%' } },
+            { name: 'pages', label: 'Страниц', type: 'number', admin: { width: '15%' } },
+          ],
         },
       ],
     },

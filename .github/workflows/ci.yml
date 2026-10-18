@@ -165,6 +165,13 @@ jobs:
             [ "$code" = "200" ] || { docker compose logs site | tail -n 80 | tee -a ci.log; exit 1; }
           done
           curl -s http://127.0.0.1:3100/courses | grep -q 'Тамхиди' && echo "compose: программа на месте" | tee -a ci.log
+          # повторный запуск не должен ничего пересоздавать
+          docker compose restart site; sleep 20
+          curl -s -o /dev/null http://127.0.0.1:3100/ ; sleep 5
+          docker compose logs site | grep -E "Стартовое|пропускаю|Программа" | tee -a ci.log || true
+          bash "Сделать копию данных (Mac).command" < /dev/null | tail -n 4 | tee -a ci.log
+          ls -la backups | tee -a ci.log
+          grep -c "CREATE TABLE" backups/*.sql | tee -a ci.log
           docker compose down -v
 
       - name: Сохранить миграцию и package-lock.json в репозиторий
