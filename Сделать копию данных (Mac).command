@@ -15,4 +15,4 @@ echo
 echo "Готово! Копия лежит в папке backups:"
 echo "  baza-$T.sql  — уроки, тесты, статьи, книги"
 echo "  faily-$T     — загруженные аудио, PDF и картинки"
-open backups 2>/dev/null
+open backups 2>/dev/null || true
