@@ -45,8 +45,9 @@ export function Quote() {
 /**
  * Шапка сайта: полоса с датой и намазом, белая шапка с меню.
  * `children` — тёмно-зелёный блок под шапкой (главный экран, шапка кабинета).
+ * `plain` — зелёный блок без узора из звёзд (на главной вместо него эмблема).
  */
-export async function Header({ children }: { children?: React.ReactNode }) {
+export async function Header({ children, plain = false }: { children?: React.ReactNode; plain?: boolean }) {
   const [user, prayerDefaults, courses] = await Promise.all([
     REGISTRATION_ENABLED ? getCurrentUser() : null,
     getPrayerDefaults(),
@@ -87,8 +88,8 @@ export async function Header({ children }: { children?: React.ReactNode }) {
         </div>
       </header>
       {children ? (
-        <div className="header-band">
-          <Pattern />
+        <div className={`header-band${plain ? ' plain' : ''}`}>
+          {plain ? null : <Pattern />}
           {children}
         </div>
       ) : null}
