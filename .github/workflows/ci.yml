@@ -7,6 +7,8 @@ name: Проверка сборки
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -67,6 +69,9 @@ jobs:
         run: |
           (timeout 600 npm run migrate:create -- update --skip-empty < /dev/null) 2>&1 | tee mc.log | tee -a ci.log
           if grep -q "renamed from" mc.log; then echo "::error::Миграция требует ответа на вопрос о переименовании столбца"; exit 1; fi
+          if [ "${{ github.event_name }}" = "pull_request" ] && [ -n "$(git status --porcelain src/migrations)" ]; then
+            echo "::error::Структура базы изменилась, а миграции в ветке нет: npm run migrate:create -- <имя> и закоммитить" | tee -a ci.log; exit 1
+          fi
           ls src/migrations | tee -a ci.log
           (npm run migrate < /dev/null) 2>&1 | tee -a ci.log
 
@@ -186,10 +191,10 @@ jobs:
 
       # Журнал проверки сохраняется в отдельную ветку ci-logs, чтобы его можно было прочитать без доступа к интерфейсу GitHub
       - name: Сохранить журнал проверки
-        if: always()
+        if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         run: |
           mkdir -p /tmp/logs && (cp -r shots /tmp/logs/ 2>/dev/null || true); (cp /tmp/site-preview.zip /tmp/logs/ 2>/dev/null || true); cp ci.log /tmp/logs/ci.log 2>/dev/null || echo "нет журнала" > /tmp/logs/ci.log
-          echo "${{ job.status }} ${{ github.sha }}" > /tmp/logs/status.txt
+          echo "${{ job.status }} ${{ github.event.pull_request.head.sha || github.sha }} ${{ github.head_ref || github.ref_name }}" > /tmp/logs/status.txt
           cd /tmp/logs && git init -q -b ci-logs && git add -A
-          git -c user.name="github-actions[bot]" -c user.email="41898283+github-actions[bot]@users.noreply.github.com" commit -qm "Журнал проверки ${{ github.sha }}"
+          git -c user.name="github-actions[bot]" -c user.email="41898283+github-actions[bot]@users.noreply.github.com" commit -qm "Журнал проверки ${{ github.event.pull_request.head.sha || github.sha }}"
           git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ci-logs
