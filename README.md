@@ -105,11 +105,11 @@
 
 ```bash
 npm install
-npm run migrate:create -- initial # один раз: создаёт описание таблиц базы (src/migrations)
-npm run migrate                  # создаёт таблицы в базе
+npm run migrate:create -- initial   # один раз: создаёт описание таблиц базы (src/migrations)
+npm run migrate                     # создаёт таблицы в базе
 npm run build
-npm run start                    # сайт на порту 3000
-npm run seed                     # по желанию: демо-курс из двух уроков
+npm run start                       # сайт на порту 3000
+npm run seed                        # по желанию: демо-курс из двух уроков
 ```
 
 Файлы, созданные `migrate:create`, нужно сохранить в репозитории (папка `src/migrations`).
