@@ -1,3 +1,4 @@
+import { toEmbedUrl } from './video'
 import { LESSON_CATEGORIES, labelOf } from './constants'
 import { flattenCourse, type CourseDoc, type LessonDoc } from './learning'
 import { getCourses, getLessons, mediaUrl } from './queries'
@@ -62,7 +63,7 @@ export async function getMediaItems(kind: 'audio' | 'video') {
       seconds: parseDuration(l.duration),
       audioUrl: mediaUrl(l.audio),
       thumbUrl: mediaUrl(l.thumbnail),
-      videoUrl: typeof l.videoUrl === 'string' && l.videoUrl ? l.videoUrl : null,
+      videoUrl: toEmbedUrl(typeof l.videoUrl === 'string' ? l.videoUrl : null),
       courseTitle: c?.title ?? null,
       courseSlug: c?.slug ?? null,
       lessonNumber: c?.number ?? null,

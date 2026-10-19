@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { toEmbedUrl } from '../lib/video'
+
 import { adminOnly, adminOnlyField, publishedOrAdmin } from '../access'
 import { publishedField } from '../fields/published'
 import { slugField } from '../fields/slug'
@@ -33,6 +35,10 @@ export const Lessons: CollectionConfig = {
         data.isText = blocks.length > 0 || hasBody
         const words = JSON.stringify(blocks).split(/\s+/).length + (hasBody ? JSON.stringify(body).split(/\s+/).length / 3 : 0)
         data.readingMinutes = data.isText ? Math.max(1, Math.round(words / 180)) : null
+        // Обычную ссылку на видео сразу превращаем в ссылку для встраивания
+        if (typeof data.videoUrl === 'string' && data.videoUrl.trim()) {
+          data.videoUrl = toEmbedUrl(data.videoUrl) ?? data.videoUrl.trim()
+        }
         return data
       },
     ],
@@ -75,11 +81,11 @@ export const Lessons: CollectionConfig = {
           fields: [
             {
               name: 'videoUrl',
-              label: 'Ссылка на видео для встраивания',
+              label: 'Ссылка на видео',
               type: 'text',
               admin: {
                 description:
-                  'Kinescope: https://kinescope.io/embed/… · VK Видео: https://vk.com/video_ext.php?… · Rutube: https://rutube.ru/play/embed/…',
+                  'Вставьте обычную ссылку на видео из адресной строки — VK Видео, Rutube, YouTube или Kinescope. Сайт сам превратит её в нужный вид при сохранении.',
               },
             },
             { name: 'audio', label: 'Аудиофайл (MP3)', type: 'upload', relationTo: 'media' },

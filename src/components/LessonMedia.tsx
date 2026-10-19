@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 
+import { toEmbedUrl } from '@/lib/video'
+
 import { fmtClock, useListenMap } from '@/lib/listenStore'
 
 import { ListenButton } from './audio/AudioBrowser'
@@ -26,7 +28,7 @@ export function LessonMedia({
   categoryLabel?: string
   teacher?: string | null
 }) {
-  const safeVideo = videoUrl && /^https:\/\//.test(videoUrl) ? videoUrl : null
+  const safeVideo = toEmbedUrl(videoUrl)
   const [mode, setMode] = useState<'video' | 'audio'>(safeVideo ? 'video' : 'audio')
   const listen = useListenMap()
   if (!safeVideo && !audioUrl) return null
