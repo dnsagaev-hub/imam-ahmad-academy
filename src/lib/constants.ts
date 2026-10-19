@@ -15,8 +15,8 @@ export const LESSON_CATEGORIES = [
   { label: 'Ахляк и очищение души', value: 'akhlaq' },
 ] as const
 
-/** Рубрики аудио- и видеоуроков (без «Акыды» — она только в текстовых уроках). */
-export const MEDIA_CATEGORIES = LESSON_CATEGORIES.filter((c) => c.value !== 'aqida')
+/** Рубрики аудио- и видеоуроков (те же, что у всех уроков; «Акыда» добавлена по решению владельца, задача 9). */
+export const MEDIA_CATEGORIES = LESSON_CATEGORIES
 
 /** Рубрики текстовых уроков. */
 export const TEXT_CATEGORIES = LESSON_CATEGORIES

@@ -16,14 +16,15 @@ const toTrack = (i: MediaItem): Track => ({
   href: `/lessons/${i.slug}`,
 })
 
-type Sort = 'new' | 'course' | 'short'
+type Sort = 'order' | 'new' | 'course' | 'short'
 
-/** Список аудиоуроков: поиск, сортировка, «слушать подряд», отметки прослушанного. */
-export function AudioBrowser({ items, compact = false }: { items: MediaItem[]; compact?: boolean }) {
+/** Список аудиоуроков: поиск, сортировка, «слушать подряд», отметки прослушанного.
+ *  `ordered` — уроки одной книги уже стоят по порядку изучения; этот порядок предлагается первым. */
+export function AudioBrowser({ items, compact = false, ordered = false }: { items: MediaItem[]; compact?: boolean; ordered?: boolean }) {
   const { current, playing, play } = useAudioPlayer()
   const listen = useListenMap()
   const [q, setQ] = useState('')
-  const [sort, setSort] = useState<Sort>('new')
+  const [sort, setSort] = useState<Sort>(ordered ? 'order' : 'new')
 
   const list = useMemo(() => {
     const needle = q.trim().toLowerCase()
@@ -35,9 +36,10 @@ export function AudioBrowser({ items, compact = false }: { items: MediaItem[]; c
     const sorted = [...filtered]
     if (sort === 'course')
       sorted.sort((a, b) => (a.courseTitle ?? '￿').localeCompare(b.courseTitle ?? '￿', 'ru') || (a.lessonNumber ?? 0) - (b.lessonNumber ?? 0))
+    else if (sort === 'new' && ordered) sorted.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     else if (sort === 'short') sorted.sort((a, b) => (a.seconds || 1e9) - (b.seconds || 1e9))
     return sorted
-  }, [items, q, sort])
+  }, [items, q, sort, ordered])
 
   const queue = list.map(toTrack)
   const firstUnheard = list.find((i) => !listen[i.id]?.done) ?? list[0]
@@ -54,6 +56,7 @@ export function AudioBrowser({ items, compact = false }: { items: MediaItem[]; c
           <input type="search" placeholder="Поиск по названию, курсу, преподавателю" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Поиск аудиоуроков" />
         </label>
         <select className="input select-sm" value={sort} onChange={(e) => setSort(e.target.value as Sort)} aria-label="Сортировка">
+          {ordered ? <option value="order">По порядку изучения</option> : null}
           <option value="new">Сначала новые</option>
           <option value="course">По курсам и порядку</option>
           <option value="short">Сначала короткие</option>
@@ -108,6 +111,8 @@ export function AudioBrowser({ items, compact = false }: { items: MediaItem[]; c
                     ) : null}
                     {i.teacher ? <span>{i.teacher}</span> : null}
                     {i.hasTest ? <span className="tag-test">тест</span> : null}
+                    {i.hasNotes ? <span className="tag-soft">конспект</span> : null}
+                    {i.hasFiles ? <span className="tag-soft">файлы</span> : null}
                   </div>
                   {l ? (
                     <div className="track-progress">

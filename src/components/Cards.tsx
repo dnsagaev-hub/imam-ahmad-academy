@@ -42,6 +42,8 @@ export function TextLessonCard({ lesson }: { lesson: LessonDoc }) {
           </span>
         ) : null}
         {l.questions?.length ? <span className="tag-test">тест</span> : null}
+        {l.summary || l.definitionAr ? <span className="tag-soft">конспект</span> : null}
+        {l.files?.length ? <span className="tag-soft">файлы</span> : null}
       </div>
       <h3>
         <Link href={`/lessons/${l.slug}`}>{l.title}</Link>

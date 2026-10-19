@@ -8,8 +8,9 @@ import { Crumbs } from '@/components/PageHead'
 import { BookCover } from '@/components/library/BookCover'
 import { BookTile } from '@/components/library/BookTile'
 import { deathLabel, toBookItem } from '@/lib/books'
+import { getBookLessonCounts } from '@/lib/lessonBooks'
 import { BOOK_KINDS, BOOK_LEVELS, COURSE_LEVELS, labelOf } from '@/lib/constants'
-import { getBookBySlug, getCommentaries, getCoursesByBook, mediaUrl } from '@/lib/queries'
+import { getBookBySlug, getCommentaries, getCoursesByBook, mediaUrl, plural } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,7 +31,20 @@ export default async function BookPage({ params }: { params: Promise<{ slug: str
   const doc = await getBookBySlug(slug)
   if (!doc) notFound()
   const b = toBookItem(doc)
-  const [commentaries, courses] = await Promise.all([getCommentaries(doc.id), getCoursesByBook(doc.id)])
+  const [commentaries, courses, lessonCounts] = await Promise.all([
+    getCommentaries(doc.id),
+    getCoursesByBook(doc.id),
+    getBookLessonCounts(doc.id),
+  ])
+  const lessonLinks = (
+    [
+      ['audio', 'Аудиоуроки', ['аудиоурок', 'аудиоурока', 'аудиоуроков']],
+      ['video', 'Видеоуроки', ['видеоурок', 'видеоурока', 'видеоуроков']],
+      ['text', 'Текстовые уроки', ['текстовый урок', 'текстовых урока', 'текстовых уроков']],
+    ] as const
+  )
+    .map(([kind, label, word]) => ({ href: `/${kind}?book=${encodeURIComponent(b.slug)}`, label, n: lessonCounts[kind], word }))
+    .filter((x) => x.n > 0)
   const base = doc.baseBook && typeof doc.baseBook === 'object' ? toBookItem(doc.baseBook) : null
   const pdf = mediaUrl(doc.file)
   const links: { label: string; url: string }[] = Array.isArray(doc.links) ? doc.links : []
@@ -111,6 +125,11 @@ export default async function BookPage({ params }: { params: Promise<{ slug: str
                   {volumes.length > 1 ? `Тома и файлы (${volumes.length})` : 'Читать PDF'} ↓
                 </a>
               ) : null}
+              {lessonLinks.length ? (
+                <a href="#lessons" className="btn btn-lg btn-outline">
+                  Уроки по книге ↓
+                </a>
+              ) : null}
               {!pdf && !volumes.length && !links.length ? <span className="muted">Файл книги пока не добавлен.</span> : null}
             </div>
             {volumes.length ? (
@@ -145,6 +164,23 @@ export default async function BookPage({ params }: { params: Promise<{ slug: str
 
         <div className="bgrid">
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24, minWidth: 0 }}>
+            {lessonLinks.length ? (
+              <section id="lessons" className="card card-pad bcourses" aria-label="Уроки по этой книге">
+                <span className="tl-label">Уроки по этой книге</span>
+                {lessonLinks.map((x) => (
+                  <Link key={x.href} href={x.href} className="bcourse">
+                    <span>
+                      <b>{x.label}</b>
+                      <small>
+                        {x.n} {plural(x.n, [...x.word])}
+                      </small>
+                    </span>
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                ))}
+              </section>
+            ) : null}
+
             {doc.about ? (
               <section className="card card-pad prose">
                 <h2 className="h2" style={{ fontSize: 30, marginBottom: 12 }}>

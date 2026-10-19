@@ -40,6 +40,8 @@ export function VideoTile({ item, passed = false }: { item: MediaItem; passed?: 
         <div className="vtile-tags">
           <span className="tag">{item.categoryLabel}</span>
           {passed ? <span className="tag-done">✓ Пройден</span> : item.hasTest ? <span className="tag-test">тест</span> : null}
+          {item.hasNotes ? <span className="tag-soft">конспект</span> : null}
+          {item.hasFiles ? <span className="tag-soft">файлы</span> : null}
         </div>
         <h3>{item.title}</h3>
         <span className="vtile-meta">
