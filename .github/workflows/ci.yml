@@ -112,6 +112,8 @@ jobs:
           # Главная без лишнего (задача 11): только шапка, зелёный блок с кнопками и подвал
           check "главная: зелёный блок с кнопками" 'has "/" "Смотреть курсы"'
           check "главная: разделов ниже нет" 'hasnt "/" "Четыре ступени обучения" && hasnt "/" "Задать вопрос"'
+          # Главная с дверью и эмблемой (задача 13): дверь на компьютере, эмблема за текстом на телефоне
+          check "главная: арочная дверь и эмблема" 'has "/" "hero-door" && has "/" "emblem-white.png"'
           cat server.log >> ci.log
           if [ $fail = 1 ]; then echo "--- server.log ---"; tail -n 200 server.log; exit 1; fi
 
@@ -144,7 +146,14 @@ jobs:
             for (const p of pages) {
               errors.length = 0
               await page.goto('http://127.0.0.1:3000' + p, { waitUntil: 'networkidle' }).catch((e) => errors.push(String(e)))
-              await page.waitForTimeout(500)
+              // на главной ждём, пока распахнётся дверь (задача 13: анимация 0,5 с + 2 с)
+              await page.waitForTimeout(p === '/' ? 3000 : 500)
+              // Снимок во всю длину (fullPage) в Chromium рисует CSS-анимацию в начальном положении, хотя в окне
+              // браузера дверь уже открыта; закрепляем конечное положение двери обычными стилями перед снимком
+              if (p === '/') await page.evaluate(() => document.querySelectorAll('.hero-door *').forEach((el) => {
+                const cs = getComputedStyle(el)
+                Object.assign(el.style, { transform: cs.transform, opacity: cs.opacity, boxShadow: cs.boxShadow, animation: 'none' })
+              }))
               const file = '/tmp/shots/' + name + (p === '/' ? '_home' : p.replaceAll('/', '_')) + '.png'
               await page.screenshot({ path: file, fullPage: name === 'desk' })
               const overflow = await page.evaluate(() => {

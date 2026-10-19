@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { REGISTRATION_ENABLED } from '@/lib/config'
@@ -13,8 +14,20 @@ export default async function HomePage() {
 
   return (
     <>
-      <Header>
+      <Header plain>
+        {/* Телефон: большая полупрозрачная эмблема за текстом */}
+        <Image src="/brand/emblem-white.png" alt="" width={191} height={391} className="hero-watermark" unoptimized />
         <div className="hero">
+          {/* Компьютер: арочная дверь распахивается при загрузке, в проёме — эмблема («дверь к знаниям») */}
+          <div className="hero-door" aria-hidden="true">
+            <span className="door-frame" />
+            <span className="door-light">
+              <Image src="/brand/emblem.png" alt="" width={191} height={391} unoptimized priority />
+            </span>
+            <span className="door-leaf left" />
+            <span className="door-leaf right" />
+            <span className="door-beam" />
+          </div>
           <div className="ornament">
             <span />
             <StarIcon />

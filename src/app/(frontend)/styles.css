@@ -172,6 +172,54 @@ button, input, select, textarea { font: inherit; }
 .hero p { margin: 0; max-width: 640px; font-size: 18px; line-height: 1.65; color: #d4efe4; }
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; }
 
+/* Главная: вместо узора — эмблема. Компьютер — арочная дверь, телефон — эмблема за текстом */
+.header-band.plain { background: radial-gradient(ellipse 60% 80% at 50% 0%, var(--royal) 0%, var(--navy-2) 60%); }
+.header-band > .hero-watermark {
+  position: absolute; left: 50%; top: 50%; height: 92%; width: auto; transform: translate(-50%, -50%);
+  opacity: 0.07; pointer-events: none; display: none;
+}
+.hero-door { position: relative; width: 170px; height: 230px; margin: 12px 0 16px; perspective: 700px; }
+.door-frame {
+  position: absolute; inset: -12px -12px 0; border: 1.5px solid rgba(127, 211, 181, 0.6); border-bottom: 0;
+  border-radius: 97px 97px 0 0; box-shadow: 0 0 0 9px rgba(127, 211, 181, 0.06);
+}
+.door-light {
+  position: absolute; inset: 0; border-radius: 85px 85px 0 0; overflow: hidden;
+  background: radial-gradient(ellipse at 50% 60%, #fff 0%, #eafff6 35%, #9fe3c8 75%, #5cc7a0 100%);
+  animation: door-glow 2s ease-in-out 0.5s both;
+}
+.door-light img { position: absolute; left: 50%; top: 50%; height: 150px; width: auto; transform: translate(-50%, -46%); }
+.door-leaf {
+  position: absolute; top: 0; bottom: 0; width: 50%; background: linear-gradient(180deg, #00634a, var(--navy-2));
+  border: 1px solid rgba(127, 211, 181, 0.55);
+  box-shadow: inset 0 0 0 7px rgba(0, 61, 44, 0.6), inset 0 0 0 8px rgba(127, 211, 181, 0.35);
+}
+.door-leaf.left { left: 0; transform-origin: left center; border-radius: 85px 0 0 0; animation: door-left 2s cubic-bezier(0.65, 0, 0.35, 1) 0.5s both; }
+.door-leaf.right { right: 0; transform-origin: right center; border-radius: 0 85px 0 0; animation: door-right 2s cubic-bezier(0.65, 0, 0.35, 1) 0.5s both; }
+.door-leaf::after { content: ''; position: absolute; top: 52%; width: 5px; height: 18px; border-radius: 3px; background: var(--gold-light); }
+.door-leaf.left::after { right: 12px; }
+.door-leaf.right::after { left: 12px; }
+.door-beam {
+  position: absolute; left: 50%; top: 100%; width: 420px; height: 150px; transform: translateX(-50%); pointer-events: none;
+  background: radial-gradient(ellipse 50% 100% at 50% 0%, rgba(191, 235, 217, 0.22), transparent 70%);
+  animation: door-fade 2s ease-in-out 0.5s both;
+}
+.hero-door + .ornament { display: none; }
+@keyframes door-left { from { transform: rotateY(0); } to { transform: rotateY(-82deg); } }
+@keyframes door-right { from { transform: rotateY(0); } to { transform: rotateY(82deg); } }
+@keyframes door-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes door-glow {
+  from { box-shadow: none; }
+  to { box-shadow: 0 0 60px rgba(191, 235, 217, 0.55), 0 0 140px rgba(127, 211, 181, 0.35); }
+}
+@media (prefers-reduced-motion: reduce) { .door-leaf.left, .door-leaf.right, .door-light, .door-beam { animation-duration: 0.01s; animation-delay: 0s; } }
+@media (max-width: 760px) {
+  .hero-door { display: none; }
+  .hero-door + .ornament { display: flex; }
+  .header-band.plain { background: var(--navy-2); }
+  .header-band > .hero-watermark { display: block; }
+}
+
 /* ---------- Кнопки ---------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 24px;
