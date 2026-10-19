@@ -87,6 +87,8 @@ jobs:
       - name: Запуск и проверка страниц
         run: |
           cp -r public .next/standalone/
+          # Файлы, загруженные наполнением (картинка блока «Рисунок»): сервер ищет папку media от своей папки
+          if [ -d media ]; then cp -r media .next/standalone/; fi
           cp -r .next/static .next/standalone/.next/
           (cd .next/standalone && NODE_ENV=production PORT=3000 HOSTNAME=127.0.0.1 node server.js > ../../server.log 2>&1 &)
           for i in $(seq 1 60); do curl -s -o /dev/null http://127.0.0.1:3000/ && break; sleep 2; done

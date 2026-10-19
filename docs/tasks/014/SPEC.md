@@ -38,7 +38,7 @@
 
 ## Затронуто
 `src/blocks/lessonBlocks.ts` (новый блок), `src/components/text/LessonText.tsx`, `src/app/(frontend)/styles.css`,
-новая миграция в `src/migrations/`, `src/seed/sampleLessons.ts` и `src/seed/index.ts` (демо-рисунок),
+новая миграция в `src/migrations/`, `src/seed/sampleLessons.ts`, `src/seed/starter.ts`, `src/seed/images/pyatOsnov.ts` (демо-рисунок),
 `.github/workflows/ci.yml` (проверка, что на демо-уроке есть картинка), `docs/ARCHITECTURE.md`, `README.md` (наполнение).
 
 ## Риски и откат
