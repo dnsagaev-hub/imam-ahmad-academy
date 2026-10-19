@@ -702,7 +702,7 @@ body.has-player { padding-bottom: 104px; }
 .tl[data-mode='ru'] .tl-ar { display: none; }
 .tl[data-mode='ar'] .tl-ru { display: none; }
 .tl[data-mode='ru'] .tl-matn, .tl[data-mode='ar'] .tl-matn { grid-template-columns: 1fr; }
-.tl[data-mode='ar'] .tl-explain, .tl[data-mode='ar'] .tl-terms, .tl[data-mode='ar'] .tl-note, .tl[data-mode='ar'] .tl-takeaways { display: none; }
+.tl[data-mode='ar'] .tl-explain, .tl[data-mode='ar'] .tl-terms, .tl[data-mode='ar'] .tl-note, .tl[data-mode='ar'] .tl-figure, .tl[data-mode='ar'] .tl-takeaways { display: none; }
 @media (max-width: 760px) {
   .tl-matn { grid-template-columns: 1fr; }
   .tl-ar { order: 1; border-right: 0; border-bottom: 3px solid var(--gold); }
@@ -728,6 +728,12 @@ body.has-player { padding-bottom: 104px; }
 .tl-note-dalil { border-left-color: var(--gold); background: #effaf5; }
 .tl-note-verify { border-left-color: var(--muted-2); background: #f3f5f4; }
 .tl-note-verify .tl-label { color: var(--muted); }
+/* Рисунок: карта, схема, древо; нажатие открывает крупно */
+.tl-figure { margin: 0; padding: 14px; border-radius: 16px; background: #fff; border: 1px solid var(--line); }
+.tl-figure a { display: block; border-radius: 10px; overflow: hidden; background: var(--paper); cursor: zoom-in; }
+.tl-figure img { display: block; width: 100%; max-width: 100%; height: auto; max-height: 80vh; object-fit: contain; }
+.tl-figure figcaption { margin-top: 10px; font-size: 14.5px; line-height: 1.5; color: var(--muted); text-align: center; }
+.tl-figure figcaption .tl-src { margin-top: 4px; }
 .tl-takeaways { padding: 20px 22px; border-radius: 16px; background: var(--navy-2); color: #fff; }
 .tl-takeaways .tl-label { color: var(--gold-light); }
 .tl-takeaways ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
