@@ -193,10 +193,9 @@ button, input, select, textarea { font: inherit; }
   position: absolute; top: 0; bottom: 0; width: 50%; background: linear-gradient(180deg, #00634a, var(--navy-2));
   border: 1px solid rgba(127, 211, 181, 0.55);
   box-shadow: inset 0 0 0 7px rgba(0, 61, 44, 0.6), inset 0 0 0 8px rgba(127, 211, 181, 0.35);
-  animation: 2s cubic-bezier(0.65, 0, 0.35, 1) 0.5s both;
 }
-.door-leaf.left { left: 0; transform-origin: left center; border-radius: 85px 0 0 0; animation-name: door-left; }
-.door-leaf.right { right: 0; transform-origin: right center; border-radius: 0 85px 0 0; animation-name: door-right; }
+.door-leaf.left { left: 0; transform-origin: left center; border-radius: 85px 0 0 0; animation: door-left 2s cubic-bezier(0.65, 0, 0.35, 1) 0.5s both; }
+.door-leaf.right { right: 0; transform-origin: right center; border-radius: 0 85px 0 0; animation: door-right 2s cubic-bezier(0.65, 0, 0.35, 1) 0.5s both; }
 .door-leaf::after { content: ''; position: absolute; top: 52%; width: 5px; height: 18px; border-radius: 3px; background: var(--gold-light); }
 .door-leaf.left::after { right: 12px; }
 .door-leaf.right::after { left: 12px; }
@@ -213,7 +212,7 @@ button, input, select, textarea { font: inherit; }
   from { box-shadow: none; }
   to { box-shadow: 0 0 60px rgba(191, 235, 217, 0.55), 0 0 140px rgba(127, 211, 181, 0.35); }
 }
-@media (prefers-reduced-motion: reduce) { .door-leaf, .door-light, .door-beam { animation-duration: 0.01s; animation-delay: 0s; } }
+@media (prefers-reduced-motion: reduce) { .door-leaf.left, .door-leaf.right, .door-light, .door-beam { animation-duration: 0.01s; animation-delay: 0s; } }
 @media (max-width: 760px) {
   .hero-door { display: none; }
   .hero-door + .ornament { display: flex; }
