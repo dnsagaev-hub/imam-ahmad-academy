@@ -731,7 +731,7 @@ body.has-player { padding-bottom: 104px; }
 /* Рисунок: карта, схема, древо; нажатие открывает крупно */
 .tl-figure { margin: 0; padding: 14px; border-radius: 16px; background: #fff; border: 1px solid var(--line); }
 .tl-figure a { display: block; border-radius: 10px; overflow: hidden; background: var(--paper); cursor: zoom-in; }
-.tl-figure img { display: block; width: 100%; max-width: 100%; height: auto; max-height: 80vh; object-fit: contain; }
+.tl-figure img { display: block; width: 100%; max-width: 100%; height: auto; }
 .tl-figure figcaption { margin-top: 10px; font-size: 14.5px; line-height: 1.5; color: var(--muted); text-align: center; }
 .tl-figure figcaption .tl-src { margin-top: 4px; }
 .tl-takeaways { padding: 20px 22px; border-radius: 16px; background: var(--navy-2); color: #fff; }
