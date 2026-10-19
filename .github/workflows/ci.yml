@@ -148,6 +148,12 @@ jobs:
               await page.goto('http://127.0.0.1:3000' + p, { waitUntil: 'networkidle' }).catch((e) => errors.push(String(e)))
               // на главной ждём, пока распахнётся дверь (задача 13: анимация 0,5 с + 2 с)
               await page.waitForTimeout(p === '/' ? 3000 : 500)
+              // Снимок во всю длину (fullPage) в Chromium рисует CSS-анимацию в начальном положении, хотя в окне
+              // браузера дверь уже открыта; закрепляем конечное положение двери обычными стилями перед снимком
+              if (p === '/') await page.evaluate(() => document.querySelectorAll('.hero-door *').forEach((el) => {
+                const cs = getComputedStyle(el)
+                Object.assign(el.style, { transform: cs.transform, opacity: cs.opacity, boxShadow: cs.boxShadow, animation: 'none' })
+              }))
               const file = '/tmp/shots/' + name + (p === '/' ? '_home' : p.replaceAll('/', '_')) + '.png'
               await page.screenshot({ path: file, fullPage: name === 'desk' })
               const overflow = await page.evaluate(() => {
