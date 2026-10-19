@@ -152,6 +152,32 @@ jobs:
               })
               console.log(name, p, errors.length ? 'ОШИБКИ: ' + errors.join(' | ').slice(0, 500) : 'ok', overflow ? 'ГОРИЗОНТАЛЬНАЯ ПРОКРУТКА: ' + overflow : '')
             }
+            // Расписание намазов в полосе над шапкой (задача 10): компьютер — по наведению, телефон — по нажатию
+            try {
+              const c2 = name === 'phone' ? await browser.newContext({ viewport: vp, locale: 'ru-RU', timezoneId: 'Europe/Moscow', hasTouch: true, isMobile: true }) : ctx
+              const p2 = name === 'phone' ? await c2.newPage() : page
+              const shown = () => p2.evaluate(() => { const el = document.querySelector('.tp-pop'); return !!el && getComputedStyle(el).visibility === 'visible' })
+              const res = []
+              await p2.goto('http://127.0.0.1:3000/', { waitUntil: 'networkidle' })
+              res.push(['закрыто сначала', !(await shown())])
+              if (name === 'desk') {
+                await p2.hover('.topbar-prayer', { timeout: 5000 }); await p2.waitForTimeout(400)
+                res.push(['наведение открывает', await shown()])
+                await p2.screenshot({ path: '/tmp/shots/desk_prayer_popup.png', clip: { x: 0, y: 0, width: 1440, height: 520 } })
+                await p2.mouse.move(300, 700, { steps: 5 }); await p2.waitForTimeout(400)
+                res.push(['курсор ушёл — закрыто', !(await shown())])
+              } else {
+                await p2.tap('.topbar-prayer', { timeout: 5000 }); await p2.waitForTimeout(400)
+                res.push(['нажатие открывает, страница та же', (await shown()) && new URL(p2.url()).pathname === '/'])
+                await p2.screenshot({ path: '/tmp/shots/phone_prayer_popup.png' })
+                await p2.touchscreen.tap(12, 830); await p2.waitForTimeout(400)
+                res.push(['нажатие мимо закрывает', !(await shown())])
+                await c2.close()
+              }
+              for (const [what, ok] of res) console.log(name, 'расписание намазов:', what, ok ? 'ok' : 'ОШИБКИ')
+            } catch (e) {
+              console.log(name, 'расписание намазов: ОШИБКИ', String(e).slice(0, 300))
+            }
             if (name === 'phone') {
               await page.goto('http://127.0.0.1:3000/', { waitUntil: 'networkidle' })
               await page.click('.nav-toggle').catch(() => {})

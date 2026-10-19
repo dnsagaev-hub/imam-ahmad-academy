@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useMemo, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { requestGeolocation, resolvePlace, savePrayerPrefs, usePrayerPrefs } from '@/lib/prayerStore'
 import {
@@ -52,6 +53,104 @@ const inText = (h: number) => {
   return `через ${Math.floor(m / 60)} ч ${m % 60} мин`
 }
 
+/**
+ * Ближайший намаз в полосе над шапкой. При наведении мыши (и при фокусе с клавиатуры)
+ * в правом углу появляется расписание всех намазов на сегодня; курсор ушёл — расписание скрылось.
+ * На телефоне и планшете наведения нет: первое нажатие открывает расписание, повторное или нажатие мимо — закрывает.
+ */
+function TopBarPrayer({ place, data, now }: Pick<ReturnType<typeof useTimes>, 'place' | 'data' | 'now'>) {
+  const ref = useRef<HTMLDivElement>(null)
+  const pathname = usePathname()
+  // Нажатием (телефон) расписание открыто на той странице, где его открыли: переход на другую страницу его закрывает
+  const [openOn, setOpenOn] = useState<string | null>(null)
+  const open = openOn === pathname
+  // Esc прячет расписание, открытое наведением или фокусом, пока курсор или фокус не уйдут с кнопки
+  const [dismissed, setDismissed] = useState(false)
+  // Закрывать по Esc и по нажатию мимо
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpenOn(null)
+    const onDown = (e: PointerEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpenOn(null)
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onDown)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onDown)
+    }
+  }, [open])
+
+  return (
+    <div
+      className={`tp${open ? ' open' : ''}${dismissed ? ' dismissed' : ''}`}
+      ref={ref}
+      onKeyDown={(e) => {
+        if (e.key !== 'Escape') return
+        setOpenOn(null)
+        setDismissed(true)
+      }}
+      onMouseLeave={() => setDismissed(false)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDismissed(false)
+      }}
+    >
+      <Link
+        href="/prayer-times"
+        className="topbar-prayer"
+        onClick={(e) => {
+          // С мышью ссылка ведёт на страницу намазов; без наведения (касание) — открывает и закрывает расписание
+          if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
+          e.preventDefault()
+          setOpenOn(open ? null : pathname)
+        }}
+      >
+        {data ? (
+          <>
+            <span className="dot" aria-hidden="true" />
+            <span>
+              {PRAYER_NAMES[data.next.key].ru} <strong>{formatTime(data.times[data.next.key])}</strong>
+            </span>
+            <span className="muted-light">
+              {inText(data.next.inHours)} · {place.label}
+            </span>
+          </>
+        ) : (
+          <span>Время намаза</span>
+        )}
+      </Link>
+      <div className="tp-pop" aria-label="Время намазов на сегодня">
+        <div className="tp-head">
+          <span className="tp-place">{place.label}</span>
+          <span className="tp-date">
+            {now ? new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', timeZone: place.tz }).format(now) : ' '}
+          </span>
+        </div>
+        <ol className="tp-list">
+          {PRAYER_ORDER.map((k) => {
+            const isNext = data?.next.key === k
+            return (
+              <li key={k} className={`tp-row${isNext ? ' next' : ''}${k === 'sunrise' ? ' sunrise' : ''}`}>
+                <span className="tp-nm">
+                  {PRAYER_NAMES[k].ru}
+                  {isNext && data ? <small>{inText(data.next.inHours)}</small> : null}
+                </span>
+                <span className="ar tp-ar" lang="ar" dir="rtl">
+                  {PRAYER_NAMES[k].ar}
+                </span>
+                <b>{data ? formatTime(data.times[k]) : '—:—'}</b>
+              </li>
+            )
+          })}
+        </ol>
+        <Link href="/prayer-times" className="tp-more" onClick={() => setOpenOn(null)}>
+          Город и метод расчёта →
+        </Link>
+      </div>
+    </div>
+  )
+}
+
 /** Тонкая полоса над шапкой: дата по двум календарям и ближайший намаз. */
 export function TopBar({ defaults }: { defaults: PrayerDefaults }) {
   const { place, data, now } = useTimes(defaults)
@@ -77,21 +176,7 @@ export function TopBar({ defaults }: { defaults: PrayerDefaults }) {
             </>
           ) : null}
         </div>
-        <Link href="/prayer-times" className="topbar-prayer">
-          {data ? (
-            <>
-              <span className="dot" aria-hidden="true" />
-              <span>
-                {PRAYER_NAMES[data.next.key].ru} <strong>{formatTime(data.times[data.next.key])}</strong>
-              </span>
-              <span className="muted-light">
-                {inText(data.next.inHours)} · {place.label}
-              </span>
-            </>
-          ) : (
-            <span>Время намаза</span>
-          )}
-        </Link>
+        <TopBarPrayer place={place} data={data} now={now} />
       </div>
     </div>
   )

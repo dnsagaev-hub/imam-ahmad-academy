@@ -57,6 +57,37 @@ button, input, select, textarea { font: inherit; }
 .topbar-prayer { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; color: #fff; text-decoration: none; min-height: 32px; padding: 0 12px; border-radius: 99px; background: rgba(255, 255, 255, 0.08); }
 .topbar-prayer:hover { color: #fff; background: rgba(255, 255, 255, 0.16); }
 .topbar-prayer .dot { width: 8px; height: 8px; border-radius: 99px; background: var(--gold); box-shadow: 0 0 0 3px rgba(0, 160, 122, 0.3); }
+/* Расписание всех намазов: всплывает в правом углу полосы при наведении (на телефоне — по нажатию) */
+.topbar { position: relative; z-index: 40; }
+.topbar-inner { position: relative; }
+.tp-pop {
+  position: absolute; right: 24px; top: calc(100% + 8px); width: min(320px, calc(100vw - 48px));
+  background: #fff; color: var(--ink); border-radius: 18px; border-top: 3px solid var(--gold); box-shadow: 0 24px 56px rgba(0, 61, 44, 0.24);
+  padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; font-size: 14px;
+  opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+}
+/* невидимый мостик между кнопкой и расписанием, чтобы курсор не «проваливался» */
+.tp-pop::before { content: ''; position: absolute; left: -80px; right: 0; top: -22px; height: 22px; }
+.tp.open .tp-pop { opacity: 1; visibility: visible; transform: none; }
+@media (hover: hover) and (pointer: fine) {
+  .tp:hover .tp-pop, .tp:has(:focus-visible) .tp-pop { opacity: 1; visibility: visible; transform: none; }
+}
+.tp.dismissed .tp-pop { opacity: 0; visibility: hidden; transform: translateY(6px); }
+.tp.open .topbar-prayer { background: rgba(255, 255, 255, 0.16); }
+.tp-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.tp-place { font-family: var(--display); font-size: 24px; font-weight: 700; color: var(--navy-2); line-height: 1.1; }
+.tp-date { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.tp-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.tp-row { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 12px; padding: 7px 10px; border-radius: 10px; }
+.tp-nm { font-weight: 700; color: var(--navy); display: flex; flex-direction: column; line-height: 1.2; }
+.tp-nm small { font-size: 12px; font-weight: 600; color: var(--gold-light); }
+.tp-ar { font-size: 17px; color: var(--royal); }
+.tp-row b { font-size: 17px; color: var(--navy); font-variant-numeric: tabular-nums; min-width: 3.2em; text-align: right; }
+.tp-row.sunrise .tp-nm, .tp-row.sunrise b { color: var(--muted); font-weight: 600; }
+.tp-row.next { background: var(--navy-2); }
+.tp-row.next .tp-nm, .tp-row.next b { color: #fff; }
+.tp-row.next .tp-ar { color: var(--gold-light); }
+.tp-more { font-weight: 700; font-size: 13.5px; }
 .muted-light { color: var(--gold-light); }
 
 /* ---------- Шапка ---------- */
