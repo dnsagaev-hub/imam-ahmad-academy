@@ -39,7 +39,7 @@ export function AudioBrowser({ items, compact = false, ordered = false }: { item
     else if (sort === 'new' && ordered) sorted.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     else if (sort === 'short') sorted.sort((a, b) => (a.seconds || 1e9) - (b.seconds || 1e9))
     return sorted
-  }, [items, q, sort])
+  }, [items, q, sort, ordered])
 
   const queue = list.map(toTrack)
   const firstUnheard = list.find((i) => !listen[i.id]?.done) ?? list[0]
