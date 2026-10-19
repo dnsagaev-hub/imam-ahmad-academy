@@ -1,0 +1,74 @@
+# Академия имама Ахмада: как устроено
+
+## Модули
+```
+src/
+  payload.config.ts        настройки Payload (коллекции, S3, почта, onInit → стартовое наполнение)
+  collections/             Courses, Lessons, Articles, Books, Media, Users, QuizAttempts, Messages
+  globals/Settings.ts      настройки сайта (тексты главной, город намазов, хиджра, контакты, FAQ)
+  blocks/lessonBlocks.ts   блоки текстового урока: matn, explanation, terms, note, takeaways
+  access/                  кто что видит и меняет
+  fields/                  общие поля коллекций
+  types/                   типы TypeScript
+  lib/                     constants (ступени, рубрики), learning (логика курса/уровня), queries (запросы),
+                           books, media, video, prayerTimes, localProgress, listenStore
+  components/              Header/NavMenu/Footer, Cards, program/Program (ступени), library/*, text/*,
+                           audio/*, video/*, progress/*, contact/QuestionBuilder, Quiz, PrayerWidgets
+  app/(frontend)/          страницы сайта; actions.ts — серверные действия (checkAnswer, submitQuiz); styles.css — все стили
+  app/(payload)/           админка (сгенерировано Payload, не трогать без нужды)
+  migrations/              миграции базы
+  seed/                    стартовое наполнение: program.ts (44 курса + книги программы), sampleBooks,
+                           sampleLessons (3 текстовых урока со сверенными цитатами), sampleArticles, starter.ts
+.github/workflows/ci.yml   проверка: установка, миграции, наполнение, типы, сборка, проверка страниц,
+                           снимки экрана, Docker-образ, запуск через docker compose, ярлык копии данных
+docker-compose.yml         локальная версия: сайт + PostgreSQL (тома db-data и media), имя проекта imam-ahmad-academy
+*.command / *.bat          ярлыки для владельца: запустить, остановить, сделать копию данных
+```
+
+## Данные
+- PostgreSQL; таблицы создаются **миграциями** (`src/migrations`, `prodMigrations` — применяются при запуске сайта).
+  Правила миграций — `AGENTS.md`, «Инварианты».
+- Ступени: значения `prep | beginner | intermediate | advanced`. Шкала успеха — `STUDENT_LEVELS` в `src/lib/constants.ts`,
+  `studentLevel()` в `src/lib/learning.ts`.
+- Прогресс ученика при выключенной регистрации — localStorage (`src/lib/localProgress.ts`), выгрузка и загрузка файлом на `/progress`.
+- Верный ответ теста — поле `correct`, его читает только админ; проверка — серверные действия `checkAnswer`/`submitQuiz`.
+- Библиотека: книга = вид (матн/шарх/хашия/справочник/перевод/пособие), ступень, «опорная книга мазхаба», связь
+  «шарх → матн», основной PDF + список «Тома и файлы» (много PDF), ссылки «Читать онлайн». «Путь изучения фикха»
+  строится из книг раздела «Фикх» по ступеням.
+- Одиночное поле курса `book` заменено на `books`; `book` оставлено скрытым (миграции только добавляющие).
+- Стартовое наполнение (`SEED_STARTER=true`) — один раз, затем скрытый флаг `starterSeeded` в настройках (`src/seed/starter.ts`).
+- Файлы: S3, если заданы `S3_*`, иначе папка `media/` (в локальной версии — Docker-том `media`). Аудио — MP3 до 300 МБ.
+
+## Внешние системы
+- Видео: в уроке хранится ссылка; `src/lib/video.ts` (`toEmbedUrl`) превращает обычные ссылки VK Видео, Rutube,
+  YouTube, Kinescope в ссылки для встраивания.
+- Время намазов считается в браузере (порт PrayTimes.org, аср по ханбалитскому — коэффициент 1); местоположение
+  никуда не отправляется.
+- Хиджра — `Intl` (Umm al-Qura) с поправкой ±2 дня из настроек.
+- Почта (SMTP) — только для смены пароля, в локальной версии её нет.
+
+## Ключевые расчёты и правила
+- Открытие уроков и уровень ученика — `src/lib/learning.ts`.
+- Проверка ответов — только на сервере (`app/(frontend)/actions.ts`).
+
+## Окружения
+- **Сборка:** `output: 'standalone'`, многоэтапный `Dockerfile`; на этапе сборки подставляются временные
+  `PAYLOAD_SECRET`/`DATABASE_URL`; все страницы `force-dynamic`, поэтому база при сборке не нужна.
+- **CI:** GitHub Actions, своя PostgreSQL 17 в сервисе, журнал в ветку `ci-logs`.
+- **Локальная версия владельца:** docker compose, данные в томах `db-data` и `media`. Обновление: владелец распаковывает
+  новую версию в новую папку (или `git pull`), запускает «Сделать копию данных», затем «Запустить сайт»; миграции
+  применяются при старте. Имя проекта compose задано в файле, поэтому тома те же при любой папке.
+- **Хостинг (ещё не сделано).** Выбран Timeweb Cloud: App Platform (сборка из GitHub по Dockerfile, автодеплой),
+  облачная PostgreSQL в той же приватной сети, S3-хранилище (`S3_ENDPOINT=https://s3.twcstorage.ru`, `S3_REGION=ru-1`).
+  Переменные: `DATABASE_URL`, `PAYLOAD_SECRET` (новый: `openssl rand -hex 32`), `NEXT_PUBLIC_SERVER_URL`,
+  `NEXT_PUBLIC_REGISTRATION_ENABLED=false`, `S3_BUCKET`, `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`.
+  Не ставить `SEED_STARTER=true` на хостинге, если переносится локальная база владельца. После первого запуска сразу
+  создать администратора на `/admin` (первый вошедший становится админом).
+- **Перенос локальных данных на хостинг (задача в `TASKS.md`):** `pg_dump` локальной базы → восстановить в базу Timeweb
+  (до первого запуска сайта или в пустую базу); файлы из тома `media` загрузить в S3-бакет (Payload storage-s3 хранит
+  файлы по имени `filename` в корне бакета — проверить префикс перед загрузкой). Наполнять только одну версию:
+  локальную до переноса, хостинг — после.
+
+## Сопутствующие материалы
+- Макеты страниц (Claude Design): https://claude.ai/artifact/UdSaeDUgo8Lba529Kem9tw
+- Руководство для владельца по наполнению (Claude Doc): https://claude.ai/code/artifact/ec9bb99d-38db-4720-88d5-cdbb094c9745
