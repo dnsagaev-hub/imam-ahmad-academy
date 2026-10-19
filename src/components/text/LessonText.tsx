@@ -79,7 +79,7 @@ function Block({ b, index }: { b: AnyBlock; index: number }) {
         <figure className="tl-figure">
           <a href={img.url} target="_blank" rel="noopener" title="Открыть крупно">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={img.url} alt={alt} width={img.width ?? undefined} height={img.height ?? undefined} loading="lazy" />
+            <img src={img.url} alt={alt} width={img.width ?? undefined} height={img.height ?? undefined} />
           </a>
           {b.caption || b.source ? (
             <figcaption>
