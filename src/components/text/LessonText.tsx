@@ -1,6 +1,6 @@
 import { TextReader } from './TextReader'
 
-/* Текстовый урок из блоков: арабский текст рядом с переводом, пояснения, термины, пометки, итоги. */
+/* Текстовый урок из блоков: арабский текст рядом с переводом, пояснения, термины, пометки, рисунки, итоги. */
 
 type AnyBlock = { blockType: string; id?: string | null } & Record<string, any>
 
@@ -70,6 +70,26 @@ function Block({ b, index }: { b: AnyBlock; index: number }) {
           ))}
         </aside>
       )
+    case 'figure': {
+      // Картинку могли удалить из «Файлов» — тогда блок просто не показывается.
+      const img = b.image
+      if (!img || typeof img !== 'object' || !img.url) return null
+      const alt = img.alt || b.caption || 'Рисунок к уроку'
+      return (
+        <figure className="tl-figure">
+          <a href={img.url} target="_blank" rel="noopener" title="Открыть крупно">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={img.url} alt={alt} width={img.width ?? undefined} height={img.height ?? undefined} />
+          </a>
+          {b.caption || b.source ? (
+            <figcaption>
+              {b.caption ? <span>{b.caption}</span> : null}
+              {b.source ? <span className="tl-src">{b.source}</span> : null}
+            </figcaption>
+          ) : null}
+        </figure>
+      )
+    }
     case 'takeaways':
       return (
         <section className="tl-takeaways">

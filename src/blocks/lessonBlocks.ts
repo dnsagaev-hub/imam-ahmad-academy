@@ -2,7 +2,7 @@ import type { Block } from 'payload'
 
 /*
  * Блоки текстового урока. Урок собирается из них в админке, как из кирпичиков:
- * отрывок книги (арабский + перевод), пояснение, термины, пометка, итоги.
+ * отрывок книги (арабский + перевод), пояснение, термины, пометка, рисунок, итоги.
  */
 
 export const MatnBlock: Block = {
@@ -89,4 +89,28 @@ export const TakeawaysBlock: Block = {
   ],
 }
 
-export const LESSON_BLOCKS = [MatnBlock, ExplanationBlock, TermsBlock, NoteBlock, TakeawaysBlock]
+export const FigureBlock: Block = {
+  slug: 'figure',
+  labels: { singular: 'Рисунок', plural: 'Рисунки' },
+  fields: [
+    {
+      name: 'image',
+      label: 'Картинка',
+      type: 'upload',
+      relationTo: 'media',
+      // Не `required`: тогда в базе столбец без NOT NULL и картинку можно удалить из «Файлов», не ломая урок.
+      validate: (value: unknown) => (value ? true : 'Выберите картинку'),
+      filterOptions: { mimeType: { contains: 'image' } },
+      admin: { description: 'Карта, схема, родословное древо. Загрузите новую или выберите из «Файлов».' },
+    },
+    { name: 'caption', label: 'Подпись под рисунком', type: 'text' },
+    {
+      name: 'source',
+      label: 'Источник (необязательно)',
+      type: 'text',
+      admin: { placeholder: 'По «ар-Рахик аль-махтум», с. 201' },
+    },
+  ],
+}
+
+export const LESSON_BLOCKS = [MatnBlock, ExplanationBlock, TermsBlock, NoteBlock, FigureBlock, TakeawaysBlock]

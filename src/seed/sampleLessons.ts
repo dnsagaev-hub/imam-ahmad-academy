@@ -8,12 +8,16 @@
  * стоит сверить с печатным изданием, а пояснения — с преподавателем.
  */
 
+import { PYAT_OSNOV_SVG } from './images/pyatOsnov'
+
 type Block =
   | { blockType: 'matn'; arabic: string; translation: string; source?: string }
   | { blockType: 'explanation'; title?: string; text: string }
   | { blockType: 'terms'; items: { arabic: string; meaning: string }[] }
   | { blockType: 'note'; kind: 'mutamad' | 'ikhtilaf' | 'dalil' | 'remark' | 'verify'; title?: string; text: string }
   | { blockType: 'takeaways'; items: { text: string }[] }
+  /** Рисунок: картинка загружается в «Файлы» при наполнении (см. `seedTextLessons`). */
+  | { blockType: 'figure'; svg: string; fileName: string; alt: string; caption?: string; source?: string }
 
 type Q = { question: string; options: { text: string }[]; correct: number; explanation: string }
 
@@ -182,6 +186,14 @@ export const usulAhmad: SampleLesson = {
       translation:
         'Пятая основа — кыяс: имам Ахмад прибегал к нему по необходимости… Таковы пять основ фетв имама Ахмада, на них всё и держится.',
       source: BADRAN,
+    },
+    {
+      blockType: 'figure',
+      svg: PYAT_OSNOV_SVG,
+      fileName: 'pyat-osnov-ahmada.svg',
+      alt: 'Схема: пять основ фетв имама Ахмада по порядку — текст, фетва сподвижника, выбор из мнений сподвижников, мурсаль и «слабый» хадис, кыяс',
+      caption: 'Порядок доводов: к следующей основе имам переходил, только если не находил предыдущей',
+      source: 'Схема по тексту урока (Ибн Бадран, «аль-Мадхаль»)',
     },
     {
       blockType: 'matn',

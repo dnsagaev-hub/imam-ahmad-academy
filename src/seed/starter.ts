@@ -58,6 +58,19 @@ export async function seedTextLessons(payload: Payload, bookIds: Record<string, 
       ids[l.slug] = found.docs[0].id
       continue
     }
+    const content = await Promise.all(
+      l.content.map(async (b) => {
+        if (b.blockType !== 'figure') return b
+        const { svg, fileName, alt, ...rest } = b
+        const data = Buffer.from(svg, 'utf8')
+        const media = await payload.create({
+          collection: 'media',
+          data: { alt },
+          file: { data, mimetype: 'image/svg+xml', name: fileName, size: data.length },
+        })
+        return { ...rest, image: media.id }
+      }),
+    )
     const doc = await payload.create({
       collection: 'lessons',
       data: {
@@ -67,7 +80,7 @@ export async function seedTextLessons(payload: Payload, bookIds: Record<string, 
         excerpt: l.excerpt,
         sourceRef: l.sourceRef,
         book: l.book ? bookIds[l.book] : undefined,
-        content: l.content,
+        content,
         passingScore: 70,
         questions: l.questions,
         isPublished: true,
