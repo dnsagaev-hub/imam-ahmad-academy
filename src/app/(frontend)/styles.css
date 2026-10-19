@@ -918,6 +918,8 @@ body.has-player { padding-bottom: 104px; }
 @media (max-width: 900px) {
   .pb-panel { position: fixed; left: 12px; right: 12px; top: 72px; width: auto; max-height: calc(100vh - 90px); overflow-y: auto; }
   .pb:not(.open) .pb-panel { display: none; }
+  /* Кнопка меню стоит слоем выше шапки; пока панель «Мой прогресс» открыта, прячем её, чтобы не торчала поверх панели */
+  .site-header:has(.pb.open) .nav-toggle { visibility: hidden; }
 }
 
 .seg { flex-wrap: wrap; max-width: 100%; }
