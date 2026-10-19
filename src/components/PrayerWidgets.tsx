@@ -58,20 +58,20 @@ const inText = (h: number) => {
  * в правом углу появляется расписание всех намазов на сегодня; курсор ушёл — расписание скрылось.
  * На телефоне и планшете наведения нет: первое нажатие открывает расписание, повторное или нажатие мимо — закрывает.
  */
-function TopBarPrayer({ defaults }: { defaults: PrayerDefaults }) {
-  const { place, data, now } = useTimes(defaults)
+function TopBarPrayer({ place, data, now }: Pick<ReturnType<typeof useTimes>, 'place' | 'data' | 'now'>) {
   const ref = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
-  // Расписание открыто на той странице, где его открыли: переход на другую страницу его закрывает
+  // Нажатием (телефон) расписание открыто на той странице, где его открыли: переход на другую страницу его закрывает
   const [openOn, setOpenOn] = useState<string | null>(null)
   const open = openOn === pathname
-  const setOpen = (v: boolean) => setOpenOn(v ? pathname : null)
+  // Esc прячет расписание, открытое наведением или фокусом, пока курсор или фокус не уйдут с кнопки
+  const [dismissed, setDismissed] = useState(false)
   // Закрывать по Esc и по нажатию мимо
   useEffect(() => {
     if (!open) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpenOn(null)
     const onDown = (e: PointerEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpenOn(null)
     }
     document.addEventListener('keydown', onKey)
     document.addEventListener('pointerdown', onDown)
@@ -82,17 +82,27 @@ function TopBarPrayer({ defaults }: { defaults: PrayerDefaults }) {
   }, [open])
 
   return (
-    <div className={`tp${open ? ' open' : ''}`} ref={ref}>
+    <div
+      className={`tp${open ? ' open' : ''}${dismissed ? ' dismissed' : ''}`}
+      ref={ref}
+      onKeyDown={(e) => {
+        if (e.key !== 'Escape') return
+        setOpenOn(null)
+        setDismissed(true)
+      }}
+      onMouseLeave={() => setDismissed(false)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDismissed(false)
+      }}
+    >
       <Link
         href="/prayer-times"
         className="topbar-prayer"
-        aria-expanded={open}
-        aria-controls="prayer-pop"
         onClick={(e) => {
           // С мышью ссылка ведёт на страницу намазов; без наведения (касание) — открывает и закрывает расписание
           if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
           e.preventDefault()
-          setOpen(!open)
+          setOpenOn(open ? null : pathname)
         }}
       >
         {data ? (
@@ -109,11 +119,11 @@ function TopBarPrayer({ defaults }: { defaults: PrayerDefaults }) {
           <span>Время намаза</span>
         )}
       </Link>
-      <div className="tp-pop" id="prayer-pop" role="dialog" aria-label="Время намазов на сегодня">
+      <div className="tp-pop" aria-label="Время намазов на сегодня">
         <div className="tp-head">
           <span className="tp-place">{place.label}</span>
           <span className="tp-date">
-            {now ? new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', timeZone: place.tz }).format(now) : ' '}
+            {now ? new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', timeZone: place.tz }).format(now) : ' '}
           </span>
         </div>
         <ol className="tp-list">
@@ -133,7 +143,7 @@ function TopBarPrayer({ defaults }: { defaults: PrayerDefaults }) {
             )
           })}
         </ol>
-        <Link href="/prayer-times" className="tp-more">
+        <Link href="/prayer-times" className="tp-more" onClick={() => setOpenOn(null)}>
           Город и метод расчёта →
         </Link>
       </div>
@@ -143,7 +153,7 @@ function TopBarPrayer({ defaults }: { defaults: PrayerDefaults }) {
 
 /** Тонкая полоса над шапкой: дата по двум календарям и ближайший намаз. */
 export function TopBar({ defaults }: { defaults: PrayerDefaults }) {
-  const { place, now } = useTimes(defaults)
+  const { place, data, now } = useTimes(defaults)
   const greg = now
     ? new Intl.DateTimeFormat('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: place.tz }).format(now)
     : ''
@@ -153,7 +163,7 @@ export function TopBar({ defaults }: { defaults: PrayerDefaults }) {
     <div className="topbar">
       <div className="container topbar-inner">
         <div className="topbar-date" aria-live="off">
-          <span className="greg">{greg ? greg.charAt(0).toUpperCase() + greg.slice(1) : ' '}</span>
+          <span className="greg">{greg ? greg.charAt(0).toUpperCase() + greg.slice(1) : ' '}</span>
           {hijri ? (
             <>
               <span className="sep" aria-hidden="true">
@@ -166,7 +176,7 @@ export function TopBar({ defaults }: { defaults: PrayerDefaults }) {
             </>
           ) : null}
         </div>
-        <TopBarPrayer defaults={defaults} />
+        <TopBarPrayer place={place} data={data} now={now} />
       </div>
     </div>
   )

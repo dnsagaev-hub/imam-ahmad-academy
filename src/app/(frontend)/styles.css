@@ -67,11 +67,12 @@ button, input, select, textarea { font: inherit; }
   opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
 }
 /* невидимый мостик между кнопкой и расписанием, чтобы курсор не «проваливался» */
-.tp-pop::before { content: ''; position: absolute; left: 0; right: 0; top: -22px; height: 22px; }
+.tp-pop::before { content: ''; position: absolute; left: -80px; right: 0; top: -22px; height: 22px; }
 .tp.open .tp-pop { opacity: 1; visibility: visible; transform: none; }
 @media (hover: hover) and (pointer: fine) {
   .tp:hover .tp-pop, .tp:has(:focus-visible) .tp-pop { opacity: 1; visibility: visible; transform: none; }
 }
+.tp.dismissed .tp-pop { opacity: 0; visibility: hidden; transform: translateY(6px); }
 .tp.open .topbar-prayer { background: rgba(255, 255, 255, 0.16); }
 .tp-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .tp-place { font-family: var(--display); font-size: 24px; font-weight: 700; color: var(--navy-2); line-height: 1.1; }
