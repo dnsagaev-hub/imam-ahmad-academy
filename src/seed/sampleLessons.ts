@@ -23,6 +23,8 @@ export type SampleLesson = {
   category: string
   excerpt: string
   sourceRef: string
+  /** Книга урока (адрес книги в библиотеке), если урок не входит в курс с этой книгой. */
+  book?: string
   content: Block[]
   questions: Q[]
 }
@@ -35,6 +37,7 @@ export const usulAhmad: SampleLesson = {
   slug: 'pyat-osnov-fetv-imama-ahmada',
   title: 'Пять основ, на которых строятся фетвы имама Ахмада',
   category: 'madhhab',
+  book: 'al-madkhal-ibn-badran',
   excerpt:
     'Текст, фетвы сподвижников, выбор из их мнений, мурсаль и слабый хадис, кыяс — в каком порядке имам Ахмад опирался на доводы.',
   sourceRef:

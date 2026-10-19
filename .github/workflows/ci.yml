@@ -92,12 +92,21 @@ jobs:
           for i in $(seq 1 60); do curl -s -o /dev/null http://127.0.0.1:3000/ && break; sleep 2; done
           fail=0
           for path in / /courses "/courses?level=prep" /courses/stupen-1-03-fiqh-ibadat /courses/demo-fikh-ochischeniya /lessons/demo-tayammum /text /audio /video \
+                      "/text?category=fiqh" "/text?book=ahsar-al-muhtasarat" "/audio?category=aqida" "/audio?book=net-takoy-knigi" "/video?book=ahsar-al-muhtasarat" \
                       /articles /articles/tayammum-pri-holodnoy-vode /articles/pochemu-u-imama-ahmada-neskolko-mneniy \
                       /library /library/ahsar-al-muhtasarat /library/kashshaf-al-qina /contact /progress /prayer-times /about /admin; do
             code=$(curl -s -o /dev/null -w '%{http_code}' -L "http://127.0.0.1:3000$path")
             echo "$code  $path" | tee -a ci.log
             [ "$code" = "200" ] || fail=1
           done
+          # Уроки по книгам (задача 8): полка, уроки книги, блок в библиотеке, книга без уроков
+          has() { curl -s "http://127.0.0.1:3000$1" | grep -q "$2"; }
+          check() { if eval "$2"; then echo "книги ok: $1" | tee -a ci.log; else echo "ОШИБКИ: уроки по книгам — $1" | tee -a ci.log; fail=1; fi; }
+          check "полка текстовых уроков: книга из поля урока" 'has "/text" "lshelf-book" && has "/text?category=madhhab" "Аль-Мадхаль"'
+          check "уроки книги, книга взята из курса" 'has "/text?book=ahsar-al-muhtasarat" "Таяммум"'
+          check "блок «Уроки по этой книге»" 'has "/library/ahsar-al-muhtasarat" "Уроки по этой книге"'
+          check "у книги без уроков блока нет" '! has "/library/kashshaf-al-qina" "Уроки по этой книге"'
+          check "несуществующая книга" 'has "/audio?book=net-takoy-knigi" "По этой книге аудиоуроков пока нет"'
           cat server.log >> ci.log
           if [ $fail = 1 ]; then echo "--- server.log ---"; tail -n 200 server.log; exit 1; fi
 
@@ -118,8 +127,8 @@ jobs:
           npx -y playwright@1.56.1 install --with-deps chromium > /dev/null 2>&1
           cat > /tmp/shots.mjs <<'JS'
           import { chromium } from 'playwright'
-          const pages = ['/', '/courses/demo-fikh-ochischeniya', '/lessons/pyat-osnov-fetv-imama-ahmada', '/lessons/demo-tayammum', '/courses', '/courses?level=beginner', '/courses/stupen-3-01-fiqh', '/text', '/audio', '/video', '/articles',
-            '/articles/tayammum-pri-holodnoy-vode', '/library', '/library/ahsar-al-muhtasarat', '/contact', '/progress', '/prayer-times', '/admin']
+          const pages = ['/', '/courses/demo-fikh-ochischeniya', '/lessons/pyat-osnov-fetv-imama-ahmada', '/lessons/demo-tayammum', '/courses', '/courses?level=beginner', '/courses/stupen-3-01-fiqh', '/text', '/text?book=ahsar-al-muhtasarat', '/audio', '/video', '/articles',
+            '/articles/tayammum-pri-holodnoy-vode', '/library', '/library/ahsar-al-muhtasarat', '/library/al-madkhal-ibn-badran', '/contact', '/progress', '/prayer-times', '/admin']
           const browser = await chromium.launch()
           for (const [name, vp] of [['desk', { width: 1440, height: 900 }], ['phone', { width: 390, height: 844 }]]) {
             const ctx = await browser.newContext({ viewport: vp, locale: 'ru-RU', timezoneId: 'Europe/Moscow' })

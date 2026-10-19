@@ -13,7 +13,7 @@ export const Lessons: CollectionConfig = {
   labels: { singular: 'Урок', plural: 'Уроки' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'category', 'isPublished', 'updatedAt'],
+    defaultColumns: ['title', 'category', 'book', 'isPublished', 'updatedAt'],
     group: 'Обучение',
     description:
       'Урок может входить в курс (добавьте его в модуль на странице курса) или быть отдельным аудио/видеоуроком.',
@@ -66,6 +66,17 @@ export const Lessons: CollectionConfig = {
       defaultValue: 'fiqh',
       options: [...LESSON_CATEGORIES],
       admin: { position: 'sidebar', description: 'В какой рубрике показывать урок (аудио, видео, текстовые уроки)' },
+    },
+    {
+      name: 'book',
+      label: 'Книга',
+      type: 'relationship',
+      relationTo: 'books',
+      admin: {
+        position: 'sidebar',
+        description:
+          'По какой книге урок. В разделах уроков он появится под обложкой этой книги. Если пусто, а урок входит в курс, — берётся первая книга курса',
+      },
     },
     {
       name: 'duration',

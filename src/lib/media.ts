@@ -1,6 +1,7 @@
 import { toEmbedUrl } from './video'
 import { LESSON_CATEGORIES, labelOf } from './constants'
-import { flattenCourse, type CourseDoc, type LessonDoc } from './learning'
+import type { CourseDoc, LessonDoc } from './learning'
+import { getBooksByIds, lessonContext } from './lessonBooks'
 import { getCourses, getLessons, mediaUrl } from './queries'
 
 /* Данные для разделов «Аудиоуроки» и «Видеоуроки». В браузер уходят только эти поля (без ответов тестов). */
@@ -20,6 +21,9 @@ export type MediaItem = {
   courseSlug: string | null
   lessonNumber: number | null
   hasTest: boolean
+  hasFiles: boolean
+  hasNotes: boolean
+  bookId: string | null
   excerpt: string | null
   teacher: string | null
   createdAt: string
@@ -43,13 +47,8 @@ export function formatTotal(seconds: number): string {
 export async function getMediaItems(kind: 'audio' | 'video') {
   const [lessons, courses] = await Promise.all([getLessons({ kind, limit: 1000 }), getCourses()])
 
-  const courseOf = new Map<string, { title: string; slug: string; number: number }>()
-  for (const c of courses as CourseDoc[]) {
-    for (const f of flattenCourse(c)) {
-      const k = String(f.lesson.id)
-      if (!courseOf.has(k)) courseOf.set(k, { title: c.title, slug: String(c.slug ?? ''), number: f.number })
-    }
-  }
+  const { courseOf, bookIdOf } = lessonContext(lessons as Record<string, any>[], courses as CourseDoc[])
+  const books = await getBooksByIds([...bookIdOf.values()])
 
   const items: MediaItem[] = (lessons as (LessonDoc & Record<string, any>)[]).map((l) => {
     const c = courseOf.get(String(l.id))
@@ -68,6 +67,9 @@ export async function getMediaItems(kind: 'audio' | 'video') {
       courseSlug: c?.slug ?? null,
       lessonNumber: c?.number ?? null,
       hasTest: Boolean(l.questions?.length),
+      hasFiles: Boolean(l.files?.length),
+      hasNotes: Boolean(l.summary || l.definitionAr),
+      bookId: books.has(bookIdOf.get(String(l.id)) ?? '') ? bookIdOf.get(String(l.id))! : null,
       excerpt: l.excerpt ?? null,
       teacher: l.teacher ?? null,
       createdAt: String(l.createdAt ?? ''),
@@ -77,5 +79,10 @@ export async function getMediaItems(kind: 'audio' | 'video') {
   const counts: Record<string, number> = {}
   for (const i of items) counts[i.category] = (counts[i.category] ?? 0) + 1
 
-  return { items, counts, courses }
+  return { items, counts, courses, books }
+}
+
+/** Порядок уроков одной книги: по номеру в курсе, затем от старых к новым. */
+export function byStudyOrder<T extends { lessonNumber?: number | null; createdAt?: unknown }>(a: T, b: T) {
+  return (a.lessonNumber ?? 1e9) - (b.lessonNumber ?? 1e9) || String(a.createdAt ?? '').localeCompare(String(b.createdAt ?? ''))
 }

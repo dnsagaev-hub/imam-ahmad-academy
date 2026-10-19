@@ -50,7 +50,7 @@ export async function seedArticles(payload: Payload) {
   }
 }
 
-export async function seedTextLessons(payload: Payload) {
+export async function seedTextLessons(payload: Payload, bookIds: Record<string, number | string> = {}) {
   const ids: Record<string, number | string> = {}
   for (const l of SAMPLE_LESSONS) {
     const found = await payload.find({ collection: 'lessons', where: { slug: { equals: l.slug } }, limit: 1, depth: 0 })
@@ -66,6 +66,7 @@ export async function seedTextLessons(payload: Payload) {
         category: l.category,
         excerpt: l.excerpt,
         sourceRef: l.sourceRef,
+        book: l.book ? bookIds[l.book] : undefined,
         content: l.content,
         passingScore: 70,
         questions: l.questions,
@@ -124,7 +125,7 @@ export async function seedStarter(payload: Payload) {
   }
   const bookIds = await seedLibrary(payload)
   await seedProgram(payload, bookIds)
-  await seedTextLessons(payload)
+  await seedTextLessons(payload, bookIds)
   await seedArticles(payload)
   await payload.updateGlobal({ slug: 'settings', data: { starterSeeded: true } as any })
   payload.logger.info('Стартовое наполнение готово.')

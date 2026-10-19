@@ -55,7 +55,7 @@ await payload.updateGlobal({
 })
 
 const bookIds = await seedLibrary(payload)
-const lessonIds = await seedTextLessons(payload)
+const lessonIds = await seedTextLessons(payload, bookIds)
 await seedProgram(payload, bookIds)
 
 const exists = await payload.find({ collection: 'courses', where: { slug: { equals: 'demo-fikh-ochischeniya' } }, limit: 1 })
