@@ -181,6 +181,32 @@ jobs:
             } catch (e) {
               console.log(name, 'расписание намазов: ОШИБКИ', String(e).slice(0, 300))
             }
+            // Панель «Мой прогресс» открывается поверх меню, пункты меню не проступают сквозь неё (задача 12)
+            try {
+              const c3 = name === 'phone' ? await browser.newContext({ viewport: vp, locale: 'ru-RU', timezoneId: 'Europe/Moscow', hasTouch: true, isMobile: true }) : ctx
+              const p3 = name === 'phone' ? await c3.newPage() : page
+              await p3.goto('http://127.0.0.1:3000/', { waitUntil: 'networkidle' })
+              if (name === 'desk') await p3.hover('.pb-btn', { timeout: 5000 })
+              else await p3.tap('.pb-btn', { timeout: 5000 })
+              await p3.waitForTimeout(400)
+              const covered = await p3.evaluate(() => {
+                const panel = document.querySelector('.pb-panel')
+                if (!panel || getComputedStyle(panel).visibility !== 'visible') return 'панель не открылась'
+                const r = panel.getBoundingClientRect()
+                const out = new Set()
+                for (let x = r.left + 20; x < r.right - 20; x += 10)
+                  for (let y = r.top + 20; y < Math.min(r.bottom, window.innerHeight) - 20; y += 10) {
+                    const el = document.elementFromPoint(x, y)
+                    if (el && !el.closest('.pb-panel')) out.add(el.tagName.toLowerCase() + '.' + String(el.className).split(' ').join('.'))
+                  }
+                return [...out].slice(0, 5).join(', ')
+              })
+              await p3.screenshot({ path: '/tmp/shots/' + name + '_progress_popup.png', clip: name === 'desk' ? { x: 0, y: 0, width: 1440, height: 760 } : undefined })
+              console.log(name, 'панель «Мой прогресс» поверх меню:', covered ? 'ОШИБКИ: ' + covered : 'ok')
+              if (name === 'phone') await c3.close()
+            } catch (e) {
+              console.log(name, 'панель «Мой прогресс»: ОШИБКИ', String(e).slice(0, 300))
+            }
             if (name === 'phone') {
               await page.goto('http://127.0.0.1:3000/', { waitUntil: 'networkidle' })
               await page.click('.nav-toggle').catch(() => {})
