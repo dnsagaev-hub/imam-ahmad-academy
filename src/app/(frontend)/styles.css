@@ -110,12 +110,14 @@ button, input, select, textarea { font: inherit; }
 
 .quote {
   flex: 1 1 380px; min-width: 0; margin: 0;
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 20px;
-  padding: 6px 24px; border-left: 1px solid var(--line-2); border-right: 1px solid var(--line-2);
+  display: flex; align-items: center;
+  padding: 4px clamp(20px, 2.8vw, 40px); border-left: 1px solid var(--line-2); border-right: 1px solid var(--line-2);
 }
-.quote-ar { margin: 0; font-family: var(--arabic); font-size: 32px; font-weight: 700; line-height: 1.3; white-space: nowrap; direction: rtl; color: var(--navy-2); }
-.quote figcaption { display: flex; flex-direction: column; gap: 4px; }
-.quote-ru { font-family: var(--display); font-style: italic; font-weight: 600; font-size: 23px; color: var(--royal); line-height: 1.1; }
+/* Цитата на всю ширину, под ней тонкая линия, справа имя (вариант «2в», выбор владельца 20.10.2026) */
+.quote figcaption { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+.quote-ru { font-family: var(--display); font-style: italic; font-weight: 600; font-size: clamp(28px, 2.8vw, 40px); color: var(--royal); line-height: 1.05; text-align: center; }
+.quote .quote-by { display: flex; align-items: center; gap: 14px; font-size: 15px; letter-spacing: 0.03em; text-transform: none; color: var(--gold-dark); font-weight: 700; }
+.quote .quote-by::before { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
 .quote-by { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-dark); font-weight: 700; }
 
 .header-actions { display: flex; gap: 10px; align-items: center; }
@@ -474,8 +476,6 @@ table.data .r { text-align: right; }
 .auth-box { width: 100%; max-width: 460px; display: flex; flex-direction: column; gap: 22px; }
 
 @media (max-width: 720px) {
-  .quote { border: 0; padding: 0; justify-content: flex-start; }
-  .quote-ar { font-size: 26px; }
   .auth-side { padding: 32px 24px; }
   .quiz { padding: 22px; }
 }
@@ -944,11 +944,10 @@ body.has-player { padding-bottom: 104px; }
   .brand-emblem { width: 30px; }
   .brand-name { font-size: 16px; }
   .brand-sub { display: none; }
-  .quote { order: 3; flex: 1 1 100%; justify-content: flex-start; border: 0; padding: 0 0 2px; gap: 2px 12px; }
-  .quote-ar { font-size: 22px; }
-  .quote figcaption { flex-direction: row; align-items: baseline; gap: 10px; }
-  .quote-ru { font-size: 17px; }
-  .quote-by { display: none; }
+  .quote { order: 3; flex: 1 1 100%; border: 0; padding: 4px 0 8px; }
+  .quote figcaption { gap: 4px; }
+  .quote-ru { font-size: 28px; }
+  .quote .quote-by { font-size: 13px; }
 
   .site-header { position: relative; }
   .main-nav { position: static; margin-top: 8px; padding: 0; border-top: 0; }
