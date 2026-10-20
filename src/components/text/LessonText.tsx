@@ -64,8 +64,8 @@ function Block({ b, index }: { b: AnyBlock; index: number }) {
       )
     case 'terms':
       return (
-        <section className="tl-terms" aria-label="Термины">
-          <div className="tl-label">Термины</div>
+        <section className="tl-terms" aria-label="Словарь урока">
+          <div className="tl-label">Словарь урока</div>
           <dl>
             {(b.items ?? []).map((t: any, i: number) => (
               <div key={i} className="tl-term">
