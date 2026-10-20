@@ -134,7 +134,7 @@ export function LessonText({
   readingMinutes?: number | null
   label?: string
 }) {
-  const hasArabic = blocks.some((b) => b.blockType === 'matn')
+  const hasArabic = blocks.some((b) => b.blockType === 'matn' || b.blockType === 'hadith')
   let matnIndex = 0
   return (
     <TextReader hasArabic={hasArabic} readingMinutes={readingMinutes ?? undefined} label={label}>
