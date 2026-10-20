@@ -2,7 +2,7 @@ import type { Block } from 'payload'
 
 /*
  * Блоки текстового урока. Урок собирается из них в админке, как из кирпичиков:
- * отрывок книги (арабский + перевод), пояснение, термины, пометка, рисунок, итоги.
+ * отрывок книги (арабский + перевод), хадис, пояснение, термины, пометка, рисунок, итоги.
  */
 
 export const MatnBlock: Block = {
@@ -16,6 +16,29 @@ export const MatnBlock: Block = {
       label: 'Откуда (книга, страница)',
       type: 'text',
       admin: { placeholder: 'Ахсар аль-Мухтасарат, с. 87' },
+    },
+  ],
+}
+
+// Хадис — в своей рамке, чтобы ученик не принял его за текст изучаемой книги.
+export const HadithBlock: Block = {
+  slug: 'hadith',
+  labels: { singular: 'Хадис', plural: 'Хадисы' },
+  fields: [
+    { name: 'arabic', label: 'Арабский текст хадиса', type: 'textarea', required: true, admin: { rtl: true } },
+    { name: 'translation', label: 'Перевод на русский', type: 'textarea', required: true },
+    {
+      name: 'narrator',
+      label: 'Передатчик (необязательно)',
+      type: 'text',
+      admin: { placeholder: 'Абу Хурайра' },
+    },
+    {
+      name: 'source',
+      label: 'Сборник и номер',
+      type: 'text',
+      required: true,
+      admin: { placeholder: 'Передал Муслим (№ 976)' },
     },
   ],
 }
@@ -113,4 +136,4 @@ export const FigureBlock: Block = {
   ],
 }
 
-export const LESSON_BLOCKS = [MatnBlock, ExplanationBlock, TermsBlock, NoteBlock, FigureBlock, TakeawaysBlock]
+export const LESSON_BLOCKS = [MatnBlock, HadithBlock, ExplanationBlock, TermsBlock, NoteBlock, FigureBlock, TakeawaysBlock]

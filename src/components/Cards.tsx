@@ -31,7 +31,7 @@ export function CourseCard({ course }: { course: CourseDoc }) {
 
 export function TextLessonCard({ lesson }: { lesson: LessonDoc }) {
   const l = lesson as LessonDoc & Record<string, any>
-  const bilingual = Array.isArray(l.content) && l.content.some((b: any) => b?.blockType === 'matn')
+  const bilingual = Array.isArray(l.content) && l.content.some((b: any) => b?.blockType === 'matn' || b?.blockType === 'hadith')
   return (
     <article className="card lift article-card text-card">
       <div className="text-card-top">

@@ -12,6 +12,7 @@ import { PYAT_OSNOV_SVG } from './images/pyatOsnov'
 
 type Block =
   | { blockType: 'matn'; arabic: string; translation: string; source?: string }
+  | { blockType: 'hadith'; arabic: string; translation: string; narrator?: string; source: string }
   | { blockType: 'explanation'; title?: string; text: string }
   | { blockType: 'terms'; items: { arabic: string; meaning: string }[] }
   | { blockType: 'note'; kind: 'mutamad' | 'ikhtilaf' | 'dalil' | 'remark' | 'verify'; title?: string; text: string }
@@ -506,7 +507,14 @@ export const tayammum: SampleLesson = {
     {
       blockType: 'note',
       kind: 'dalil',
-      text: 'Основа описания — хадис ‘Аммара ибн Ясира, в котором Пророк ﷺ показал таяммум: удар по земле, затем протирание лица и кистей. Хадис есть у аль-Бухари и Муслима; формулировки сверить на Dorar.net.',
+      text: 'Основа описания — хадис ‘Аммара ибн Ясира, в котором Пророк ﷺ показал таяммум: удар по земле, затем протирание лица и кистей.',
+    },
+    {
+      blockType: 'hadith',
+      arabic: 'إِنَّمَا كَانَ يَكْفِيكَ أَنْ تَقُولَ هَكَذَا وَضَرَبَ بِيَدَيْهِ إِلَى الأَرْضِ فَنَفَضَ يَدَيْهِ فَمَسَحَ وَجْهَهُ وَكَفَّيْهِ',
+      translation: '«Тебе было бы достаточно сделать вот так», — и он ударил руками о землю, стряхнул их и протёр лицо и кисти.',
+      narrator: '‘Аммар ибн Ясир',
+      source: 'Передал Муслим (№ 368)',
     },
     {
       blockType: 'matn',

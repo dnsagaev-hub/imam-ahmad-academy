@@ -6,7 +6,7 @@ src/
   payload.config.ts        настройки Payload (коллекции, S3, почта, onInit → стартовое наполнение)
   collections/             Courses, Lessons, Articles, Books, Media, Users, QuizAttempts, Messages
   globals/Settings.ts      настройки сайта (тексты главной, город намазов, хиджра, контакты, FAQ)
-  blocks/lessonBlocks.ts   блоки текстового урока (и статей): matn, explanation, terms, note, figure (картинка из media), takeaways
+  blocks/lessonBlocks.ts   блоки текстового урока (и статей): matn, hadith (хадис в своей рамке), explanation, terms, note, figure (картинка из media), takeaways
   access/                  кто что видит и меняет
   fields/                  общие поля коллекций
   types/                   типы TypeScript
