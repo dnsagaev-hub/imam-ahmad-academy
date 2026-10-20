@@ -414,6 +414,8 @@ textarea.input { padding: 12px 16px; resize: vertical; min-height: 120px; }
 .prose { font-size: 16px; line-height: 1.7; }
 .prose h2, .prose h3 { font-family: var(--display); color: var(--navy); }
 .prose blockquote { margin: 0; padding: 12px 20px; border-left: 3px solid var(--gold); background: var(--paper); border-radius: 0 12px 12px 0; }
+/* Картинка в свободном тексте статьи: пропорции сохраняются (у <img> есть атрибуты width/height), на компьютере не шире 760px. */
+.prose img { width: auto; max-width: min(100%, 760px); height: auto; margin: 8px auto; border-radius: 14px; }
 
 /* Тест */
 .quiz { border-top: 4px solid var(--navy); padding: 32px; display: flex; flex-direction: column; gap: 22px; }
