@@ -31,12 +31,9 @@ export function Brand({ light = false }: { light?: boolean }) {
 export function Quote() {
   return (
     <figure className="quote">
-      <p className="quote-ar" lang="ar" dir="rtl">
-        مع المحبرة إلى المقبرة
-      </p>
       <figcaption>
         <span className="quote-ru">«С пером — до могилы»</span>
-        <span className="quote-by">Имам Ахмад ибн Ханбаль</span>
+        <span className="quote-by">Ахмад ибн Ханбаль</span>
       </figcaption>
     </figure>
   )
