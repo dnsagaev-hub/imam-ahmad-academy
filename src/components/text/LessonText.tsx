@@ -1,6 +1,6 @@
 import { TextReader } from './TextReader'
 
-/* Текстовый урок из блоков: арабский текст рядом с переводом, пояснения, термины, пометки, рисунки, итоги. */
+/* Текстовый урок из блоков: арабский текст рядом с переводом, хадисы, пояснения, термины, пометки, рисунки, итоги. */
 
 type AnyBlock = { blockType: string; id?: string | null } & Record<string, any>
 
@@ -34,6 +34,23 @@ function Block({ b, index }: { b: AnyBlock; index: number }) {
             ))}
             {b.source ? <span className="tl-src">{b.source}</span> : null}
           </div>
+        </section>
+      )
+    case 'hadith':
+      return (
+        <section className="tl-hadith" aria-label="Хадис">
+          <div className="tl-label">Хадис{b.narrator ? <span className="tl-hadith-narrator"> · передал {b.narrator}</span> : null}</div>
+          <div className="tl-hadith-ar" lang="ar" dir="rtl">
+            {paragraphs(b.arabic).map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </div>
+          <div className="tl-hadith-ru">
+            {paragraphs(b.translation).map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </div>
+          {b.source ? <span className="tl-src">{b.source}</span> : null}
         </section>
       )
     case 'explanation':

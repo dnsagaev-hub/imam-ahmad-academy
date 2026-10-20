@@ -3,6 +3,7 @@ import * as migration_20261017_221855_update from './20261017_221855_update';
 import * as migration_20261018_081532_update from './20261018_081532_update';
 import * as migration_20261019_153827_lesson_book from './20261019_153827_lesson_book';
 import * as migration_20261019_230346_lesson_figure from './20261019_230346_lesson_figure';
+import * as migration_20261020_090912_lesson_hadith from './20261020_090912_lesson_hadith';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20261019_230346_lesson_figure.up,
     down: migration_20261019_230346_lesson_figure.down,
-    name: '20261019_230346_lesson_figure'
+    name: '20261019_230346_lesson_figure',
+  },
+  {
+    up: migration_20261020_090912_lesson_hadith.up,
+    down: migration_20261020_090912_lesson_hadith.down,
+    name: '20261020_090912_lesson_hadith'
   },
 ];

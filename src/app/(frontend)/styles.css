@@ -734,6 +734,16 @@ body.has-player { padding-bottom: 104px; }
 .tl-figure img { display: block; width: 100%; max-width: 100%; height: auto; }
 .tl-figure figcaption { margin-top: 10px; font-size: 14.5px; line-height: 1.5; color: var(--muted); text-align: center; }
 .tl-figure figcaption .tl-src { margin-top: 4px; }
+/* Хадис: своя рамка, арабский текст над переводом — не путать с текстом книги */
+.tl-hadith { padding: 18px 22px 16px; border-radius: 16px; border: 2px solid var(--gold); background: #fff; }
+.tl-hadith .tl-label { color: var(--royal); }
+.tl-hadith-narrator { font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--muted); }
+.tl-hadith-ar { margin-top: 6px; padding: 14px 18px; border-radius: 12px; background: var(--ice); font-family: var(--arabic); font-size: calc(var(--tl-size) * 1.45); line-height: 1.9; color: var(--navy); overflow-wrap: anywhere; }
+.tl-hadith-ru { margin-top: 12px; color: var(--ink); }
+.tl-hadith-ar p, .tl-hadith-ru p { margin: 0 0 8px; }
+.tl-hadith-ar p:last-child, .tl-hadith-ru p:last-child { margin-bottom: 0; }
+.tl[data-mode='ru'] .tl-hadith-ar { display: none; }
+.tl[data-mode='ar'] .tl-hadith-ru { display: none; }
 .tl-takeaways { padding: 20px 22px; border-radius: 16px; background: var(--navy-2); color: #fff; }
 .tl-takeaways .tl-label { color: var(--gold-light); }
 .tl-takeaways ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
