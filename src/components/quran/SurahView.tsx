@@ -160,11 +160,6 @@ export function SurahView({
     if (track) play(track, SURAHS.map((s) => trackOf(r, s)).filter((t): t is Track => t !== null))
   }
 
-  const openListen = () => {
-    setTab('listen')
-    const r = reciters.find((x) => x.id === reciterId) ?? reciters[0]
-    if (r && !current?.id.startsWith(`quran-${surah.n}-`)) start(r)
-  }
 
   return (
     <>
@@ -175,7 +170,7 @@ export function SurahView({
           </svg>
           Читать
         </button>
-        <button type="button" role="tab" aria-selected={tab === 'listen'} className={tab === 'listen' ? 'on' : ''} onClick={openListen}>
+        <button type="button" role="tab" aria-selected={tab === 'listen'} className={tab === 'listen' ? 'on' : ''} onClick={() => setTab('listen')}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M4 14v-2a8 8 0 0 1 16 0v2" />
             <rect x="3" y="14" width="4" height="6" rx="1.5" />
@@ -189,11 +184,12 @@ export function SurahView({
         <section className="sv-listen" aria-label="Чтецы">
           <p className="sv-listen-lead">
             {reciters.length
-              ? 'Выберите чтеца — сура зазвучит в плеере внизу экрана. Плеер не прерывается, пока вы читаете перевод.'
+              ? 'Нажмите на чтеца — сура зазвучит в плеере внизу экрана. Плеер не прерывается, пока вы читаете перевод.'
               : 'Записей этой суры пока нет.'}
           </p>
           <ul className="reciters">
-            {reciters.map((r) => {
+            {/* Чтец, которого ученик выбирал в прошлый раз, — первым в списке */}
+            {[...reciters].sort((a, b) => Number(b.id === reciterId) - Number(a.id === reciterId)).map((r) => {
               const isCur = current?.id === `quran-${surah.n}-${r.id}`
               return (
                 <li key={r.id}>
