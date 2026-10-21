@@ -52,6 +52,8 @@ docker-compose.yml         локальная версия: сайт + PostgreSQ
   Payload показывает «An unknown error occurred». Чтецы — коллекция `reciters`: папка `baseUrl` + `NNN.mp3` или свои MP3
   по сурам; семь чтецов с mp3quran.net добавляет миграция `20261021_125346_quran`. Плеер — общий `AudioPlayer`,
   очередь — все суры чтеца.
+  Сборник переводов одним файлом: `/quran/import` (только администратор), `parseCollectionDocx` в `src/lib/docx.ts`,
+  сохранение — серверное действие `importQuranCollection` через Payload с правами вошедшего администратора.
   Подсветка читаемого аята: `/quran/timing?r=<чтец>&s=<сура>` (`src/lib/quranTiming.ts`) берёт у mp3quran.net
   разметку времени аятов для чтеца, подключённого ссылкой на папку mp3quran (кэш сутки); у своих MP3 подсветки нет.
   Старые адреса семи чтецов (server*.mp3quran.net) заменяются на новые папки cdn.mp3quran.net (`currentFolder` в `src/lib/quran.ts`).
