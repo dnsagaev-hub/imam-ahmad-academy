@@ -115,7 +115,8 @@ export function SurahView({
       const scale = a.duration ? (maxEnd > a.duration * 50 ? 1000 : 1) : maxEnd > 20000 ? 1000 : 1
       const t = a.currentTime * scale
       const hit = timing.find(([, s, e]) => t >= s && t < e)
-      const n = hit ? hit[0] : null
+      // До первого аята чтец читает истиаза и басмалу — подсвечиваем басмалу, даже если вступление не размечено
+      const n = hit ? hit[0] : t < timing[0][1] ? 0 : null
       mark(n !== null && n >= 0 && n <= arabic.length ? n : null)
     }
     update()
