@@ -18,6 +18,20 @@ const paragraphs = (text?: string | null) =>
     .map((p) => p.trim())
     .filter(Boolean)
 
+// «Вопрос N.» / «Ответ.» в начале абзаца (и «س ١:» / «ج:» в арабском) — подписью, чтобы отличались от текста.
+const QA_RU = /^(Вопрос(?:\s+\d+)?\.?|Ответ\.?)\s+/
+const QA_AR = /^([سج](?:\s*[\u0660-\u06690-9]+)?\s*:)\s*/
+
+function QaParagraph({ text, re }: { text: string; re: RegExp }) {
+  const m = text.match(re)
+  if (!m) return <p>{text}</p>
+  return (
+    <p>
+      <span className="tl-qa">{m[1]}</span> {text.slice(m[0].length)}
+    </p>
+  )
+}
+
 function Block({ b, index }: { b: AnyBlock; index: number }) {
   switch (b.blockType) {
     case 'matn':
@@ -25,12 +39,12 @@ function Block({ b, index }: { b: AnyBlock; index: number }) {
         <section className="tl-matn" aria-label={`Текст книги, отрывок ${index}`}>
           <div className="tl-ar" lang="ar" dir="rtl">
             {paragraphs(b.arabic).map((p, i) => (
-              <p key={i}>{p}</p>
+              <QaParagraph key={i} text={p} re={QA_AR} />
             ))}
           </div>
           <div className="tl-ru">
             {paragraphs(b.translation).map((p, i) => (
-              <p key={i}>{p}</p>
+              <QaParagraph key={i} text={p} re={QA_RU} />
             ))}
             {b.source ? <span className="tl-src">{b.source}</span> : null}
           </div>
