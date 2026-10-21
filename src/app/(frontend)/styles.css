@@ -1125,6 +1125,12 @@ body.has-player { padding-bottom: 104px; }
 .ayah-note { margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border: 1px solid var(--line-2); border-radius: 99px; background: #fff; color: var(--royal); font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.18s; }
 .ayah-note:hover { background: var(--ice); }
 .ar-only .ayah { grid-template-columns: 1fr; grid-template-areas: 'ar'; }
+/* Аят, который сейчас читает чтец (вкладка «Слушать», если у записи есть разметка аятов) */
+.ayah, .basmala { transition: background 0.35s ease, box-shadow 0.35s ease; }
+.ayah.now, .basmala.now { margin: 0 -32px; padding-left: 32px; padding-right: 32px; background: var(--ice); box-shadow: inset 4px 0 0 var(--gold); }
+.ayah.now .ayah-ar { color: var(--navy); }
+.ayah.now .ayah-no { background: var(--gold); color: #fff; }
+.sv-sync { margin: 12px 0 0; font-size: 14px; color: var(--muted); }
 
 .cm-back { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 20px; background: rgba(0, 40, 28, 0.45); backdrop-filter: blur(3px); animation: cm-fade 0.2s ease; }
 .cm { width: min(720px, 100%); max-height: min(82vh, 760px); display: flex; flex-direction: column; background: #fff; border-top: 3px solid var(--gold); border-radius: 20px; box-shadow: 0 30px 70px rgba(0, 40, 28, 0.35); animation: cm-rise 0.26s ease; }
@@ -1163,6 +1169,7 @@ body.has-player { padding-bottom: 104px; }
   .ayahs { padding: 4px 16px; }
   .basmala { font-size: 28px; }
   .ayah { grid-template-columns: 1fr; grid-template-areas: 'ar' 'tr'; gap: 12px; padding: 20px 0; }
+  .ayah.now, .basmala.now { margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
   .ayah-ar { font-size: 27px; }
   .ayah-tr { padding-left: 46px; }
   .ayah-tr p { font-size: 16px; }
