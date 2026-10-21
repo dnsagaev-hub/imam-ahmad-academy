@@ -12,6 +12,9 @@ import { getReciters, getTranslation } from '@/lib/quranData'
 
 export const dynamic = 'force-dynamic'
 
+// Перевод басмалы владельца (как в его файле суры 67): если в файле суры басмалы нет, берётся он
+const BASMALA_RU = 'С именем Аллаха, Милостивого, Милующего!'
+
 const num = (n: string) => (/^[1-9]\d{0,2}$/.test(n) && Number(n) >= 1 && Number(n) <= 114 ? Number(n) : 0)
 
 export async function generateMetadata({ params }: { params: Promise<{ n: string }> }): Promise<Metadata> {
@@ -68,7 +71,7 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
         </div>
       </div>
       <main className="container qmain">
-        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? (tr?.basmala ?? null) : null} translation={translation} comments={comments} reciters={reciters} />
+        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? tr?.basmala || BASMALA_RU : null} translation={translation} comments={comments} reciters={reciters} />
         <nav className="sv-pager" aria-label="Соседние суры">
           {prev ? (
             <Link href={`/quran/${prev.n}`} className="sv-pg">
