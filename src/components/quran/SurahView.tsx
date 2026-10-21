@@ -1,11 +1,34 @@
 'use client'
 
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 
 import { useAudioPlayer, type Track } from '@/components/audio/AudioPlayer'
 import { SURAHS, audioUrl, splitTranslation, type Reciter, type Surah } from '@/lib/quran'
+import type { AyahTime } from '@/lib/quranTiming'
 
 const RECITER_KEY = 'quran-reciter'
+
+// Разметка аятов по «чтец-сура», чтобы не спрашивать сервер повторно
+const timingCache = new Map<string, Promise<AyahTime[]>>()
+const loadTiming = (reciter: string, surah: number) => {
+  const key = `${reciter}-${surah}`
+  let p = timingCache.get(key)
+  if (!p) {
+    p = fetch(`/quran/timing?r=${encodeURIComponent(reciter)}&s=${surah}`)
+      .then((r) => (r.ok ? r.json() : { ayahs: [] }))
+      .then((d: { ayahs?: AyahTime[] }) => d.ayahs ?? [])
+      .catch(() => [])
+    timingCache.set(key, p)
+  }
+  return p
+}
+
+// Элемент виден на экране: ниже шапки и выше плеера внизу
+const onScreen = (el: Element) => {
+  const r = el.getBoundingClientRect()
+  const player = document.querySelector('.player-bar')?.getBoundingClientRect().height ?? 0
+  return r.bottom > 70 && r.top < window.innerHeight - player - 40
+}
 
 const trackOf = (r: Reciter, s: Surah): Track | null => {
   const url = audioUrl(r, s.n)
@@ -48,10 +71,62 @@ export function SurahView({
 }) {
   // Чтец со своими файлами показывается только у сур, для которых загружена запись
   const reciters = all.filter((r) => audioUrl(r, surah.n))
-  const { current, playing, play } = useAudioPlayer()
+  const { current, playing, play, audio } = useAudioPlayer()
   const [tab, setTab] = useState<'read' | 'listen'>('read')
   const [reciterId, setReciterId] = useState(reciters[0]?.id ?? '')
   const [open, setOpen] = useState<number | null>(null)
+  const [timing, setTiming] = useState<AyahTime[] | null>(null)
+  const [now, setNow] = useState<number | null>(null)
+  const nowRef = useRef<number | null>(null)
+
+  // Звучит эта сура — какой чтец (по номеру дорожки «quran-<сура>-<чтец>»)
+  const prefix = `quran-${surah.n}-`
+  const playingReciter = current?.id.startsWith(prefix) ? current.id.slice(prefix.length) : null
+
+  useEffect(() => {
+    setTiming(null)
+    if (!playingReciter) return
+    let alive = true
+    loadTiming(playingReciter, surah.n).then((t) => alive && setTiming(t))
+    return () => {
+      alive = false
+    }
+  }, [playingReciter, surah.n])
+
+  // Подсветка: по времени записи находим аят; 0 — вступление (басмала)
+  useEffect(() => {
+    const a = audio()
+    const mark = (n: number | null) => {
+      if (n === nowRef.current) return
+      const prev = nowRef.current === null ? null : document.getElementById(nowRef.current === 0 ? 'a0' : `a${nowRef.current}`)
+      nowRef.current = n
+      setNow(n)
+      // Страница едет за чтецом, только если ученик смотрел на прошлый аят (не листает сам)
+      const next = n === null ? null : document.getElementById(`a${n}`)
+      if (next && !onScreen(next) && (!prev || onScreen(prev))) next.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+    if (!a || !timing?.length) {
+      mark(null)
+      return
+    }
+    const maxEnd = timing[timing.length - 1][2]
+    const update = () => {
+      // mp3quran отдаёт время в миллисекундах; на всякий случай различаем по длине записи
+      const scale = a.duration ? (maxEnd > a.duration * 50 ? 1000 : 1) : maxEnd > 20000 ? 1000 : 1
+      const t = a.currentTime * scale
+      const hit = timing.find(([, s, e]) => t >= s && t < e)
+      // До первого аята чтец читает истиаза и басмалу — подсвечиваем басмалу, даже если вступление не размечено
+      const n = hit ? hit[0] : t < timing[0][1] ? 0 : null
+      mark(n !== null && n >= 0 && n <= arabic.length ? n : null)
+    }
+    update()
+    a.addEventListener('timeupdate', update)
+    a.addEventListener('seeked', update)
+    return () => {
+      a.removeEventListener('timeupdate', update)
+      a.removeEventListener('seeked', update)
+    }
+  }, [timing, audio, arabic.length])
 
   useEffect(() => {
     try {
@@ -149,6 +224,13 @@ export function SurahView({
               )
             })}
           </ul>
+          {playingReciter && timing ? (
+            <p className="sv-sync">
+              {timing.length
+                ? 'Аят, который сейчас читает чтец, подсвечен в тексте ниже.'
+                : 'У этой записи нет разметки аятов, поэтому подсветки нет.'}
+            </p>
+          ) : null}
         </section>
       ) : null}
 
@@ -160,7 +242,7 @@ export function SurahView({
 
       <div className={`ayahs${translation ? '' : ' ar-only'}`}>
         {basmala ? (
-          <div className="basmala">
+          <div className={`basmala${now === 0 ? ' now' : ''}`} id="a0">
             <p lang="ar" dir="rtl">
               {basmala}
             </p>
@@ -171,7 +253,7 @@ export function SurahView({
           const no = i + 1
           const note = comments[no] != null
           return (
-            <div className="ayah" id={`a${no}`} key={no}>
+            <div className={`ayah${now === no ? ' now' : ''}`} id={`a${no}`} key={no} aria-current={now === no ? 'true' : undefined}>
               <div className="ayah-ar" lang="ar" dir="rtl">
                 {ar}
               </div>

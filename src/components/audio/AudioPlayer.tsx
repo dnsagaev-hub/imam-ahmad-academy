@@ -17,9 +17,11 @@ type Ctx = {
   playing: boolean
   play: (track: Track, queue?: Track[]) => void
   toggle: () => void
+  /** Сам элемент <audio>: страница суры следит по нему, какой аят звучит */
+  audio: () => HTMLAudioElement | null
 }
 
-const AudioCtx = createContext<Ctx>({ current: null, playing: false, play: () => {}, toggle: () => {} })
+const AudioCtx = createContext<Ctx>({ current: null, playing: false, play: () => {}, toggle: () => {}, audio: () => null })
 export const useAudioPlayer = () => useContext(AudioCtx)
 
 const RATES = [1, 1.25, 1.5, 1.75, 2, 0.75]
@@ -121,7 +123,8 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
     }
   }, [current, index, queue.length, go])
 
-  const value = useMemo(() => ({ current, playing, play, toggle }), [current, playing, play, toggle])
+  const audio = useCallback(() => audioRef.current, [])
+  const value = useMemo(() => ({ current, playing, play, toggle, audio }), [current, playing, play, toggle, audio])
   const pct = duration ? (time / duration) * 100 : 0
 
   return (

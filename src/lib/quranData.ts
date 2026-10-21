@@ -1,7 +1,7 @@
 import { cache } from 'react'
 
 import { getPayloadClient } from './payload'
-import type { Reciter } from './quran'
+import { currentFolder, type Reciter } from './quran'
 import { mediaUrl } from './queries'
 
 /* Запросы раздела «Коран»: переводы сур и чтецы. Скрытое (без галочки «Опубликовано») не показывается. */
@@ -67,6 +67,6 @@ export const getReciters = cache(async (): Promise<Reciter[]> => {
       const url = mediaUrl(f.audio)
       if (url) files[Number(f.surah)] = url
     }
-    return { id: String(r.id), name: r.name, nameAr: r.nameAr ?? '', base: r.source === 'link' && r.baseUrl ? r.baseUrl : null, files }
+    return { id: String(r.id), name: r.name, nameAr: r.nameAr ?? '', base: r.source === 'link' && r.baseUrl ? currentFolder(r.baseUrl) : null, files }
   })
 })
