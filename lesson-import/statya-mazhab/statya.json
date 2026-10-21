@@ -1,0 +1,693 @@
+{
+ "title": "Что такое мазхаб: на примере ханбалитской школы",
+ "slug": "chto-takoe-mazhab-na-primere-hanbalitskoj-shkoly",
+ "kind": "article",
+ "category": "madhhab",
+ "excerpt": "Чем «мнение имама Ахмада» отличается от «позиции ханбалитского мазхаба»: как складывалось наследие школы, что такое риваят, ваджх и тахридж и какое мнение называют му‘тамад.",
+ "sourceRef": "Ибн Хамдан, «Сыфат аль-фатва»; Ибн Бадран, «аль-Мадхаль»; аль-Мардави, «аль-Инсаф»; Ибн Кудама, «аль-Мугни»",
+ "image": "ot-slov-imama-k-pozicii-shkoly.png",
+ "imageAlt": "Схема: имам Ахмад → аль-Халляль собирает переданное → виды мнений (риваят, ваджх, тахридж) → му‘тамад, позиция мазхаба",
+ "body": {
+  "root": {
+   "type": "root",
+   "children": [
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Когда человек начинает изучать исламское право, ему часто встречаются выражения «по ханбалитскому мазхабу», «мнение имама Ахмада», «принятая позиция школы». На первый взгляд они могут показаться равнозначными. Однако за ними стоят разные вещи, и понимание этой разницы помогает осмысленнее читать книги по фикху.",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "В самом общем смысле мазхаб — это правовая школа: совокупность положений фикха, способов их обоснования и научной работы, благодаря которой эти знания передаются, уточняются и применяются к конкретным вопросам. Мазхаб связывают с определённым имамом, поскольку его знания, решения и подход к доказательствам стали основой школы. В случае ханбалитского мазхаба таким имамом является Ахмад ибн Ханбаль.",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "При этом слово «мазхаб» может употребляться в более узком значении. Когда в книге говорится «мазхаб Ахмада в этом вопросе», речь может идти о его позиции по конкретной теме. А когда мы говорим о ханбалитском мазхабе в целом, подразумеваем также труды учёных, которые передавали его ответы, объясняли их, сопоставляли между собой и разрабатывали новые вопросы на основе принципов школы.",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Эту широту хорошо видно у ханбалитского правоведа Ибн Хамдана. В книге «Сыфат аль-фатва» он описывает знание мазхаба как знание прямых высказываний имама, а также выводов и разработок учёных его школы. Следовательно, содержание мазхаба включает несколько связанных между собой пластов научного наследия. ",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "link",
+       "fields": {
+        "linkType": "custom",
+        "url": "https://app.turath.io/book/6356?page=21",
+        "newTab": true
+       },
+       "children": [
+        {
+         "type": "text",
+         "text": "Ибн Хамдан, «Сыфат аль-фатва», с. 23",
+         "format": 0,
+         "style": "",
+         "mode": "normal",
+         "detail": 0,
+         "version": 1
+        }
+       ],
+       "direction": "ltr",
+       "format": "",
+       "indent": 0,
+       "version": 3
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Как же это наследие складывалось?",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Ученики имама Ахмада записывали его ответы на вопросы, правовые решения и пояснения. Но они не только записывали его слова: ученики находились рядом с имамом, наблюдали за его практикой и передавали увиденное. Поэтому в мазхаб вошли не одни лишь высказывания Ахмада, но и его практика: его действия, его указания, то, на что он обращал внимание, и тому подобное. Учёные школы учитывают и эти сведения, когда выясняют, каким было мнение имама в том или ином вопросе.",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Позднее эти записи собирали и изучали другие учёные. Особое место в этой работе занял Абу Бакр аль-Халляль (являвшийся учеником учеников имама Ахмада). По рассказу Ибн Бадрана в книге «Введение в мазхаб имама Ахмада», он путешествовал, встречался с учениками имама и собирал переданные от него сведения с указанием цепочек передачи. Его собрание стало одной из важнейших основ для дальнейшего составления ханбалитских книг по фикху. ",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "link",
+       "fields": {
+        "linkType": "custom",
+        "url": "https://app.turath.io/book/6309?page=82",
+        "newTab": true
+       },
+       "children": [
+        {
+         "type": "text",
+         "text": "Ибн Бадран, «аль-Мадхаль», с. 124–125",
+         "format": 0,
+         "style": "",
+         "mode": "normal",
+         "detail": 0,
+         "version": 1
+        }
+       ],
+       "direction": "ltr",
+       "format": "",
+       "indent": 0,
+       "version": 3
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Работа продолжалась из поколения в поколение. Требовалось установить, что именно сказал имам, правильно понять его слова, выяснить обстоятельства ответа и сопоставить его с другими высказываниями. Затем возникали новые вопросы, которые тоже нуждались в рассмотрении.",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Поэтому на страницах ханбалитских книг встречаются разные виды мнений. Одни передаются непосредственно от Ахмада; их называют ",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "text",
+       "text": "риваятами",
+       "format": 1,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "text",
+       "text": ". Другие представляют собой выводы правоведов школы; для них часто используется термин ",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "text",
+       "text": "ваджх",
+       "format": 1,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "text",
+       "text": ". Встречается и ",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "text",
+       "text": "тахридж",
+       "format": 1,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "text",
+       "text": " — выведение решения на основе уже известных положений и принципов мазхаба.",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Для обычного читателя достаточно запомнить главное: высказывание имама и вывод последующего учёного имеют разное происхождение. Хороший комментарий помогает увидеть, кому принадлежит мнение и как оно было получено. Именно поэтому ханбалитские авторы подробно обсуждали, в каких случаях допустимо приписывать определённое решение самому Ахмаду. Ибн Бадран, например, приводит разногласия даже о том, как понимать его одобрение чужого мнения или объяснение основания какого-либо решения. ",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "link",
+       "fields": {
+        "linkType": "custom",
+        "url": "https://app.turath.io/book/6309?page=90",
+        "newTab": true
+       },
+       "children": [
+        {
+         "type": "text",
+         "text": "Ибн Бадран, «аль-Мадхаль», с. 132–133",
+         "format": 0,
+         "style": "",
+         "mode": "normal",
+         "detail": 0,
+         "version": 1
+        }
+       ],
+       "direction": "ltr",
+       "format": "",
+       "indent": 0,
+       "version": 3
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Отсюда возникает следующий вопрос: если внутри школы есть несколько мнений, какое из них называют «позицией мазхаба»?",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "В таком контексте обычно имеется в виду мнение, которое признано предпочтительным и принято за основу авторитетными учёными школы. Для его обозначения часто употребляют слово ",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "text",
+       "text": "му‘тамад",
+       "format": 1,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "text",
+       "text": " — то, на что опираются.",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Выяснению таких позиций посвящены специальные труды. Ханбалитский шейх ‘Аля ад-Дин аль-Мардави в начале «аль-Инсаф» объясняет, что в «аль-Мукни‘» Ибн Кудамы иногда приведены разные мнения без указания предпочтительного. Читателю из-за этого бывает трудно отличить сильную позицию от слабой. Задача аль-Мардави — разъяснить, какие мнения признаны правильными в рамках мазхаба, какие получили распространение и на какие опирались его учёные. ",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "link",
+       "fields": {
+        "linkType": "custom",
+        "url": "https://app.turath.io/book/21609?page=1",
+        "newTab": true
+       },
+       "children": [
+        {
+         "type": "text",
+         "text": "Аль-Мардави, «аль-Инсаф», т. 1, с. 3",
+         "format": 0,
+         "style": "",
+         "mode": "normal",
+         "detail": 0,
+         "version": 1
+        }
+       ],
+       "direction": "ltr",
+       "format": "",
+       "indent": 0,
+       "version": 3
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Поэтому фраза «такое мнение встречается у ханбалитов» ещё не означает, что именно оно принято в школе. Автор мог привести его для полноты обсуждения, сопоставления или последующего разбора. Аль-Мардави специально замечает: само перечисление нескольких мнений не обязательно указывает на равную силу каждого из них. ",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "link",
+       "fields": {
+        "linkType": "custom",
+        "url": "https://app.turath.io/book/21609?page=2",
+        "newTab": true
+       },
+       "children": [
+        {
+         "type": "text",
+         "text": "«Аль-Инсаф», т. 1, с. 4",
+         "format": 0,
+         "style": "",
+         "mode": "normal",
+         "detail": 0,
+         "version": 1
+        }
+       ],
+       "direction": "ltr",
+       "format": "",
+       "indent": 0,
+       "version": 3
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "В основе всей этой работы лежит обращение к религиозным доказательствам. Описывая подход Ахмада, Ибн Бадран прежде всего подчёркивает его внимание к текстам Откровения: когда имам находил доказательство, он выносил решение в соответствии с ним. Большое значение в его научной работе имели хадисы и наследие ранних поколений мусульман. ",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "link",
+       "fields": {
+        "linkType": "custom",
+        "url": "https://app.turath.io/book/6309?page=71",
+        "newTab": true
+       },
+       "children": [
+        {
+         "type": "text",
+         "text": "Ибн Бадран, «аль-Мадхаль», с. 113–114",
+         "format": 0,
+         "style": "",
+         "mode": "normal",
+         "detail": 0,
+         "version": 1
+        }
+       ],
+       "direction": "ltr",
+       "format": "",
+       "indent": 0,
+       "version": 3
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "При этом применение доказательства требует понимания. Нужно установить смысл текста, рассмотреть другие сообщения по тому же вопросу и разобраться, к каким обстоятельствам относится вывод. Именно такую работу читатель наблюдает в подробных трудах по фикху. Например, в «аль-Мугни» Ибн Кудама объясняет положения ханбалитской школы, приводит мнения других имамов и рассматривает их доводы. В предисловии он прямо говорит о намерении показывать вопросы согласия и разногласия учёных. ",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "link",
+       "fields": {
+        "linkType": "custom",
+        "url": "https://app.turath.io/book/8463?page=2",
+        "newTab": true
+       },
+       "children": [
+        {
+         "type": "text",
+         "text": "Ибн Кудама, «аль-Мугни», т. 1, с. 4",
+         "format": 0,
+         "style": "",
+         "mode": "normal",
+         "detail": 0,
+         "version": 1
+        }
+       ],
+       "direction": "ltr",
+       "format": "",
+       "indent": 0,
+       "version": 3
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Для учащегося мазхаб даёт возможность осваивать это наследие последовательно. Сначала он знакомится с основными положениями, затем учится различать мнения и понимать их основания. Постепенно короткая формулировка из учебника раскрывается для него как результат внимательного исследования.",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Именно так полезно смотреть на ханбалитский мазхаб: как на научную традицию, выросшую из фикха имама Ахмада и продолженную многими поколениями правоведов. Их книги сохраняют его ответы, объясняют способы рассуждения, уточняют принятые решения и передают ученику инструменты понимания. За словами «по ханбалитскому мазхабу» стоит эта долгая работа — от вопроса, заданного имаму, до тщательно выверенного положения в учебнике.",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    },
+    {
+     "type": "heading",
+     "children": [
+      {
+       "type": "text",
+       "text": "Схема: от слов имама к позиции школы",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "tag": "h2"
+    },
+    {
+     "type": "upload",
+     "relationTo": "media",
+     "value": "__IMAGE__",
+     "fields": null,
+     "format": "",
+     "version": 3
+    },
+    {
+     "type": "paragraph",
+     "children": [
+      {
+       "type": "text",
+       "text": "Схема: как из ответов имама Ахмада складываются риваяты, ваджхи и тахриджи и как учёные школы определяют му‘тамад.",
+       "format": 2,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "text",
+       "text": " ",
+       "format": 0,
+       "style": "",
+       "mode": "normal",
+       "detail": 0,
+       "version": 1
+      },
+      {
+       "type": "link",
+       "fields": {
+        "linkType": "custom",
+        "url": "/api/media/file/ot-slov-imama-k-pozicii-shkoly.png",
+        "newTab": true
+       },
+       "children": [
+        {
+         "type": "text",
+         "text": "Открыть схему крупно",
+         "format": 0,
+         "style": "",
+         "mode": "normal",
+         "detail": 0,
+         "version": 1
+        }
+       ],
+       "direction": "ltr",
+       "format": "",
+       "indent": 0,
+       "version": 3
+      }
+     ],
+     "direction": "ltr",
+     "format": "",
+     "indent": 0,
+     "version": 1,
+     "textFormat": 0,
+     "textStyle": ""
+    }
+   ],
+   "direction": "ltr",
+   "format": "",
+   "indent": 0,
+   "version": 1
+  }
+ }
+}
