@@ -131,6 +131,8 @@ jobs:
           check "Коран: басмала перед сурой, кроме 1 и 9" 'has "/quran/2" "class=\"basmala\"" && hasnt "/quran/1" "class=\"basmala\"" && hasnt "/quran/9" "class=\"basmala\""'
           # Подсветка читаемого аята (задача 26): адрес разметки отвечает всегда; число аятов у mp3quran — для сведения
           check "Коран: адрес разметки аятов" 'has "/quran/timing?r=1&s=67" "\"ayahs\""'
+          echo "mp3quran ayat_timing/reads: $(curl -s -m 20 https://mp3quran.net/api/v3/ayat_timing/reads | head -c 6000)" | tee -a ci.log
+          echo "mp3quran ayat_timing сура 67, запись 5: $(curl -s -m 20 'https://mp3quran.net/api/v3/ayat_timing?surah=67&read=5' | head -c 400)" | tee -a ci.log
           for r in 1 2 3 4 5 6 7; do
             echo "разметка аятов, чтец $r, сура 67: $(curl -s "http://127.0.0.1:3000/quran/timing?r=$r&s=67" | head -c 160)" | tee -a ci.log
           done
