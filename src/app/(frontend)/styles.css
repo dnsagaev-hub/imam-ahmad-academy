@@ -701,6 +701,8 @@ body.has-player { padding-bottom: 104px; }
 .tl-ar { order: 2; padding: 20px 22px; background: var(--ice); border-right: 4px solid var(--gold); font-family: var(--arabic); font-size: calc(var(--tl-size) * 1.45); line-height: 1.9; color: var(--navy); }
 .tl-ru { order: 1; padding: 20px 22px; background: #fff; color: var(--ink); }
 .tl-ar p, .tl-ru p { margin: 0 0 8px; }
+/* Перевод текста книги — жирным, чтобы отличался от пояснений (слова владельца 21.10.2026) */
+.tl-ru p { font-weight: 700; }
 .tl-ar p:last-child, .tl-ru p:last-of-type { margin-bottom: 0; }
 .tl-src { display: block; margin-top: 10px; font-size: 12.5px; color: var(--muted-2); font-style: italic; }
 .tl[data-mode='ru'] .tl-ar { display: none; }
