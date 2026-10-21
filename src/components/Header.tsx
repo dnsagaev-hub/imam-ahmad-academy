@@ -32,7 +32,7 @@ export function Quote() {
   return (
     <figure className="quote">
       <figcaption>
-        <span className="quote-ru">«С пером — до могилы»</span>
+        <span className="quote-ru">«С чернильницей — до могилы»</span>
         <span className="quote-by">Ахмад ибн Ханбаль</span>
       </figcaption>
     </figure>
