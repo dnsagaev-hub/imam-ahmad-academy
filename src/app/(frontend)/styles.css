@@ -703,6 +703,9 @@ body.has-player { padding-bottom: 104px; }
 .tl-ar p, .tl-ru p { margin: 0 0 8px; }
 /* Перевод текста книги — жирным, чтобы отличался от пояснений (слова владельца 21.10.2026) */
 .tl-ru p { font-weight: 700; }
+/* «Вопрос N.» / «Ответ.» в тексте книги — зелёной подписью (слова владельца 21.10.2026) */
+.tl-qa { color: var(--royal); font-weight: 800; }
+.tl-ru .tl-qa { text-transform: uppercase; letter-spacing: .06em; font-size: .82em; }
 .tl-ar p:last-child, .tl-ru p:last-of-type { margin-bottom: 0; }
 .tl-src { display: block; margin-top: 10px; font-size: 12.5px; color: var(--muted-2); font-style: italic; }
 .tl[data-mode='ru'] .tl-ar { display: none; }
