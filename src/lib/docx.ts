@@ -63,21 +63,26 @@ export function docxParagraphs(buf: Buffer): string[] {
     .filter(Boolean)
 }
 
-export type ParsedSurah = { basmala: string | null; ayahs: { number: number; text: string }[] }
+export type ParsedSurah = { basmala: string | null; ayahs: { number: number; text: string }[]; stray: string | null; autoNumbered: boolean }
 
 /**
  * Перевод суры из абзацев: «N. текст» — перевод аята N; абзац, начинающийся со «С именем Аллаха», — басмала.
  * Арабские абзацы и заголовки пропускаются (арабский текст на сайте берётся не из файла).
+ * Русский абзац без номера после первого аята — `stray`: иначе он молча пропал бы с сайта.
  */
 export function parseSurahDocx(buf: Buffer): ParsedSurah {
   let basmala: string | null = null
+  let stray: string | null = null
   const ayahs: { number: number; text: string }[] = []
   for (const p of docxParagraphs(buf)) {
     const m = p.match(/^(\d{1,3})\s*[.)]\s*(.+)$/)
     if (m && /[А-Яа-яЁё]/.test(m[2])) ayahs.push({ number: Number(m[1]), text: m[2].trim() })
     else if (!basmala && /^С именем Аллаха/i.test(p)) basmala = p
+    else if (ayahs.length && !stray && /[А-Яа-яЁё]/.test(p)) stray = `после аята ${ayahs[ayahs.length - 1].number}: «${p.slice(0, 60)}${p.length > 60 ? '…' : ''}»`
   }
-  return { basmala, ayahs }
+  // Номера, поставленные автоматическим списком Word, в тексте абзаца не видны
+  const xml = readZipEntry(buf, 'word/document.xml')?.toString('utf8') ?? ''
+  return { basmala, ayahs, stray, autoNumbered: !ayahs.length && xml.includes('<w:numPr>') }
 }
 
 /** «1, 2, 5–9» вместо длинного перечня номеров. */

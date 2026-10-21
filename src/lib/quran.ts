@@ -131,18 +131,6 @@ export const getSurah = (n: number) => SURAHS[n - 1]
 
 export const PLACE_LABEL = { m: 'Мекканская', d: 'Мединская' } as const
 
-/** Семь чтецов, с которыми раздел открывается (их создаёт миграция; дальше владелец правит список в админке).
- *  Записи — открытая библиотека mp3quran.net: сура целиком одним файлом, риваят Хафс. */
-export const DEFAULT_RECITERS: { name: string; nameAr: string; baseUrl: string }[] = [
-  { name: 'Мишари ар-Рашид', nameAr: 'مشاري راشد العفاسي', baseUrl: 'https://server8.mp3quran.net/afs/' },
-  { name: 'Махир аль-Му‘айкыли', nameAr: 'ماهر المعيقلي', baseUrl: 'https://server12.mp3quran.net/maher/' },
-  { name: '‘Абдуррахман ас-Судейс', nameAr: 'عبد الرحمن السديس', baseUrl: 'https://server11.mp3quran.net/sds/' },
-  { name: 'Абу Бакр аш-Шатри', nameAr: 'أبو بكر الشاطري', baseUrl: 'https://server11.mp3quran.net/shatri/' },
-  { name: 'Бадр ат-Турки', nameAr: 'بدر التركي', baseUrl: 'https://server10.mp3quran.net/bader/Rewayat-Hafs-A-n-Assem/' },
-  { name: 'Махмуд Халиль аль-Хусари', nameAr: 'محمود خليل الحصري', baseUrl: 'https://server13.mp3quran.net/husr/' },
-  { name: 'Насир аль-Катами', nameAr: 'ناصر القطامي', baseUrl: 'https://server6.mp3quran.net/qtm/' },
-]
-
 /** Чтец для страницы суры: либо папка с файлами 001.mp3…114.mp3, либо свои файлы по номерам сур. */
 export type Reciter = { id: string; name: string; nameAr: string; base: string | null; files: Record<number, string> }
 
@@ -163,7 +151,7 @@ export function searchKey(s: string) {
     .toLowerCase()
     .replace(/[ً-ٰٟۖ-ۭ]/g, '')
     .replace(/[أإآٱ]/g, 'ا')
-    .replace(/\b(аль|ал|ан|ар|ас|аш|ат|аз|ад)-/g, '')
+    .replace(/(^|\s)(аль|ал|ан|ар|ас|аш|ат|аз|ад|ль)[-\s]/g, '$1')
     .replace(/[‘’'ʼ`«»-]/g, '')
     .replace(/ё/g, 'е')
 }

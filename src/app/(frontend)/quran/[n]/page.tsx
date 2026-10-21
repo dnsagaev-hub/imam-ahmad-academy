@@ -12,7 +12,7 @@ import { getReciters, getTranslation } from '@/lib/quranData'
 
 export const dynamic = 'force-dynamic'
 
-const num = (n: string) => (/^\d{1,3}$/.test(n) && Number(n) >= 1 && Number(n) <= 114 ? Number(n) : 0)
+const num = (n: string) => (/^[1-9]\d{0,2}$/.test(n) && Number(n) >= 1 && Number(n) <= 114 ? Number(n) : 0)
 
 export async function generateMetadata({ params }: { params: Promise<{ n: string }> }): Promise<Metadata> {
   const s = getSurah(num((await params).n))

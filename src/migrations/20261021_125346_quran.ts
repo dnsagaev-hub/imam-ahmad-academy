@@ -1,6 +1,15 @@
 import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
-import { DEFAULT_RECITERS } from '../lib/quran'
+// Список вписан в миграцию, а не взят из кода: миграция должна давать один и тот же результат всегда
+const RECITERS = [
+  ['Мишари ар-Рашид', 'مشاري راشد العفاسي', 'https://server8.mp3quran.net/afs/'],
+  ['Махир аль-Му‘айкыли', 'ماهر المعيقلي', 'https://server12.mp3quran.net/maher/'],
+  ['‘Абдуррахман ас-Судейс', 'عبد الرحمن السديس', 'https://server11.mp3quran.net/sds/'],
+  ['Абу Бакр аш-Шатри', 'أبو بكر الشاطري', 'https://server11.mp3quran.net/shatri/'],
+  ['Бадр ат-Турки', 'بدر التركي', 'https://server10.mp3quran.net/bader/Rewayat-Hafs-A-n-Assem/'],
+  ['Махмуд Халиль аль-Хусари', 'محمود خليل الحصري', 'https://server13.mp3quran.net/husr/'],
+  ['Насир аль-Катами', 'ناصر القطامي', 'https://server6.mp3quran.net/qtm/'],
+]
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
@@ -76,10 +85,10 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "payload_locked_documents_rels_reciters_id_idx" ON "payload_locked_documents_rels" USING btree ("reciters_id");`)
 
   // Семь чтецов, с которыми открывается раздел «Коран»; дальше владелец правит список в админке
-  for (const [i, r] of DEFAULT_RECITERS.entries()) {
+  for (const [i, [name, nameAr, baseUrl]] of RECITERS.entries()) {
     await db.execute(sql`
       INSERT INTO "reciters" ("name", "name_ar", "is_published", "order", "source", "base_url")
-      VALUES (${r.name}, ${r.nameAr}, true, ${(i + 1) * 10}, 'link', ${r.baseUrl});`)
+      VALUES (${name}, ${nameAr}, true, ${(i + 1) * 10}, 'link', ${baseUrl});`)
   }
 }
 

@@ -22,7 +22,11 @@ function docxProblem(buf: Buffer, s: { n: number; ru: string; ayahs: number }): 
   } catch (e) {
     return (e as Error).message
   }
-  if (!parsed.ayahs.length) return 'В файле не найдено ни одного аята. Каждый аят — отдельный абзац, начинается с номера: «1. Перевод…».'
+  if (!parsed.ayahs.length)
+    return parsed.autoNumbered
+      ? 'Номера аятов в файле поставлены автоматическим списком Word. Наберите номера текстом («1. Перевод…») или в Word: выделить список → «Нумерация» → выключить и вписать номера.'
+      : 'В файле не найдено ни одного аята. Каждый аят — отдельный абзац, начинается с номера: «1. Перевод…».'
+  if (parsed.stray) return `В файле есть абзац перевода без номера ${parsed.stray}. Соедините его с аятом или поставьте номер.`
   const errors = checkAyahNumbers(parsed.ayahs.map((a) => a.number), s.ayahs)
   return errors.length ? `Файл не подходит к суре ${s.n} «${s.ru}» (${s.ayahs} аятов): ${errors.join('; ')}.` : null
 }
@@ -105,7 +109,9 @@ export const QuranTranslations: CollectionConfig = {
           const problem = docxProblem(file.data, s)
           if (problem) throw fail(problem)
           const parsed = parseSurahDocx(file.data)
+          // Комментарии: сначала из этого же сохранения, затем из сохранённой записи
           const old = new Map<number, Ayah>(((originalDoc?.ayahs ?? []) as Ayah[]).map((a) => [Number(a.number), a]))
+          for (const a of (data.ayahs ?? []) as Ayah[]) if (a.comment) old.set(Number(a.number), a)
           data.ayahs = parsed.ayahs.map((a) => ({ number: a.number, text: a.text, comment: old.get(a.number)?.comment ?? null }))
           if (parsed.basmala) data.basmala = parsed.basmala
           return data

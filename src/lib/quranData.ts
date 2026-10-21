@@ -20,12 +20,13 @@ export const getTranslatedSurahs = cache(async (): Promise<number[]> => {
     const res = await payload.find({
       collection: 'quran-translations',
       where: { isPublished: { equals: true } },
-      select: { surah: true },
+      select: { surah: true, ayahs: { number: true } },
       depth: 0,
       limit: 200,
       pagination: false,
     })
-    return res.docs.map((d) => Number((d as { surah: number }).surah))
+    // Запись без аятов (создана без файла) переводом не считается
+    return (res.docs as { surah: number; ayahs?: unknown[] | null }[]).filter((d) => d.ayahs?.length).map((d) => Number(d.surah))
   } catch {
     return []
   }
