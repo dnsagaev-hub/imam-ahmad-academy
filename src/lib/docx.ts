@@ -111,3 +111,59 @@ export function checkAyahNumbers(numbers: number[], total: number): string[] {
   if (dup.size) errors.push(`повторяются номера ${ranges([...dup])}`)
   return errors
 }
+
+export type CollectionSurah = {
+  /** Заголовок суры в файле: «Ан-Наба» */
+  name: string
+  /** Смысл названия: (Весть) */
+  meaning: string
+  basmala: string | null
+  ayahs: { number: number; text: string }[]
+  stray: string | null
+}
+
+const CYR = /[А-Яа-яЁё]/
+const AYAH = /^(\d{1,3})\s*[.)]\s*(.+)$/
+
+/**
+ * Сборник сур в одном файле (как «Коран 78-114.docx»): перед каждой сурой два абзаца — «Название» и (смысл названия),
+ * дальше аяты «N. перевод». Первый аят суры может быть без номера (номер стоял автоматическим списком Word):
+ * если первый пронумерованный аят — 2, последний русский абзац перед ним считается аятом 1.
+ * `firstHint` — номер первой суры, если в начале файла написано «78 – 114».
+ */
+export function parseCollectionDocx(buf: Buffer): { surahs: CollectionSurah[]; firstHint: number | null } {
+  const paras = docxParagraphs(buf)
+  const surahs: CollectionSurah[] = []
+  const pending: string[][] = []
+  let firstHint: number | null = null
+  for (let i = 0; i < paras.length; i++) {
+    const p = paras[i]
+    const next = paras[i + 1] ?? ''
+    if (/^«[^»]{1,40}»$/.test(p) && /^\([^)]{1,60}\)$/.test(next)) {
+      surahs.push({ name: p.slice(1, -1).trim(), meaning: next.slice(1, -1).trim(), basmala: null, ayahs: [], stray: null })
+      pending.push([])
+      i++
+      continue
+    }
+    const s = surahs[surahs.length - 1]
+    if (!s) {
+      const m = p.match(/^(\d{1,3})\s*[–—-]\s*\d{1,3}\b/)
+      if (m && firstHint === null) firstHint = Number(m[1])
+      continue
+    }
+    const m = p.match(AYAH)
+    if (m && CYR.test(m[2])) s.ayahs.push({ number: Number(m[1]), text: m[2].trim() })
+    else if (!s.basmala && /^С именем Аллаха/i.test(p)) s.basmala = p
+    else if (CYR.test(p)) {
+      if (!s.ayahs.length) pending[pending.length - 1].push(p)
+      else if (!s.stray) s.stray = `после аята ${s.ayahs[s.ayahs.length - 1].number}: «${p.slice(0, 60)}${p.length > 60 ? '…' : ''}»`
+    }
+  }
+  surahs.forEach((s, k) => {
+    const before = pending[k]
+    if (!before.length) return
+    if (s.ayahs[0]?.number === 2) s.ayahs.unshift({ number: 1, text: before.pop()! })
+    if (before.length && !s.stray) s.stray = `перед первым аятом: «${before[0].slice(0, 60)}${before[0].length > 60 ? '…' : ''}»`
+  })
+  return { surahs, firstHint }
+}

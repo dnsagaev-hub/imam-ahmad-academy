@@ -1178,3 +1178,15 @@ body.has-player { padding-bottom: 104px; }
   .sv-pager { grid-template-columns: 1fr 1fr; }
   .sv-pg-all { grid-column: 1 / -1; grid-row: 2; }
 }
+
+/* Загрузка сборника переводов сур (/quran/import, задача 28) */
+.qimport { display: flex; flex-direction: column; gap: 18px; max-width: 720px; padding: 24px; background: #fff; border: 1px solid var(--line); border-radius: 18px; }
+.qimport-field { display: flex; flex-direction: column; gap: 6px; font-weight: 700; color: var(--ink); }
+.qimport-field input { font: inherit; font-weight: 400; padding: 10px 12px; border: 1px solid var(--line-2); border-radius: 10px; background: var(--paper); max-width: 100%; }
+.qimport-num input { width: 160px; }
+.qimport-msg { padding: 14px 18px; border-radius: 12px; line-height: 1.55; }
+.qimport-msg p { margin: 0; }
+.qimport-msg ul { margin: 8px 0 0; padding-left: 20px; }
+.qimport-msg.bad { background: var(--red-bg); color: var(--red); }
+.qimport-msg.good { background: var(--ice); color: var(--navy); }
+.qimport-msg.good p + ul, .qimport-msg.good ul + p { margin-top: 8px; }
