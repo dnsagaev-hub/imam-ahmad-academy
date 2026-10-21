@@ -15,6 +15,8 @@ import { Lessons } from './collections/Lessons'
 import { Media } from './collections/Media'
 import { Messages } from './collections/Messages'
 import { QuizAttempts } from './collections/QuizAttempts'
+import { QuranTranslations } from './collections/QuranTranslations'
+import { Reciters } from './collections/Reciters'
 import { Users } from './collections/Users'
 import { Settings } from './globals/Settings'
 import { migrations } from './migrations'
@@ -40,7 +42,7 @@ export default buildConfig({
     supportedLanguages: { ru },
     fallbackLanguage: 'ru',
   },
-  collections: [Courses, Lessons, Articles, Books, Media, Users, QuizAttempts, Messages],
+  collections: [Courses, Lessons, Articles, Books, Media, QuranTranslations, Reciters, Users, QuizAttempts, Messages],
   globals: [Settings],
   // Почта (письма для смены пароля). Включается, если заданы настройки SMTP.
   email: process.env.SMTP_HOST

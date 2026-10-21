@@ -4,7 +4,7 @@
 ```
 src/
   payload.config.ts        настройки Payload (коллекции, S3, почта, onInit → стартовое наполнение)
-  collections/             Courses, Lessons, Articles, Books, Media, Users, QuizAttempts, Messages
+  collections/             Courses, Lessons, Articles, Books, Media, QuranTranslations, Reciters, Users, QuizAttempts, Messages
   globals/Settings.ts      настройки сайта (тексты главной, город намазов, хиджра, контакты, FAQ)
   blocks/lessonBlocks.ts   блоки текстового урока (и статей): matn, hadith (хадис в своей рамке), explanation, terms, note, figure (картинка из media), takeaways
   access/                  кто что видит и меняет
@@ -42,9 +42,20 @@ docker-compose.yml         локальная версия: сайт + PostgreSQ
   (номер в курсе, затем дата). Страница книги библиотеки показывает число уроков по видам (`getBookLessonCounts`).
   Рубрики аудио и видео — все рубрики уроков, включая «Акыду» (`MEDIA_CATEGORIES`).
 - Стартовое наполнение (`SEED_STARTER=true`) — один раз, затем скрытый флаг `starterSeeded` в настройках (`src/seed/starter.ts`).
+- Коран (`/quran`): арабский текст и шрифт — Комплекс короля Фахда (KFGQPC Uthmanic Hafs v18), постоянные данные в
+  `src/data/quran/<номер>.json` и `public/fonts/quran/`; список сур (русское название, смысл, мекканская/мединская по Tanzil,
+  число аятов) — `src/lib/quran.ts`. Перевод — коллекция `quran-translations` (одна запись на суру: аяты с переводом
+  и комментарием richText); загрузка .docx разбирается хуком `beforeChange` (`src/lib/docx.ts`, без зависимостей:
+  zip + `word/document.xml`), номера аятов сверяются с сурой, комментарии при повторной загрузке сохраняются.
+  Файл .docx лежит в `media/quran-docx` (не в S3: после разбора он не нужен сайту). Жирный/обычный — по скобкам
+  (`splitTranslation`), а не по форматированию Word. Ошибка хука — `APIError` с явным `name`: иначе в собранной версии
+  Payload показывает «An unknown error occurred». Чтецы — коллекция `reciters`: папка `baseUrl` + `NNN.mp3` или свои MP3
+  по сурам; семь чтецов с mp3quran.net добавляет миграция `20261021_125346_quran`. Плеер — общий `AudioPlayer`,
+  очередь — все суры чтеца.
 - Файлы: S3, если заданы `S3_*`, иначе папка `media/` (в локальной версии — Docker-том `media`). Аудио — MP3 до 300 МБ.
 
 ## Внешние системы
+- Аудио Корана: mp3quran.net по ссылке (адреса чтецов — в админке, «Коран → Чтецы»).
 - Видео: в уроке хранится ссылка; `src/lib/video.ts` (`toEmbedUrl`) превращает обычные ссылки VK Видео, Rutube,
   YouTube, Kinescope в ссылки для встраивания.
 - Время намазов считается в браузере (порт PrayTimes.org, аср по ханбалитскому — коэффициент 1); местоположение

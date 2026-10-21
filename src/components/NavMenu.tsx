@@ -12,6 +12,7 @@ type Item = { label: string; href: string; match: string; sub?: { label: string;
 
 const items: Item[] = [
   { label: 'О сайте', href: '/about', match: '/about' },
+  { label: 'Коран', href: '/quran', match: '/quran' },
   {
     label: 'Курсы',
     href: '/courses',

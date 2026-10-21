@@ -130,5 +130,24 @@ if (exists.totalDocs === 0) {
 
 await seedArticles(payload)
 
+// Демо-перевод суры для проверки раздела «Коран» (заглушка, не перевод владельца)
+const demoSurah = await payload.find({ collection: 'quran-translations', where: { surah: { equals: 114 } }, limit: 1 })
+if (!demoSurah.docs.length) {
+  await payload.create({
+    collection: 'quran-translations',
+    data: {
+      surah: 114,
+      translator: 'Образец',
+      basmala: 'Образец перевода басмалы',
+      ayahs: Array.from({ length: 6 }, (_, i) => ({
+        number: i + 1,
+        text: `Образец: перевод аята ${i + 1} [пояснение в квадратных скобках] и основной текст (уточнение в круглых скобках).`,
+        comment: i === 0 ? (doc(paragraph('Образец комментария к аяту. Здесь будет пояснение владельца.')) as never) : null,
+      })),
+    },
+  })
+  payload.logger.info('Демо-перевод суры 114 создан.')
+}
+
 payload.logger.info('Готово.')
 process.exit(0)
