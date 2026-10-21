@@ -4,7 +4,7 @@
  * Своих MP3 и чтецов без разметки это не касается — у них подсветки нет.
  */
 
-const API = 'https://mp3quran.net/api/v3/ayat_timing'
+const API = 'https://www.mp3quran.net/api/v3/ayat_timing'
 const DAY = 86400
 
 /** Аят и его начало и конец в записи — в тех единицах, что отдаёт mp3quran (переводит в секунды браузер). */
