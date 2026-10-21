@@ -572,6 +572,8 @@ table.data .r { text-align: right; }
 .search { flex: 1 1 320px; display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; border: 1px solid var(--line-2); border-radius: 12px; background: #fff; color: var(--muted); }
 .search:focus-within { outline: 2px solid var(--blue); outline-offset: 1px; }
 .search input { flex: 1; min-width: 0; border: 0; outline: 0; font-size: 15px; background: transparent; color: var(--ink); }
+/* Поиск отдельной строкой (статьи): в колонке flex-basis 320px растягивал поле по высоте */
+.search-solo { flex: none; width: 100%; max-width: 520px; }
 .select-sm { width: auto; min-height: 48px; }
 .tag-soft { display: inline-flex; padding: 2px 8px; border-radius: 99px; background: var(--ice); color: var(--royal); font-size: 12px; font-weight: 700; }
 .tag-test { display: inline-flex; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line-2); color: var(--muted); font-size: 12px; font-weight: 700; }
