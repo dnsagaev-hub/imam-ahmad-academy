@@ -144,6 +144,9 @@ jobs:
                   if pat.search(r['name'] + ' ' + m['server']):
                       print('mp3quran чтец:', r['id'], r['name'], '| запись', m['id'], m['name'], m['server'], m['surah_total'])
           PY
+          for u in https://cdn.mp3quran.net/audio/mishary-alafasy/r1/067.mp3 https://cdn.mp3quran.net/audio/badr-turki/r1/067.mp3 https://server8.mp3quran.net/afs/067.mp3; do
+            echo "mp3quran файл $u: $(curl -s -o /dev/null -I -L -w '%{http_code} %{content_type} %{size_download}' -m 20 "$u")" | tee -a ci.log
+          done
           for r in 1 2 3 4 5 6 7; do
             echo "разметка аятов, чтец $r, сура 67: $(curl -s "http://127.0.0.1:3000/quran/timing?r=$r&s=67" | head -c 160)" | tee -a ci.log
           done

@@ -134,6 +134,21 @@ export const PLACE_LABEL = { m: 'Мекканская', d: 'Мединская' 
 /** Чтец для страницы суры: либо папка с файлами 001.mp3…114.mp3, либо свои файлы по номерам сур. */
 export type Reciter = { id: string; name: string; nameAr: string; base: string | null; files: Record<number, string> }
 
+// mp3quran.net перенёс записи с серверов server*.mp3quran.net в cdn.mp3quran.net. Разметка аятов (подсветка)
+// привязана к новым папкам, поэтому семь чтецов, добавленных миграцией, берутся из новых папок. Адрес, который
+// владелец поменял в админке, не трогается: замена — только для этих старых адресов.
+const CDN = 'https://cdn.mp3quran.net/audio/'
+const MOVED: Record<string, string> = {
+  'https://server8.mp3quran.net/afs/': `${CDN}mishary-alafasy/r1/`,
+  'https://server12.mp3quran.net/maher/': `${CDN}maher-muaiqly/r1/`,
+  'https://server11.mp3quran.net/sds/': `${CDN}abdulrahman-sudais/r1/`,
+  'https://server11.mp3quran.net/shatri/': `${CDN}abubakr-shatri/r1/`,
+  'https://server10.mp3quran.net/bader/Rewayat-Hafs-A-n-Assem/': `${CDN}badr-turki/r1/`,
+  'https://server13.mp3quran.net/husr/': `${CDN}mahmoud-husary/r1/`,
+  'https://server6.mp3quran.net/qtm/': `${CDN}nasser-qatami/r1/`,
+}
+export const currentFolder = (base: string): string => MOVED[base.trim()] ?? base
+
 export const audioUrl = (r: Reciter, n: number): string | null =>
   r.base ? `${r.base}${String(n).padStart(3, '0')}.mp3` : (r.files[n] ?? null)
 
