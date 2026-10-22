@@ -1116,6 +1116,10 @@ body.has-player { padding-bottom: 104px; }
 .basmala p { margin: 0; }
 .basmala-ru { margin-top: 4px !important; font-family: var(--body); font-size: 16px; font-weight: 700; color: var(--ink); }
 .sh-credit { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
+/* Сведения о суре: кнопки в шапке суры (задача 31) */
+.sh-info { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.sh-info-btn { padding: 8px 16px; border: 1px solid var(--line); border-radius: 99px; background: #fff; color: var(--navy); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: border-color 0.15s, background 0.15s, color 0.15s; }
+.sh-info-btn:hover, .sh-info-btn:focus-visible { border-color: var(--royal); background: var(--royal); color: #fff; }
 .basmala { margin: 0; padding: 26px 0 22px; border-bottom: 1px solid var(--line); text-align: center; font-family: var(--quran); font-size: 36px; line-height: 1.6; color: var(--navy); }
 .ayah { display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: 'tr ar'; gap: 44px; padding: 24px 0; border-bottom: 1px solid var(--line-soft); scroll-margin-top: 90px; }
 .ayah:last-child { border-bottom: 0; }

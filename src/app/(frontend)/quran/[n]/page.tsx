@@ -6,14 +6,22 @@ import { notFound } from 'next/navigation'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { Crumbs } from '@/components/PageHead'
+import { SurahInfoButtons, type SurahInfoPart } from '@/components/quran/SurahInfoButtons'
 import { SurahView } from '@/components/quran/SurahView'
+import { SURAH_INFO_PARTS } from '@/collections/SurahInfo'
 import { PLACE_LABEL, getSurah, plural } from '@/lib/quran'
-import { getReciters, getTranslation } from '@/lib/quranData'
+import { getReciters, getSurahInfo, getTranslation } from '@/lib/quranData'
 
 export const dynamic = 'force-dynamic'
 
 // Перевод басмалы владельца (как в его файле суры 67): если в файле суры басмалы нет, берётся он
 const BASMALA_RU = 'С именем Аллаха, Милостивого, Милующего!'
+
+// В тексте редактора есть хотя бы одна буква (пустой редактор хранит пустой абзац)
+const hasText = (v: unknown) => {
+  const c = v as { root?: { children?: unknown[] } } | null | undefined
+  return !!c?.root?.children?.some((ch) => JSON.stringify(ch).includes('"text":"'))
+}
 
 const num = (n: string) => (/^[1-9]\d{0,2}$/.test(n) && Number(n) >= 1 && Number(n) <= 114 ? Number(n) : 0)
 
@@ -38,10 +46,14 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
   const translation = ayahs ? Array.from({ length: s.ayahs }, (_, i) => ayahs.find((a) => a.number === i + 1)?.text ?? '') : null
   // Комментарий показывается, только если в нём есть текст
   const comments: Record<number, React.ReactNode> = {}
-  for (const a of ayahs ?? []) {
-    const c = a.comment as { root?: { children?: unknown[] } } | null | undefined
-    if (c?.root?.children?.some((ch) => JSON.stringify(ch).includes('"text":"'))) comments[a.number] = <RichText data={c as never} />
-  }
+  for (const a of ayahs ?? []) if (hasText(a.comment)) comments[a.number] = <RichText data={a.comment as never} />
+  // Сведения о суре: кнопка — только у заполненного пункта
+  const info = await getSurahInfo(n)
+  const infoParts: SurahInfoPart[] = SURAH_INFO_PARTS.filter((p) => hasText(info?.[p.name])).map((p) => ({
+    key: p.name,
+    label: p.label,
+    body: <RichText data={info![p.name] as never} />,
+  }))
   const prev = n > 1 ? getSurah(n - 1) : null
   const next = n < 114 ? getSurah(n + 1) : null
 
@@ -63,6 +75,7 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
                 </span>
               </div>
               {translation && tr?.translator ? <p className="sh-credit">Перевод, комментарий и редакция — {tr.translator}</p> : null}
+              {infoParts.length ? <SurahInfoButtons surahName={s.ru} parts={infoParts} /> : null}
             </div>
             <p className="sh-ar" lang="ar" dir="rtl">
               سُورَةُ {s.ar}
