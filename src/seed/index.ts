@@ -142,7 +142,11 @@ if (!demoSurah.docs.length) {
       ayahs: Array.from({ length: 6 }, (_, i) => ({
         number: i + 1,
         text: `Образец: перевод аята ${i + 1} [пояснение в квадратных скобках] и основной текст (уточнение в круглых скобках).`,
-        comment: i === 0 ? (doc(paragraph('Образец комментария к аяту. Здесь будет пояснение владельца.')) as never) : null,
+        // У аята 1 — все четыре пояснения, у аята 2 — только толкование (задача 33)
+        comment: i < 2 ? (doc(paragraph('Образец толкования аята. Здесь будет пояснение владельца.')) as never) : null,
+        occasion: i === 0 ? (doc(paragraph('Образец: причина ниспослания аята.')) as never) : null,
+        connection: i === 0 ? (doc(paragraph('Образец: связь с предыдущим аятом.')) as never) : null,
+        reflection: i === 0 ? (doc(paragraph('Образец: размышление над аятом.')) as never) : null,
       })),
     },
   })

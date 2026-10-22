@@ -4,7 +4,7 @@ import { APIError, type CollectionConfig } from 'payload'
 import { adminOnly, publishedOrAdmin } from '../access'
 import { publishedField } from '../fields/published'
 import { checkAyahNumbers, parseSurahDocx } from '../lib/docx'
-import { getSurah } from '../lib/quran'
+import { AYAH_NOTES, getSurah, keepNotes } from '../lib/quran'
 
 // Ошибка показывается в админке всплывающим сообщением. Имя задано явно: после сборки имена классов
 // сжимаются, и без имени Payload заменяет текст на «An unknown error occurred».
@@ -31,13 +31,14 @@ function docxProblem(buf: Buffer, s: { n: number; ru: string; ayahs: number }): 
   return errors.length ? `Файл не подходит к суре ${s.n} «${s.ru}» (${s.ayahs} аятов): ${errors.join('; ')}.` : null
 }
 
-type Ayah = { number?: number | null; text?: string | null; comment?: unknown }
+type Ayah = { number?: number | null; text?: string | null } & Record<string, unknown>
 
 const DOCX = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 
 /**
  * Перевод одной суры. Владелец загружает свой файл Word: аяты «N. текст» разбираются в список «Аяты».
- * Комментарии к аятам пишутся в админке и при повторной загрузке файла сохраняются.
+ * Пояснения к аятам (толкование, причина ниспослания, связь, размышление) пишутся в админке и при повторной
+ * загрузке файла сохраняются.
  * Арабский текст здесь не хранится — он постоянный (src/data/quran).
  */
 export const QuranTranslations: CollectionConfig = {
@@ -48,7 +49,7 @@ export const QuranTranslations: CollectionConfig = {
     defaultColumns: ['title', 'translator', 'isPublished', 'updatedAt'],
     group: 'Коран',
     description:
-      'Укажите номер суры и загрузите файл Word: каждый аят — абзац «1. Перевод…». Основной текст на сайте будет жирным, пояснения в [ ] и ( ) — обычным. Комментарий к аяту — в списке «Аяты» ниже. Много сур одним файлом (например, 78–114) — на сайте по адресу /quran/import.',
+      'Укажите номер суры и загрузите файл Word: каждый аят — абзац «1. Перевод…». Основной текст на сайте будет жирным, пояснения в [ ] и ( ) — обычным. Толкование, причина ниспослания, связь с предыдущим аятом и размышление — у аята в списке «Аяты» ниже. Много сур одним файлом (например, 78–114) — на сайте по адресу /quran/import.',
   },
   defaultSort: 'surah',
   access: {
@@ -92,7 +93,8 @@ export const QuranTranslations: CollectionConfig = {
       fields: [
         { name: 'number', label: 'Номер аята', type: 'number', required: true, min: 1 },
         { name: 'text', label: 'Перевод', type: 'textarea', required: true },
-        { name: 'comment', label: 'Комментарий (кнопка «Комментарий» у аята)', type: 'richText' },
+        // Пояснения: у аята на сайте — кнопка на каждое заполненное (порядок и подписи — AYAH_NOTES)
+        ...AYAH_NOTES.map((f) => ({ name: f.name, label: `${f.label} (кнопка «${f.short}» у аята)`, type: 'richText' as const })),
       ],
     },
   ],
@@ -109,10 +111,10 @@ export const QuranTranslations: CollectionConfig = {
           const problem = docxProblem(file.data, s)
           if (problem) throw fail(problem)
           const parsed = parseSurahDocx(file.data)
-          // Комментарии: сначала из этого же сохранения, затем из сохранённой записи
+          // Пояснения к аятам: сначала из этого же сохранения, затем из сохранённой записи
           const old = new Map<number, Ayah>(((originalDoc?.ayahs ?? []) as Ayah[]).map((a) => [Number(a.number), a]))
-          for (const a of (data.ayahs ?? []) as Ayah[]) if (a.comment) old.set(Number(a.number), a)
-          data.ayahs = parsed.ayahs.map((a) => ({ number: a.number, text: a.text, comment: old.get(a.number)?.comment ?? null }))
+          for (const a of (data.ayahs ?? []) as Ayah[]) if (AYAH_NOTES.some((f) => a[f.name])) old.set(Number(a.number), a)
+          data.ayahs = parsed.ayahs.map((a) => ({ number: a.number, text: a.text, ...keepNotes(old.get(a.number)) }))
           if (parsed.basmala) data.basmala = parsed.basmala
           return data
         }

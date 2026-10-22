@@ -179,3 +179,21 @@ export function plural(n: number, forms: [string, string, string]): string {
   if (b === 1) return forms[0]
   return forms[2]
 }
+
+/**
+ * Пояснения к аяту (поля аята в «Переводе суры»), порядок кнопок под переводом — этот же.
+ * «Толкование» хранится в прежнем поле `comment` (было «Комментарий»), чтобы тексты владельца остались на месте.
+ */
+export const AYAH_NOTES = [
+  { name: 'comment', label: 'Толкование', short: 'Толкование' },
+  { name: 'occasion', label: 'Причина ниспослания', short: 'Причина' },
+  { name: 'connection', label: 'Связь с предыдущим отрывком', short: 'Связь с предыдущим' },
+  { name: 'reflection', label: 'Размышление', short: 'Размышление' },
+] as const
+
+export type AyahNoteName = (typeof AYAH_NOTES)[number]['name']
+
+/** Пояснения аята из сохранённой записи — чтобы новая загрузка файла Word их не стёрла. */
+export function keepNotes(old: Record<string, unknown> | undefined): Record<AyahNoteName, unknown> {
+  return Object.fromEntries(AYAH_NOTES.map((f) => [f.name, old?.[f.name] ?? null])) as Record<AyahNoteName, unknown>
+}

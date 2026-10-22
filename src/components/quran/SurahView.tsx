@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 
 import { useAudioPlayer, type Track } from '@/components/audio/AudioPlayer'
-import { SURAHS, audioUrl, splitTranslation, type Reciter, type Surah } from '@/lib/quran'
+import { AYAH_NOTES, SURAHS, audioUrl, splitTranslation, type AyahNoteName, type Reciter, type Surah } from '@/lib/quran'
 import type { AyahTime } from '@/lib/quranTiming'
 
 const RECITER_KEY = 'quran-reciter'
@@ -51,14 +51,19 @@ function Translation({ text }: { text: string }) {
   )
 }
 
-/** Сура: вкладки «Текст и перевод» и «Слушать», аяты в две колонки, окно комментария к аяту. */
+/** Пояснение к аяту (толкование, причина ниспослания…), уже собранное на сервере. */
+export type AyahNote = { name: AyahNoteName; body: ReactNode }
+
+const noteLabel = (name: AyahNoteName) => AYAH_NOTES.find((f) => f.name === name)!
+
+/** Сура: вкладки «Текст и перевод» и «Слушать», аяты в две колонки, окно пояснений к аяту. */
 export function SurahView({
   surah,
   arabic,
   basmala,
   basmalaRu,
   translation,
-  comments,
+  notes,
   reciters: all,
 }: {
   surah: Surah
@@ -66,7 +71,7 @@ export function SurahView({
   basmala: string | null
   basmalaRu: string | null
   translation: string[] | null
-  comments: Record<number, ReactNode>
+  notes: Record<number, AyahNote[]>
   reciters: Reciter[]
 }) {
   // Чтец со своими файлами показывается только у сур, для которых загружена запись
@@ -74,7 +79,7 @@ export function SurahView({
   const { current, playing, play, audio } = useAudioPlayer()
   const [tab, setTab] = useState<'read' | 'listen'>('read')
   const [reciterId, setReciterId] = useState(reciters[0]?.id ?? '')
-  const [open, setOpen] = useState<number | null>(null)
+  const [open, setOpen] = useState<{ no: number; name: AyahNoteName } | null>(null)
   const [timing, setTiming] = useState<AyahTime[] | null>(null)
   const [now, setNow] = useState<number | null>(null)
   const nowRef = useRef<number | null>(null)
@@ -247,7 +252,7 @@ export function SurahView({
         ) : null}
         {arabic.map((ar, i) => {
           const no = i + 1
-          const note = comments[no] != null
+          const list = notes[no]
           return (
             <div className={`ayah${now === no ? ' now' : ''}`} id={`a${no}`} key={no} aria-current={now === no ? 'true' : undefined}>
               <div className="ayah-ar" lang="ar" dir="rtl">
@@ -259,13 +264,23 @@ export function SurahView({
                   <p>
                     <Translation text={translation[i] ?? ''} />
                   </p>
-                  {note ? (
-                    <button type="button" className="ayah-note" onClick={() => setOpen(no)} aria-label={`Комментарий к аяту ${no}`}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                      </svg>
-                      Комментарий
-                    </button>
+                  {list ? (
+                    <>
+                      <div className="ayah-notes">
+                        {list.map((n) => {
+                          const f = noteLabel(n.name)
+                          return (
+                            <button key={n.name} type="button" className="ayah-note" onClick={() => setOpen({ no, name: n.name })} aria-label={`${f.label}: аят ${no}`}>
+                              {f.short}
+                            </button>
+                          )
+                        })}
+                      </div>
+                      {/* Телефон: одна кнопка на все пояснения, дальше — вкладки в окне */}
+                      <button type="button" className="ayah-note ayah-notes-m" onClick={() => setOpen({ no, name: list[0].name })}>
+                        {list.length > 1 ? `Пояснения · ${list.length}` : noteLabel(list[0].name).short}
+                      </button>
+                    </>
                   ) : null}
                 </div>
               ) : null}
@@ -274,15 +289,15 @@ export function SurahView({
         })}
       </div>
 
-      {open !== null && comments[open] != null ? (
+      {open && notes[open.no]?.some((n) => n.name === open.name) ? (
         <div className="cm-back" onClick={() => setOpen(null)}>
           <div className="cm" role="dialog" aria-modal="true" aria-labelledby="cm-title" onClick={(e) => e.stopPropagation()}>
             <div className="cm-head">
               <div>
-                <p className="eyebrow">Комментарий</p>
-                <h2 id="cm-title">
-                  Сура {surah.ru}, аят {open}
-                </h2>
+                <p className="eyebrow">
+                  Сура {surah.ru}, аят {open.no}
+                </p>
+                <h2 id="cm-title">{noteLabel(open.name).label}</h2>
               </div>
               <button type="button" className="cm-x" aria-label="Закрыть" onClick={() => setOpen(null)}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
@@ -290,17 +305,28 @@ export function SurahView({
                 </svg>
               </button>
             </div>
+            {notes[open.no].length > 1 ? (
+              <div className="cm-tabs" role="tablist" aria-label="Пояснения к аяту">
+                {notes[open.no].map((n) => (
+                  <button key={n.name} type="button" role="tab" aria-selected={n.name === open.name} className={n.name === open.name ? 'on' : ''} onClick={() => setOpen({ no: open.no, name: n.name })}>
+                    {noteLabel(n.name).short}
+                  </button>
+                ))}
+              </div>
+            ) : null}
             <div className="cm-ayah">
               <p className="cm-ar" lang="ar" dir="rtl">
-                {arabic[open - 1]}
+                {arabic[open.no - 1]}
               </p>
               {translation ? (
                 <p className="cm-tr">
-                  <Translation text={translation[open - 1] ?? ''} />
+                  <Translation text={translation[open.no - 1] ?? ''} />
                 </p>
               ) : null}
             </div>
-            <div className="cm-body">{comments[open]}</div>
+            <div className="cm-body" role="tabpanel">
+              {notes[open.no].find((n) => n.name === open.name)!.body}
+            </div>
           </div>
         </div>
       ) : null}

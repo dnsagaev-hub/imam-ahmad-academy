@@ -7,9 +7,9 @@ import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { Crumbs } from '@/components/PageHead'
 import { SurahInfoButtons, type SurahInfoPart } from '@/components/quran/SurahInfoButtons'
-import { SurahView } from '@/components/quran/SurahView'
+import { SurahView, type AyahNote } from '@/components/quran/SurahView'
 import { SURAH_INFO_PARTS } from '@/collections/SurahInfo'
-import { PLACE_LABEL, getSurah, plural } from '@/lib/quran'
+import { AYAH_NOTES, PLACE_LABEL, getSurah, plural } from '@/lib/quran'
 import { getReciters, getSurahInfo, getTranslation } from '@/lib/quranData'
 
 export const dynamic = 'force-dynamic'
@@ -44,9 +44,12 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
   const [tr, reciters] = await Promise.all([getTranslation(n), getReciters()])
   const ayahs = tr?.ayahs?.length ? [...tr.ayahs].sort((a, b) => a.number - b.number) : null
   const translation = ayahs ? Array.from({ length: s.ayahs }, (_, i) => ayahs.find((a) => a.number === i + 1)?.text ?? '') : null
-  // Комментарий показывается, только если в нём есть текст
-  const comments: Record<number, React.ReactNode> = {}
-  for (const a of ayahs ?? []) if (hasText(a.comment)) comments[a.number] = <RichText data={a.comment as never} />
+  // Пояснения к аяту (толкование и др.): кнопка — только у заполненного
+  const notes: Record<number, AyahNote[]> = {}
+  for (const a of ayahs ?? []) {
+    const list = AYAH_NOTES.filter((f) => hasText(a[f.name])).map((f) => ({ name: f.name, body: <RichText data={a[f.name] as never} /> }))
+    if (list.length) notes[a.number] = list
+  }
   // Сведения о суре: кнопка — только у заполненного пункта
   const info = await getSurahInfo(n)
   const infoParts: SurahInfoPart[] = SURAH_INFO_PARTS.filter((p) => hasText(info?.[p.name])).map((p) => ({
@@ -84,7 +87,7 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
         </div>
       </div>
       <main className="container qmain">
-        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? tr?.basmala || BASMALA_RU : null} translation={translation} comments={comments} reciters={reciters} />
+        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? tr?.basmala || BASMALA_RU : null} translation={translation} notes={notes} reciters={reciters} />
         <nav className="sv-pager" aria-label="Соседние суры">
           {prev ? (
             <Link href={`/quran/${prev.n}`} className="sv-pg">
