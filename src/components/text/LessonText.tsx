@@ -32,6 +32,12 @@ function QaParagraph({ text, re }: { text: string; re: RegExp }) {
   )
 }
 
+// **жирный** внутри абзаца пояснения или пометки — например, заголовок пункта польз.
+function Rich({ text }: { text: string }) {
+  const parts = text.split(/\*\*(.+?)\*\*/)
+  return <p>{parts.map((t, i) => (i % 2 ? <strong key={i}>{t}</strong> : t))}</p>
+}
+
 function Block({ b, index }: { b: AnyBlock; index: number }) {
   switch (b.blockType) {
     case 'matn':
@@ -72,7 +78,7 @@ function Block({ b, index }: { b: AnyBlock; index: number }) {
         <section className="tl-explain">
           {b.title ? <h3>{b.title}</h3> : null}
           {paragraphs(b.text).map((p, i) => (
-            <p key={i}>{p}</p>
+            <Rich key={i} text={p} />
           ))}
         </section>
       )
@@ -97,7 +103,7 @@ function Block({ b, index }: { b: AnyBlock; index: number }) {
         <aside className={`tl-note tl-note-${b.kind ?? 'remark'}`}>
           <div className="tl-label">{b.title || NOTE_LABEL[b.kind] || 'Замечание'}</div>
           {paragraphs(b.text).map((p, i) => (
-            <p key={i}>{p}</p>
+            <Rich key={i} text={p} />
           ))}
         </aside>
       )
