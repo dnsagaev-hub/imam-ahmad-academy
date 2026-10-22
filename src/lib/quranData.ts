@@ -1,7 +1,7 @@
 import { cache } from 'react'
 
 import { getPayloadClient } from './payload'
-import { currentFolder, type Reciter } from './quran'
+import { currentFolder, type AyahNoteName, type Reciter } from './quran'
 import { mediaUrl } from './queries'
 
 /* Запросы раздела «Коран»: переводы сур и чтецы. Скрытое (без галочки «Опубликовано») не показывается. */
@@ -10,7 +10,7 @@ export type TranslationDoc = {
   surah: number
   translator?: string | null
   basmala?: string | null
-  ayahs?: { number: number; text: string; comment?: unknown }[] | null
+  ayahs?: ({ number: number; text: string } & Partial<Record<AyahNoteName, unknown>>)[] | null
 }
 
 /** Номера сур, у которых есть опубликованный перевод. */

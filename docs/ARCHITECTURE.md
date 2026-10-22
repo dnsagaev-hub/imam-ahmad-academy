@@ -46,7 +46,7 @@ docker-compose.yml         локальная версия: сайт + PostgreSQ
   `src/data/quran/<номер>.json` и `public/fonts/quran/`; список сур (русское название, смысл, мекканская/мединская по Tanzil,
   число аятов) — `src/lib/quran.ts`. Сведения о суре (кнопки в шапке суры, окно `SurahInfoButtons`) — коллекция
   `surah-info`: номер суры и четыре richText-пункта из `SURAH_INFO_PARTS`, кнопка только у заполненного. Перевод — коллекция `quran-translations` (одна запись на суру: аяты с переводом
-  и комментарием richText); загрузка .docx разбирается хуком `beforeChange` (`src/lib/docx.ts`, без зависимостей:
+  и пояснениями richText из `AYAH_NOTES`: толкование — прежнее поле `comment`, причина ниспослания `occasion`, связь `connection`, размышление `reflection`); загрузка .docx разбирается хуком `beforeChange` (`src/lib/docx.ts`, без зависимостей:
   zip + `word/document.xml`), номера аятов сверяются с сурой, комментарии при повторной загрузке сохраняются.
   Файл .docx лежит в `media/quran-docx` (не в S3: после разбора он не нужен сайту). Жирный/обычный — по скобкам
   (`splitTranslation`), а не по форматированию Word. Ошибка хука — `APIError` с явным `name`: иначе в собранной версии

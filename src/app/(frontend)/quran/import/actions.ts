@@ -5,18 +5,18 @@ import { revalidatePath } from 'next/cache'
 import { isAdminUser } from '@/access'
 import { checkAyahNumbers, parseCollectionDocx } from '@/lib/docx'
 import { getCurrentUser, getPayloadClient } from '@/lib/payload'
-import { getSurah, plural } from '@/lib/quran'
+import { getSurah, keepNotes, plural } from '@/lib/quran'
 
 const AYAT: [string, string, string] = ['аят', 'аята', 'аятов']
 
 export type ImportState = { error?: string; problems?: string[]; done?: string[] } | null
 
-type Ayah = { number?: number | null; text?: string | null; comment?: unknown }
+type Ayah = { number?: number | null; text?: string | null } & Record<string, unknown>
 
 /**
  * Сборник переводов одним файлом: делит файл по сурам и сохраняет каждую суру так же, как «Перевод суры» в админке.
  * Если хоть одна сура не сходится по аятам, не сохраняется ничего. Сура, которая уже есть, обновляется:
- * переводы аятов — из файла, комментарии, переводчик и галочка «Опубликовано» остаются прежними.
+ * переводы аятов — из файла, пояснения к аятам, переводчик и галочка «Опубликовано» остаются прежними.
  */
 export async function importQuranCollection(_prev: ImportState, form: FormData): Promise<ImportState> {
   const user = await getCurrentUser()
@@ -54,8 +54,9 @@ export async function importQuranCollection(_prev: ImportState, form: FormData):
     const s = getSurah(first + k)!
     const found = await payload.find({ collection: 'quran-translations', where: { surah: { equals: s.n } }, limit: 1, depth: 0, user, overrideAccess: false })
     const old = found.docs[0] as { id: number | string; ayahs?: Ayah[] | null } | undefined
-    const comments = new Map((old?.ayahs ?? []).map((a) => [Number(a.number), a.comment ?? null]))
-    const ayahs = p.ayahs.map((a) => ({ number: a.number, text: a.text, comment: (comments.get(a.number) ?? null) as never }))
+    // Пояснения к аятам (толкование и др.) остаются прежними
+    const notes = new Map((old?.ayahs ?? []).map((a) => [Number(a.number), a]))
+    const ayahs = p.ayahs.map((a) => ({ number: a.number, text: a.text, ...(keepNotes(notes.get(a.number)) as Record<string, never>) }))
     const data = { surah: s.n, ayahs, ...(p.basmala ? { basmala: p.basmala } : {}) }
     if (old) await payload.update({ collection: 'quran-translations', id: old.id, data, user, overrideAccess: false })
     else await payload.create({ collection: 'quran-translations', data, user, overrideAccess: false })

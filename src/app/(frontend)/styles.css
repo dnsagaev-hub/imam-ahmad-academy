@@ -1129,8 +1129,14 @@ body.has-player { padding-bottom: 104px; }
 .ayah-tr p { margin: 0; font-size: 17px; line-height: 1.75; }
 .ayah-tr strong { font-weight: 700; color: var(--ink); }
 .tr-note { font-weight: 400; color: var(--muted); }
-.ayah-note { margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border: 1px solid var(--line-2); border-radius: 99px; background: #fff; color: var(--royal); font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.18s; }
-.ayah-note:hover { background: var(--ice); }
+/* Пояснения к аяту (задача 33): тихий ряд мелких кнопок под переводом, чтобы не спорить с самим переводом */
+.ayah-notes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.ayah-note { padding: 3px 10px; border: 1px solid var(--line-2); border-radius: 99px; background: transparent; color: var(--royal); font: inherit; font-size: 12.5px; font-weight: 600; line-height: 1.5; cursor: pointer; transition: background 0.18s, border-color 0.18s; }
+.ayah-note:hover, .ayah-note:focus-visible { background: #fff; border-color: var(--royal); }
+.ayah-notes-m { display: none; margin-top: 10px; }
+.cm-tabs { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 24px 14px; }
+.cm-tabs button { padding: 5px 12px; border: 1px solid var(--line-2); border-radius: 99px; background: #fff; color: var(--royal); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.cm-tabs button.on { background: var(--navy); border-color: var(--navy); color: #fff; }
 .ar-only .ayah { grid-template-columns: 1fr; grid-template-areas: 'ar'; }
 /* Аят, который сейчас читает чтец (вкладка «Слушать», если у записи есть разметка аятов) */
 .ayah, .basmala { transition: background 0.35s ease, box-shadow 0.35s ease; }
@@ -1180,6 +1186,9 @@ body.has-player { padding-bottom: 104px; }
   .ayah-ar { font-size: 27px; }
   .ayah-tr { padding-left: 46px; }
   .ayah-tr p { font-size: 16px; }
+  .ayah-notes { display: none; }
+  .ayah-notes-m { display: inline-block; }
+  .cm-tabs { padding: 0 20px 12px; }
   .cm-back { align-items: end; padding: 0; }
   .cm { width: 100%; max-height: 86vh; border-radius: 20px 20px 0 0; }
   .sv-pager { grid-template-columns: 1fr 1fr; }
