@@ -187,7 +187,7 @@ export function plural(n: number, forms: [string, string, string]): string {
 export const AYAH_NOTES = [
   { name: 'comment', label: 'Толкование', short: 'Толкование' },
   { name: 'occasion', label: 'Причина ниспослания', short: 'Причина' },
-  { name: 'connection', label: 'Связь с предыдущим аятом', short: 'Связь' },
+  { name: 'connection', label: 'Связь с предыдущим отрывком', short: 'Связь с предыдущим' },
   { name: 'reflection', label: 'Размышление', short: 'Размышление' },
 ] as const
 
