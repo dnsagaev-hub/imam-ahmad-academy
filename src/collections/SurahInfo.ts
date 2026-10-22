@@ -10,6 +10,7 @@ export const SURAH_INFO_PARTS = [
   { name: 'goals', label: 'Цели суры' },
   { name: 'themes', label: 'Тематика суры' },
   { name: 'revelation', label: 'Место ниспослания' },
+  { name: 'virtues', label: 'Хадис о достоинстве суры' },
 ] as const
 
 /**
@@ -24,7 +25,7 @@ export const SurahInfo: CollectionConfig = {
     defaultColumns: ['title', 'isPublished', 'updatedAt'],
     group: 'Коран',
     description:
-      'Кнопки над сурой: «Название суры», «Цели суры», «Тематика суры», «Место ниспослания». По нажатию текст открывается в окне. Пустой пункт на сайте не показывается.',
+      'Кнопки над сурой: «Название суры», «Цели суры», «Тематика суры», «Место ниспослания», «Хадис о достоинстве суры». По нажатию текст открывается в окне. Пустой пункт на сайте не показывается.',
   },
   defaultSort: 'surah',
   access: {
@@ -59,6 +60,12 @@ export const SurahInfo: CollectionConfig = {
       label: 'Место ниспослания',
       type: 'richText',
       admin: { description: 'Мекка или Медина; какие аяты ниспосланы в другом месте.' },
+    },
+    {
+      name: 'virtues',
+      label: 'Хадис о достоинстве суры',
+      type: 'richText',
+      admin: { description: 'Арабский текст хадиса из сборника, перевод, сборник и номер хадиса (например: «Передал Муслим, № 811»).' },
     },
   ],
   hooks: {

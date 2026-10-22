@@ -6,6 +6,7 @@ import * as migration_20261019_230346_lesson_figure from './20261019_230346_less
 import * as migration_20261020_090912_lesson_hadith from './20261020_090912_lesson_hadith';
 import * as migration_20261021_125346_quran from './20261021_125346_quran';
 import * as migration_20261022_081747_surah_info from './20261022_081747_surah_info';
+import * as migration_20261022_085619_surah_info_virtues from './20261022_085619_surah_info_virtues';
 
 export const migrations = [
   {
@@ -46,6 +47,11 @@ export const migrations = [
   {
     up: migration_20261022_081747_surah_info.up,
     down: migration_20261022_081747_surah_info.down,
-    name: '20261022_081747_surah_info'
+    name: '20261022_081747_surah_info',
+  },
+  {
+    up: migration_20261022_085619_surah_info_virtues.up,
+    down: migration_20261022_085619_surah_info_virtues.down,
+    name: '20261022_085619_surah_info_virtues'
   },
 ];
