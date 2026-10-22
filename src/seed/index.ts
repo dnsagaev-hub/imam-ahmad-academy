@@ -155,7 +155,7 @@ if (!demoInfo.docs.length) {
   const sample = (what: string) => doc(paragraph(`Образец: здесь владелец пишет ${what}.`)) as never
   await payload.create({
     collection: 'surah-info',
-    data: { surah: 114, nameInfo: sample('о названии суры'), goals: sample('о целях суры'), revelation: sample('о месте ниспослания') },
+    data: { surah: 114, nameInfo: sample('о названии суры'), goals: sample('о целях суры'), revelation: sample('о месте ниспослания'), virtues: sample('хадис о достоинстве суры') },
   })
   await payload.create({ collection: 'surah-info', data: { surah: 113, isPublished: false, goals: sample('о целях суры') } })
   payload.logger.info('Демо-сведения о сурах 113 и 114 созданы.')
