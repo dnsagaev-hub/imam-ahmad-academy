@@ -4,7 +4,7 @@
 ```
 src/
   payload.config.ts        настройки Payload (коллекции, S3, почта, onInit → стартовое наполнение)
-  collections/             Courses, Lessons, Articles, Books, Media, QuranTranslations, Reciters, Users, QuizAttempts, Messages
+  collections/             Courses, Lessons, Articles, Books, Media, QuranTranslations, SurahInfo, Reciters, Users, QuizAttempts, Messages
   globals/Settings.ts      настройки сайта (тексты главной, город намазов, хиджра, контакты, FAQ)
   blocks/lessonBlocks.ts   блоки текстового урока (и статей): matn, hadith (хадис в своей рамке), explanation, terms, note, figure (картинка из media), takeaways
   access/                  кто что видит и меняет
@@ -44,7 +44,8 @@ docker-compose.yml         локальная версия: сайт + PostgreSQ
 - Стартовое наполнение (`SEED_STARTER=true`) — один раз, затем скрытый флаг `starterSeeded` в настройках (`src/seed/starter.ts`).
 - Коран (`/quran`): арабский текст и шрифт — Комплекс короля Фахда (KFGQPC Uthmanic Hafs v18), постоянные данные в
   `src/data/quran/<номер>.json` и `public/fonts/quran/`; список сур (русское название, смысл, мекканская/мединская по Tanzil,
-  число аятов) — `src/lib/quran.ts`. Перевод — коллекция `quran-translations` (одна запись на суру: аяты с переводом
+  число аятов) — `src/lib/quran.ts`. Сведения о суре (кнопки в шапке суры, окно `SurahInfoButtons`) — коллекция
+  `surah-info`: номер суры и четыре richText-пункта из `SURAH_INFO_PARTS`, кнопка только у заполненного. Перевод — коллекция `quran-translations` (одна запись на суру: аяты с переводом
   и комментарием richText); загрузка .docx разбирается хуком `beforeChange` (`src/lib/docx.ts`, без зависимостей:
   zip + `word/document.xml`), номера аятов сверяются с сурой, комментарии при повторной загрузке сохраняются.
   Файл .docx лежит в `media/quran-docx` (не в S3: после разбора он не нужен сайту). Жирный/обычный — по скобкам

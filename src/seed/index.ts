@@ -149,5 +149,17 @@ if (!demoSurah.docs.length) {
   payload.logger.info('Демо-перевод суры 114 создан.')
 }
 
+// Демо-сведения о суре (задача 31, заглушка, не текст владельца): у 114 три пункта из четырёх, у 113 запись скрыта
+const demoInfo = await payload.find({ collection: 'surah-info', where: { surah: { in: [113, 114] } }, limit: 2 })
+if (!demoInfo.docs.length) {
+  const sample = (what: string) => doc(paragraph(`Образец: здесь владелец пишет ${what}.`)) as never
+  await payload.create({
+    collection: 'surah-info',
+    data: { surah: 114, nameInfo: sample('о названии суры'), goals: sample('о целях суры'), revelation: sample('о месте ниспослания') },
+  })
+  await payload.create({ collection: 'surah-info', data: { surah: 113, isPublished: false, goals: sample('о целях суры') } })
+  payload.logger.info('Демо-сведения о сурах 113 и 114 созданы.')
+}
+
 payload.logger.info('Готово.')
 process.exit(0)

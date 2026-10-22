@@ -70,3 +70,19 @@ export const getReciters = cache(async (): Promise<Reciter[]> => {
     return { id: String(r.id), name: r.name, nameAr: r.nameAr ?? '', base: r.source === 'link' && r.baseUrl ? currentFolder(r.baseUrl) : null, files }
   })
 })
+
+/** Сведения о суре (кнопки в шапке): опубликованная запись или null. */
+export async function getSurahInfo(n: number): Promise<Record<string, unknown> | null> {
+  try {
+    const payload = await getPayloadClient()
+    const res = await payload.find({
+      collection: 'surah-info',
+      where: { and: [{ surah: { equals: n } }, { isPublished: { equals: true } }] },
+      depth: 0,
+      limit: 1,
+    })
+    return (res.docs[0] as unknown as Record<string, unknown>) ?? null
+  } catch {
+    return null
+  }
+}
