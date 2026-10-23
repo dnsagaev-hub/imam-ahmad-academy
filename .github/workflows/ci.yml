@@ -164,8 +164,9 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p /tmp/preview && cd /tmp/preview
+          # Страницы мусхафа и PDF сур в копию не берутся: все 114 сур — сотни мегабайт (задача 39)
           wget -q -e robots=off --recursive --level=4 --page-requisites --convert-links --adjust-extension --no-host-directories \
-            --reject-regex '/(admin|api)(/|$)|\?' --domains 127.0.0.1 http://127.0.0.1:3000/ || true
+            --reject-regex '/(admin|api)(/|$)|\?|/mushaf' --domains 127.0.0.1 http://127.0.0.1:3000/ || true
           find . -name '*.html' | wc -l | sed 's/^/static pages: /' | tee -a $GITHUB_WORKSPACE/ci.log
           cd /tmp && mv preview imam-ahmad-academy-preview && zip -qr /tmp/site-preview.zip imam-ahmad-academy-preview
           ls -la /tmp/site-preview.zip | tee -a $GITHUB_WORKSPACE/ci.log
