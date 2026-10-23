@@ -70,6 +70,7 @@ export function SurahView({
   translation,
   notes,
   topics,
+  mushaf,
   reciters: all,
 }: {
   surah: Surah
@@ -79,6 +80,7 @@ export function SurahView({
   translation: string[] | null
   notes: Record<number, AyahNote[]>
   topics: AyahTopic[]
+  mushaf: { from: number; to: number }
   reciters: Reciter[]
 }) {
   // Чтец со своими файлами показывается только у сур, для которых загружена запись
@@ -180,7 +182,11 @@ export function SurahView({
   const start = (r: Reciter) => {
     // Очередь — все суры этого чтеца: кнопки «вперёд/назад» плеера переходят к соседней суре
     const track = trackOf(r, surah)
-    if (track) play(track, SURAHS.map((s) => trackOf(r, s)).filter((t): t is Track => t !== null))
+    if (track)
+      play(
+        track,
+        SURAHS.map((s) => trackOf(r, s)).filter((t): t is Track => t !== null),
+      )
   }
 
   return (
@@ -202,18 +208,35 @@ export function SurahView({
             Слушать
           </button>
         </div>
-        {translation ? (
-          <div className="sv-show" role="group" aria-label="Что показывать">
-            <label className={show.ar ? 'on' : ''}>
-              <input type="checkbox" checked={show.ar} onChange={() => toggle('ar')} />
-              Арабский текст
-            </label>
-            <label className={show.tr ? 'on' : ''}>
-              <input type="checkbox" checked={show.tr} onChange={() => toggle('tr')} />
-              Перевод
-            </label>
+        <div className="sv-tools">
+          {translation ? (
+            <div className="sv-show" role="group" aria-label="Что показывать">
+              <label className={show.ar ? 'on' : ''}>
+                <input type="checkbox" checked={show.ar} onChange={() => toggle('ar')} />
+                Арабский текст
+              </label>
+              <label className={show.tr ? 'on' : ''}>
+                <input type="checkbox" checked={show.tr} onChange={() => toggle('tr')} />
+                Перевод
+              </label>
+            </div>
+          ) : null}
+          {/* Сура в мусхафе Медины: страницы на сайте и PDF */}
+          <div className="sv-mushaf">
+            <a className="sv-chip" href={`/quran/${surah.n}/mushaf`}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z" />
+              </svg>
+              Мусхаф · {mushaf.from === mushaf.to ? `стр. ${mushaf.from}` : `стр. ${mushaf.from}–${mushaf.to}`}
+            </a>
+            <a className="sv-chip" href={`/quran/${surah.n}/mushaf.pdf`} download aria-label={`Скачать PDF: сура ${surah.ru} в мусхафе Медины`}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
+              </svg>
+              PDF
+            </a>
           </div>
-        ) : null}
+        </div>
       </div>
 
       {tab === 'listen' ? (

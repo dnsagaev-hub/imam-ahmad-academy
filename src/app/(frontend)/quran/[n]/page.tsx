@@ -82,31 +82,14 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
               {translation && tr?.translator ? <p className="sh-credit">Перевод, комментарий и редакция — {tr.translator}</p> : null}
               {infoParts.length ? <SurahInfoButtons surahName={s.ru} parts={infoParts} /> : null}
             </div>
-            <div className="sh-side">
-              <p className="sh-ar" lang="ar" dir="rtl">
-                سُورَةُ {s.ar}
-              </p>
-              {/* Сура в мусхафе Медины: страницы на сайте и PDF */}
-              <div className="sh-mushaf">
-                <Link className="sh-info-btn sh-mushaf-read" href={`/quran/${n}/mushaf`}>
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z" />
-                  </svg>
-                  Мусхаф · {pages.from === pages.to ? `стр. ${pages.from}` : `стр. ${pages.from}–${pages.to}`}
-                </Link>
-                <a className="sh-info-btn" href={`/quran/${n}/mushaf.pdf`} download aria-label={`Скачать PDF: сура ${s.ru} в мусхафе Медины`}>
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
-                  </svg>
-                  PDF
-                </a>
-              </div>
-            </div>
+            <p className="sh-ar" lang="ar" dir="rtl">
+              سُورَةُ {s.ar}
+            </p>
           </div>
         </div>
       </div>
       <main className="container qmain">
-        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? tr?.basmala || BASMALA_RU : null} translation={translation} notes={notes} topics={(tr?.topics ?? []).filter((t) => t.title?.trim()).map((t) => ({ from: Number(t.from), title: t.title.trim() }))} reciters={reciters} />
+        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? tr?.basmala || BASMALA_RU : null} translation={translation} notes={notes} mushaf={pages} topics={(tr?.topics ?? []).filter((t) => t.title?.trim()).map((t) => ({ from: Number(t.from), title: t.title.trim() }))} reciters={reciters} />
         <nav className="sv-pager" aria-label="Соседние суры">
           {prev ? (
             <Link href={`/quran/${prev.n}`} className="sv-pg">

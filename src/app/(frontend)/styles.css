@@ -1125,6 +1125,10 @@ body.has-player { padding-bottom: 104px; }
 .sv-show label { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; background: #fff; border: 1px solid var(--line); border-radius: 99px; color: var(--muted); font-size: 15px; font-weight: 600; cursor: pointer; user-select: none; transition: border-color 0.18s, color 0.18s; }
 .sv-show label:hover { border-color: var(--gold); }
 .sv-show label.on { color: var(--navy); border-color: var(--line-2); }
+.sv-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.sv-mushaf { display: inline-flex; flex-wrap: wrap; gap: 8px; }
+.sv-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; background: #fff; border: 1px solid var(--line); border-radius: 99px; color: var(--royal); font-size: 15px; font-weight: 600; text-decoration: none; transition: border-color 0.18s, background 0.18s, color 0.18s; }
+.sv-chip:hover, .sv-chip:focus-visible { border-color: var(--royal); background: var(--royal); color: #fff; }
 .sv-show input { width: 17px; height: 17px; margin: 0; accent-color: var(--royal); cursor: pointer; }
 
 .sv-listen { margin-bottom: 30px; padding: 20px; background: #fff; border: 1px solid var(--line); border-top: 3px solid var(--gold); border-radius: 18px; animation: sv-drop 0.28s ease; }
@@ -1204,10 +1208,6 @@ a.sh-info-btn { text-decoration: none; }
 .cm-body p { margin: 0 0 12px; }
 
 /* Мусхаф суры (задача 39): страницы мусхафа Медины одна под другой */
-/* Кнопки мусхафа под арабским названием суры */
-.sh-side { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-.sh-mushaf { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
-.sh-mushaf .sh-info-btn { display: inline-flex; align-items: center; gap: 8px; }
 .mp-note { max-width: 760px; margin: 0 auto 22px; color: var(--muted); font-size: 15px; text-align: center; }
 .mp-pages { display: flex; flex-direction: column; align-items: center; gap: 26px; }
 .mp-page { width: min(620px, 100%); margin: 0; padding: 18px 18px 10px; background: #fffdf8; border: 1px solid var(--line); border-top: 3px solid var(--gold); border-radius: 14px; box-shadow: 0 14px 34px rgba(0, 40, 28, 0.08); }
@@ -1229,11 +1229,12 @@ a.sh-info-btn { text-decoration: none; }
   .qi-ar { font-size: 23px; }
   .sh { flex-direction: column; align-items: stretch; padding-bottom: 22px; }
   .sh-ar { order: -1; font-size: 40px; text-align: right; }
-  .sh-side { display: contents; }
-  .sh-mushaf { justify-content: flex-start; }
   .sv-bar { flex-direction: column; align-items: stretch; }
   .sv-tabs { display: flex; }
   .sv-show { display: flex; }
+  .sv-tools { flex-direction: column; align-items: stretch; }
+  .sv-mushaf { display: flex; }
+  .sv-chip { flex: 1; justify-content: center; padding: 0 10px; font-size: 14px; }
   .sv-show label { flex: 1; justify-content: center; padding: 0 10px; font-size: 14px; }
   .ayah-topic { font-size: 17px; padding-top: 18px; }
   .sv-tabs button { flex: 1; justify-content: center; padding: 0 12px; }
