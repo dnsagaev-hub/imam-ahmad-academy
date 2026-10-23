@@ -9,6 +9,7 @@ import { Crumbs } from '@/components/PageHead'
 import { SurahInfoButtons, type SurahInfoPart } from '@/components/quran/SurahInfoButtons'
 import { SurahView, type AyahNote } from '@/components/quran/SurahView'
 import { SURAH_INFO_PARTS } from '@/collections/SurahInfo'
+import { mushafPages } from '@/lib/mushaf'
 import { AYAH_NOTES, PLACE_LABEL, getSurah, plural } from '@/lib/quran'
 import { getReciters, getSurahInfo, getTranslation } from '@/lib/quranData'
 
@@ -57,6 +58,7 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
     label: p.label,
     body: <RichText data={info![p.name] as never} />,
   }))
+  const pages = mushafPages(n)!
   const prev = n > 1 ? getSurah(n - 1) : null
   const next = n < 114 ? getSurah(n + 1) : null
 
@@ -80,14 +82,31 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
               {translation && tr?.translator ? <p className="sh-credit">Перевод, комментарий и редакция — {tr.translator}</p> : null}
               {infoParts.length ? <SurahInfoButtons surahName={s.ru} parts={infoParts} /> : null}
             </div>
-            <p className="sh-ar" lang="ar" dir="rtl">
-              سُورَةُ {s.ar}
-            </p>
+            <div className="sh-side">
+              <p className="sh-ar" lang="ar" dir="rtl">
+                سُورَةُ {s.ar}
+              </p>
+              {/* Сура в мусхафе Медины: страницы на сайте и PDF */}
+              <div className="sh-mushaf">
+                <Link className="sh-info-btn sh-mushaf-read" href={`/quran/${n}/mushaf`}>
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z" />
+                  </svg>
+                  Мусхаф · {pages.from === pages.to ? `стр. ${pages.from}` : `стр. ${pages.from}–${pages.to}`}
+                </Link>
+                <a className="sh-info-btn" href={`/quran/${n}/mushaf.pdf`} download aria-label={`Скачать PDF: сура ${s.ru} в мусхафе Медины`}>
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
+                  </svg>
+                  PDF
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <main className="container qmain">
-        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? tr?.basmala || BASMALA_RU : null} translation={translation} notes={notes} reciters={reciters} />
+        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? tr?.basmala || BASMALA_RU : null} translation={translation} notes={notes} topics={(tr?.topics ?? []).filter((t) => t.title?.trim()).map((t) => ({ from: Number(t.from), title: t.title.trim() }))} reciters={reciters} />
         <nav className="sv-pager" aria-label="Соседние суры">
           {prev ? (
             <Link href={`/quran/${prev.n}`} className="sv-pg">

@@ -60,6 +60,12 @@ docker-compose.yml         локальная версия: сайт + PostgreSQ
   очередь — все суры чтеца.
   Сборник переводов одним файлом: `/quran/import` (только администратор), `parseCollectionDocx` в `src/lib/docx.ts`,
   сохранение — серверное действие `importQuranCollection` через Payload с правами вошедшего администратора.
+  Темы аятов — массив `topics` записи перевода (`from` — номер аята, `title`), подпись над аятом; галочки «Арабский
+  текст» / «Перевод» — в `SurahView`, выбор хранит браузер (`quran-show`).
+  Мусхаф суры (`src/lib/mushaf.ts`): страницы суры — mp3quran.net `suwar` (start_page/end_page), изображения страниц —
+  набор GovarJabbar/Quran-PNG на GitHub; `/quran/mushaf/<стр.>` отдаёт PNG (sharp: белый фон, ширина 1300, оттенки
+  серого; копия в `media/mushaf`), `/quran/<n>/mushaf` — страницы суры, `/quran/<n>/mushaf.pdf` — PDF, собранный без
+  библиотек (`buildPdf`, A4; готовый файл тоже в `media/mushaf`).
   Подсветка читаемого аята: `/quran/timing?r=<чтец>&s=<сура>` (`src/lib/quranTiming.ts`) берёт у mp3quran.net
   разметку времени аятов для чтеца, подключённого ссылкой на папку mp3quran (кэш сутки); у своих MP3 подсветки нет.
   Старые адреса семи чтецов (server*.mp3quran.net) заменяются на новые папки cdn.mp3quran.net (`currentFolder` в `src/lib/quran.ts`).

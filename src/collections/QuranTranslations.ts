@@ -85,6 +85,25 @@ export const QuranTranslations: CollectionConfig = {
     },
     { name: 'basmala', label: 'Перевод басмалы', type: 'text', admin: { description: 'Заполняется из файла, если там есть «С именем Аллаха…»' } },
     {
+      name: 'topics',
+      label: 'Темы аятов',
+      labels: { singular: 'Тема', plural: 'Темы' },
+      type: 'array',
+      admin: {
+        description:
+          'Где в суре начинается новая тема (например, «Лицемеры», «Сыны Израиля»): номер первого аята и название темы. На сайте название стоит небольшой подписью над этим аятом. При новой загрузке файла Word темы сохраняются.',
+      },
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            { name: 'from', label: 'С аята №', type: 'number', required: true, min: 1, admin: { width: '25%' } },
+            { name: 'title', label: 'Тема', type: 'text', required: true, admin: { width: '75%' } },
+          ],
+        },
+      ],
+    },
+    {
       name: 'ayahs',
       label: 'Аяты',
       labels: { singular: 'Аят', plural: 'Аяты' },
@@ -104,6 +123,12 @@ export const QuranTranslations: CollectionConfig = {
         const s = getSurah(Number(data.surah))
         if (!s) throw fail('Номер суры — от 1 до 114.')
         data.title = `${s.n}. ${s.ru}`
+
+        // Темы аятов: номер аята — в пределах суры, по порядку
+        const topics = (data.topics ?? []) as { from?: number | null }[]
+        const wrong = topics.filter((t) => !Number.isInteger(Number(t.from)) || Number(t.from) < 1 || Number(t.from) > s.ayahs)
+        if (wrong.length) throw fail(`Темы аятов: в суре ${s.n} «${s.ru}» ${s.ayahs} аятов, а указан аят ${wrong.map((t) => t.from ?? '—').join(', ')}.`)
+        if (topics.length) data.topics = [...topics].sort((a, b) => Number(a.from) - Number(b.from))
 
         // Новый файл Word: переводы аятов берутся из него, комментарии остаются прежними
         const file = req.file

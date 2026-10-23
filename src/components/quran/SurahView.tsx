@@ -1,12 +1,14 @@
 'use client'
 
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react'
 
 import { useAudioPlayer, type Track } from '@/components/audio/AudioPlayer'
 import { AYAH_NOTES, SURAHS, audioUrl, splitTranslation, type AyahNoteName, type Reciter, type Surah } from '@/lib/quran'
 import type { AyahTime } from '@/lib/quranTiming'
 
-const RECITER_KEY = 'quran-reciter'
+// Что показывать: арабский, перевод или оба (выбор ученика помнит браузер)
+const SHOW_KEY = 'quran-show'
+type Show = { ar: boolean; tr: boolean }
 
 // Разметка аятов по «чтец-сура», чтобы не спрашивать сервер повторно
 const timingCache = new Map<string, Promise<AyahTime[]>>()
@@ -56,6 +58,9 @@ export type AyahNote = { name: AyahNoteName; body: ReactNode }
 
 const noteLabel = (name: AyahNoteName) => AYAH_NOTES.find((f) => f.name === name)!
 
+/** Тема отрывка: подпись над аятом, с которого она начинается. */
+export type AyahTopic = { from: number; title: string }
+
 /** Сура: вкладки «Текст и перевод» и «Слушать», аяты в две колонки, окно пояснений к аяту. */
 export function SurahView({
   surah,
@@ -64,6 +69,7 @@ export function SurahView({
   basmalaRu,
   translation,
   notes,
+  topics,
   reciters: all,
 }: {
   surah: Surah
@@ -72,13 +78,14 @@ export function SurahView({
   basmalaRu: string | null
   translation: string[] | null
   notes: Record<number, AyahNote[]>
+  topics: AyahTopic[]
   reciters: Reciter[]
 }) {
   // Чтец со своими файлами показывается только у сур, для которых загружена запись
   const reciters = all.filter((r) => audioUrl(r, surah.n))
   const { current, playing, play, audio } = useAudioPlayer()
   const [tab, setTab] = useState<'read' | 'listen'>('read')
-  const [reciterId, setReciterId] = useState(reciters[0]?.id ?? '')
+  const [show, setShow] = useState<Show>({ ar: true, tr: true })
   const [open, setOpen] = useState<{ no: number; name: AyahNoteName } | null>(null)
   const [timing, setTiming] = useState<AyahTime[] | null>(null)
   const [now, setNow] = useState<number | null>(null)
@@ -135,12 +142,29 @@ export function SurahView({
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(RECITER_KEY)
-      if (saved && reciters.some((r) => r.id === saved)) setReciterId(saved)
+      const saved = JSON.parse(localStorage.getItem(SHOW_KEY) ?? 'null') as Show | null
+      if (saved && (saved.ar || saved.tr)) setShow({ ar: !!saved.ar, tr: !!saved.tr })
     } catch {
-      /* без памяти браузера — чтец по умолчанию */
+      /* без памяти браузера — арабский и перевод вместе */
     }
   }, [])
+
+  // Снять обе галочки нельзя: если убрать последнюю, включается другая
+  const toggle = (k: keyof Show) => {
+    const other = k === 'ar' ? 'tr' : 'ar'
+    const next = { ...show, [k]: !show[k] } as Show
+    if (!next.ar && !next.tr) next[other] = true
+    setShow(next)
+    try {
+      localStorage.setItem(SHOW_KEY, JSON.stringify(next))
+    } catch {
+      /* ничего */
+    }
+  }
+  // Без перевода суры показывается только арабский текст, переключатель не нужен
+  const showAr = !translation || show.ar
+  const showTr = !!translation && show.tr
+  const topicAt = new Map(topics.map((t) => [t.from, t.title]))
 
   useEffect(() => {
     if (open === null) return
@@ -154,47 +178,50 @@ export function SurahView({
   }, [open])
 
   const start = (r: Reciter) => {
-    setReciterId(r.id)
-    try {
-      localStorage.setItem(RECITER_KEY, r.id)
-    } catch {
-      /* ничего */
-    }
     // Очередь — все суры этого чтеца: кнопки «вперёд/назад» плеера переходят к соседней суре
     const track = trackOf(r, surah)
     if (track) play(track, SURAHS.map((s) => trackOf(r, s)).filter((t): t is Track => t !== null))
   }
 
-
   return (
     <>
-      <div className="sv-tabs" role="tablist">
-        <button type="button" role="tab" aria-selected={tab === 'read'} className={tab === 'read' ? 'on' : ''} onClick={() => setTab('read')}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z" />
-          </svg>
-          Читать
-        </button>
-        <button type="button" role="tab" aria-selected={tab === 'listen'} className={tab === 'listen' ? 'on' : ''} onClick={() => setTab('listen')}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M4 14v-2a8 8 0 0 1 16 0v2" />
-            <rect x="3" y="14" width="4" height="6" rx="1.5" />
-            <rect x="17" y="14" width="4" height="6" rx="1.5" />
-          </svg>
-          Слушать
-        </button>
+      <div className="sv-bar">
+        <div className="sv-tabs" role="tablist">
+          <button type="button" role="tab" aria-selected={tab === 'read'} className={tab === 'read' ? 'on' : ''} onClick={() => setTab('read')}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z" />
+            </svg>
+            Читать
+          </button>
+          <button type="button" role="tab" aria-selected={tab === 'listen'} className={tab === 'listen' ? 'on' : ''} onClick={() => setTab('listen')}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 14v-2a8 8 0 0 1 16 0v2" />
+              <rect x="3" y="14" width="4" height="6" rx="1.5" />
+              <rect x="17" y="14" width="4" height="6" rx="1.5" />
+            </svg>
+            Слушать
+          </button>
+        </div>
+        {translation ? (
+          <div className="sv-show" role="group" aria-label="Что показывать">
+            <label className={show.ar ? 'on' : ''}>
+              <input type="checkbox" checked={show.ar} onChange={() => toggle('ar')} />
+              Арабский текст
+            </label>
+            <label className={show.tr ? 'on' : ''}>
+              <input type="checkbox" checked={show.tr} onChange={() => toggle('tr')} />
+              Перевод
+            </label>
+          </div>
+        ) : null}
       </div>
 
       {tab === 'listen' ? (
         <section className="sv-listen" aria-label="Чтецы">
-          <p className="sv-listen-lead">
-            {reciters.length
-              ? 'Нажмите на чтеца — сура зазвучит в плеере внизу экрана. Плеер не прерывается, пока вы читаете перевод.'
-              : 'Записей этой суры пока нет.'}
-          </p>
+          <p className="sv-listen-lead">{reciters.length ? 'Нажмите на чтеца — сура зазвучит в плеере внизу экрана. Плеер не прерывается, пока вы читаете перевод.' : 'Записей этой суры пока нет.'}</p>
           <ul className="reciters">
-            {/* Чтец, которого ученик выбирал в прошлый раз, — первым в списке */}
-            {[...reciters].sort((a, b) => Number(b.id === reciterId) - Number(a.id === reciterId)).map((r) => {
+            {/* Порядок чтецов — как в админке, выбранный чтец остаётся на своём месте */}
+            {reciters.map((r) => {
               const isCur = current?.id === `quran-${surah.n}-${r.id}`
               return (
                 <li key={r.id}>
@@ -226,65 +253,69 @@ export function SurahView({
             })}
           </ul>
           {playingReciter && timing ? (
-            <p className="sv-sync">
-              {timing.length
-                ? 'Аят, который сейчас читает чтец, подсвечен в тексте ниже.'
-                : 'У этой записи нет разметки аятов, поэтому подсветки нет.'}
-            </p>
+            <p className="sv-sync">{timing.length ? 'Аят, который сейчас читает чтец, подсвечен в тексте ниже.' : 'У этой записи нет разметки аятов, поэтому подсветки нет.'}</p>
           ) : null}
         </section>
       ) : null}
 
-      {!translation ? (
-        <p className="sv-wait">
-          Перевод этой суры готовится. Пока здесь только арабский текст — перевод появится, как только будет добавлен.
-        </p>
-      ) : null}
+      {!translation ? <p className="sv-wait">Перевод этой суры готовится. Пока здесь только арабский текст — перевод появится, как только будет добавлен.</p> : null}
 
-      <div className={`ayahs${translation ? '' : ' ar-only'}`}>
+      <div className={`ayahs${showTr ? (showAr ? '' : ' tr-only') : ' ar-only'}`}>
         {basmala ? (
           <div className={`basmala${now === 0 ? ' now' : ''}`} id="a0">
-            <p lang="ar" dir="rtl">
-              {basmala}
-            </p>
-            {basmalaRu ? <p className="basmala-ru">{basmalaRu}</p> : null}
+            {showAr ? (
+              <p lang="ar" dir="rtl">
+                {basmala}
+              </p>
+            ) : null}
+            {basmalaRu && showTr ? <p className="basmala-ru">{basmalaRu}</p> : null}
           </div>
         ) : null}
         {arabic.map((ar, i) => {
           const no = i + 1
           const list = notes[no]
+          const topic = topicAt.get(no)
           return (
-            <div className={`ayah${now === no ? ' now' : ''}`} id={`a${no}`} key={no} aria-current={now === no ? 'true' : undefined}>
-              <div className="ayah-ar" lang="ar" dir="rtl">
-                {ar}
-              </div>
-              {translation ? (
-                <div className="ayah-tr">
-                  <span className="ayah-no">{no}</span>
-                  <p>
-                    <Translation text={translation[i] ?? ''} />
-                  </p>
-                  {list ? (
-                    <>
-                      <div className="ayah-notes">
-                        {list.map((n) => {
-                          const f = noteLabel(n.name)
-                          return (
-                            <button key={n.name} type="button" className="ayah-note" onClick={() => setOpen({ no, name: n.name })} aria-label={`${f.label}: аят ${no}`}>
-                              {f.short}
-                            </button>
-                          )
-                        })}
-                      </div>
-                      {/* Телефон: одна кнопка на все пояснения, дальше — вкладки в окне */}
-                      <button type="button" className="ayah-note ayah-notes-m" onClick={() => setOpen({ no, name: list[0].name })}>
-                        {list.length > 1 ? `Пояснения · ${list.length}` : noteLabel(list[0].name).short}
-                      </button>
-                    </>
-                  ) : null}
-                </div>
+            <Fragment key={no}>
+              {topic ? (
+                <p className="ayah-topic">
+                  <span>{topic}</span>
+                </p>
               ) : null}
-            </div>
+              <div className={`ayah${now === no ? ' now' : ''}`} id={`a${no}`} aria-current={now === no ? 'true' : undefined}>
+                {showAr ? (
+                  <div className="ayah-ar" lang="ar" dir="rtl">
+                    {ar}
+                  </div>
+                ) : null}
+                {showTr && translation ? (
+                  <div className="ayah-tr">
+                    <span className="ayah-no">{no}</span>
+                    <p>
+                      <Translation text={translation[i] ?? ''} />
+                    </p>
+                    {list ? (
+                      <>
+                        <div className="ayah-notes">
+                          {list.map((n) => {
+                            const f = noteLabel(n.name)
+                            return (
+                              <button key={n.name} type="button" className="ayah-note" onClick={() => setOpen({ no, name: n.name })} aria-label={`${f.label}: аят ${no}`}>
+                                {f.short}
+                              </button>
+                            )
+                          })}
+                        </div>
+                        {/* Телефон: одна кнопка на все пояснения, дальше — вкладки в окне */}
+                        <button type="button" className="ayah-note ayah-notes-m" onClick={() => setOpen({ no, name: list[0].name })}>
+                          {list.length > 1 ? `Пояснения · ${list.length}` : noteLabel(list[0].name).short}
+                        </button>
+                      </>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+            </Fragment>
           )
         })}
       </div>
@@ -308,7 +339,14 @@ export function SurahView({
             {notes[open.no].length > 1 ? (
               <div className="cm-tabs" role="tablist" aria-label="Пояснения к аяту">
                 {notes[open.no].map((n) => (
-                  <button key={n.name} type="button" role="tab" aria-selected={n.name === open.name} className={n.name === open.name ? 'on' : ''} onClick={() => setOpen({ no: open.no, name: n.name })}>
+                  <button
+                    key={n.name}
+                    type="button"
+                    role="tab"
+                    aria-selected={n.name === open.name}
+                    className={n.name === open.name ? 'on' : ''}
+                    onClick={() => setOpen({ no: open.no, name: n.name })}
+                  >
                     {noteLabel(n.name).short}
                   </button>
                 ))}
