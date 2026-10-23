@@ -10,6 +10,7 @@ export type TranslationDoc = {
   surah: number
   translator?: string | null
   basmala?: string | null
+  topics?: { from: number; title: string }[] | null
   ayahs?: ({ number: number; text: string } & Partial<Record<AyahNoteName, unknown>>)[] | null
 }
 

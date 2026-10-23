@@ -137,7 +137,7 @@ jobs:
           check "Коран: загрузка сборника только для администратора" 'has "/quran/import" "только для администратора" && hasnt "/quran/import" "name=\"file\""'
           # Сведения о суре (задача 31): кнопки только у заполненных пунктов, скрытая запись не показывается
           check "Коран: кнопки сведений о суре" 'has "/quran/114" "sh-info-btn" && has "/quran/114" "Цели суры" && has "/quran/114" "Хадис о достоинстве суры" && hasnt "/quran/114" "Тематика суры"'
-          check "Коран: скрытые сведения о суре" 'hasnt "/quran/113" "sh-info-btn" && hasnt "/quran/2" "sh-info-btn"'
+          check "Коран: скрытые сведения о суре" 'hasnt "/quran/113" "aria-label=\"Сведения о суре\"" && hasnt "/quran/2" "aria-label=\"Сведения о суре\"" && has "/quran/114" "aria-label=\"Сведения о суре\""'
           # Раздел «Хадисы» (задача 37): деление книги из миграции, хадисы по главам, кнопки только у заполненного
           check "Хадисы: пункт меню и 10 тем" 'has "/" "href=\"/hadith\"" && has "/hadith" "العقيدة" && has "/hadith" "الفتن" && has "/hadith" "Поклонение"'
           check "Хадисы: книги темы" 'has "/hadith/akyda" "Ислам и иман" && has "/hadith/akyda" "الإيمان بالقدر"'
@@ -145,6 +145,14 @@ jobs:
           check "Хадисы: кнопки под хадисом" 'has "/hadith/akyda/islam-i-iman" "Степень достоверности" && [ "$(curl -s http://127.0.0.1:3000/hadith/akyda/islam-i-iman | grep -o ">Разъяснение<" | wc -l)" = "1" ]'
           check "Хадисы: скрытый хадис не показан" 'hasnt "/hadith/akyda/islam-i-iman" "скрытый"'
           check "Хадисы: пустая книга и неверный адрес" 'has "/hadith/akyda/vera-v-predopredelenie" "готовятся" && [ "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/hadith/akyda/net-takoy)" = "404" ]'
+          # Задачи 38–41: переключатель «арабский / перевод», мусхаф суры и PDF, темы аятов, новые чтецы
+          check "Коран: переключатель арабский и перевод" 'has "/quran/114" "Что показывать" && hasnt "/quran/2" "Что показывать"'
+          check "Коран: тема аятов" 'has "/quran/114" "Образец темы аятов" && hasnt "/quran/113" "ayah-topic"'
+          check "Коран: новые чтецы из миграции" 'has "/quran/114" "Ясир ад-Даусари" && has "/quran/114" "Абдуррашид Суфи"'
+          check "Коран: кнопки мусхафа у суры" 'has "/quran/51" "/quran/51/mushaf.pdf" && has "/quran/51" "стр. 520–523"'
+          check "Коран: страницы мусхафа суры" 'has "/quran/51/mushaf" "/quran/mushaf/520" && has "/quran/51/mushaf" "/quran/mushaf/523" && hasnt "/quran/51/mushaf" "/quran/mushaf/524"'
+          check "Коран: страница мусхафа — картинка" '[ "$(curl -s -o /dev/null -w "%{http_code} %{content_type}" http://127.0.0.1:3000/quran/mushaf/604)" = "200 image/png" ] && [ "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/quran/mushaf/605)" = "404" ]'
+          check "Коран: PDF суры" '[ "$(curl -s http://127.0.0.1:3000/quran/114/mushaf.pdf | head -c 5)" = "%PDF-" ]'
           check "Коран: адрес разметки аятов" 'has "/quran/timing?r=1&s=67" "\"ayahs\""'
           for r in 1 2 3 4 5 6 7; do
             echo "разметка аятов, чтец $r, сура 67: $(curl -s "http://127.0.0.1:3000/quran/timing?r=$r&s=67" | head -c 160)" | tee -a ci.log
@@ -156,8 +164,9 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p /tmp/preview && cd /tmp/preview
+          # Страницы мусхафа и PDF сур в копию не берутся: все 114 сур — сотни мегабайт (задача 39)
           wget -q -e robots=off --recursive --level=4 --page-requisites --convert-links --adjust-extension --no-host-directories \
-            --reject-regex '/(admin|api)(/|$)|\?' --domains 127.0.0.1 http://127.0.0.1:3000/ || true
+            --reject-regex '/(admin|api)(/|$)|\?|/mushaf' --domains 127.0.0.1 http://127.0.0.1:3000/ || true
           find . -name '*.html' | wc -l | sed 's/^/static pages: /' | tee -a $GITHUB_WORKSPACE/ci.log
           cd /tmp && mv preview imam-ahmad-academy-preview && zip -qr /tmp/site-preview.zip imam-ahmad-academy-preview
           ls -la /tmp/site-preview.zip | tee -a $GITHUB_WORKSPACE/ci.log
@@ -170,7 +179,7 @@ jobs:
           cat > /tmp/shots.mjs <<'JS'
           import { chromium } from 'playwright'
           const pages = ['/', '/courses/demo-fikh-ochischeniya', '/lessons/pyat-osnov-fetv-imama-ahmada', '/lessons/demo-tayammum', '/courses', '/courses?level=beginner', '/courses/stupen-3-01-fiqh', '/text', '/text?book=ahsar-al-muhtasarat', '/audio', '/video', '/articles',
-            '/articles/tayammum-pri-holodnoy-vode', '/library', '/library/ahsar-al-muhtasarat', '/library/al-madkhal-ibn-badran', '/contact', '/progress', '/prayer-times', '/admin', '/quran', '/quran/114', '/quran/2', '/hadith', '/hadith/akyda', '/hadith/akyda/islam-i-iman']
+            '/articles/tayammum-pri-holodnoy-vode', '/library', '/library/ahsar-al-muhtasarat', '/library/al-madkhal-ibn-badran', '/contact', '/progress', '/prayer-times', '/admin', '/quran', '/quran/114', '/quran/2', '/quran/112/mushaf', '/hadith', '/hadith/akyda', '/hadith/akyda/islam-i-iman']
           const browser = await chromium.launch()
           for (const [name, vp] of [['desk', { width: 1440, height: 900 }], ['phone', { width: 390, height: 844 }]]) {
             const ctx = await browser.newContext({ viewport: vp, locale: 'ru-RU', timezoneId: 'Europe/Moscow' })

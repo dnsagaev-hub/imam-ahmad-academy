@@ -9,6 +9,7 @@ import { Crumbs } from '@/components/PageHead'
 import { SurahInfoButtons, type SurahInfoPart } from '@/components/quran/SurahInfoButtons'
 import { SurahView, type AyahNote } from '@/components/quran/SurahView'
 import { SURAH_INFO_PARTS } from '@/collections/SurahInfo'
+import { mushafPages } from '@/lib/mushaf'
 import { AYAH_NOTES, PLACE_LABEL, getSurah, plural } from '@/lib/quran'
 import { getReciters, getSurahInfo, getTranslation } from '@/lib/quranData'
 
@@ -57,6 +58,7 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
     label: p.label,
     body: <RichText data={info![p.name] as never} />,
   }))
+  const pages = mushafPages(n)!
   const prev = n > 1 ? getSurah(n - 1) : null
   const next = n < 114 ? getSurah(n + 1) : null
 
@@ -87,7 +89,7 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
         </div>
       </div>
       <main className="container qmain">
-        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? tr?.basmala || BASMALA_RU : null} translation={translation} notes={notes} reciters={reciters} />
+        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? tr?.basmala || BASMALA_RU : null} translation={translation} notes={notes} mushaf={pages} topics={(tr?.topics ?? []).filter((t) => t.title?.trim()).map((t) => ({ from: Number(t.from), title: t.title.trim() }))} reciters={reciters} />
         <nav className="sv-pager" aria-label="Соседние суры">
           {prev ? (
             <Link href={`/quran/${prev.n}`} className="sv-pg">
