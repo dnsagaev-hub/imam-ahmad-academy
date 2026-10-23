@@ -9,16 +9,10 @@ import { ARTICLE_CATEGORIES, COURSE_LEVELS, MEDIA_CATEGORIES, TEXT_CATEGORIES } 
 import { ChevronIcon } from './Icons'
 
 type Item = { label: string; href: string; match: string; sub?: { label: string; href: string }[] }
+/** Пункт-группа: своей страницы нет, по наведению (на телефоне — по нажатию) раскрывает пункты со своими рубриками. */
+type Group = { label: string; key: string; group: Item[] }
 
-const items: Item[] = [
-  { label: 'О сайте', href: '/about', match: '/about' },
-  { label: 'Коран', href: '/quran', match: '/quran' },
-  {
-    label: 'Курсы',
-    href: '/courses',
-    match: '/courses',
-    sub: COURSE_LEVELS.map((l) => ({ label: l.label, href: `/courses?level=${l.value}` })),
-  },
+const lessonItems: Item[] = [
   {
     label: 'Текстовые уроки',
     href: '/text',
@@ -37,6 +31,18 @@ const items: Item[] = [
     match: '/video',
     sub: MEDIA_CATEGORIES.map((c) => ({ label: c.label, href: `/video?category=${c.value}` })),
   },
+]
+
+const items: (Item | Group)[] = [
+  { label: 'О сайте', href: '/about', match: '/about' },
+  { label: 'Коран', href: '/quran', match: '/quran' },
+  {
+    label: 'Курсы',
+    href: '/courses',
+    match: '/courses',
+    sub: COURSE_LEVELS.map((l) => ({ label: l.label, href: `/courses?level=${l.value}` })),
+  },
+  { label: 'Уроки', key: 'lessons', group: lessonItems },
   {
     label: 'Статьи и вопросы',
     href: '/articles',
@@ -51,12 +57,17 @@ export function NavMenu() {
   const pathname = usePathname() || '/'
   const [open, setOpen] = useState(false)
   const [expanded, setExpanded] = useState<string | null>(null)
+  const [expandedSub, setExpandedSub] = useState<string | null>(null)
 
   // На телефоне меню закрывается после перехода на другую страницу
   useEffect(() => {
     setOpen(false)
     setExpanded(null)
+    setExpandedSub(null)
   }, [pathname])
+
+  const isActive = (item: Item) =>
+    pathname.startsWith(item.match) || (item.match === '/courses' && pathname.startsWith('/lessons'))
 
   return (
     <nav className={`main-nav${open ? ' open' : ''}`} aria-label="Основное меню">
@@ -76,7 +87,57 @@ export function NavMenu() {
       </button>
       <ul id="main-menu">
         {items.map((item) => {
-          const active = pathname.startsWith(item.match) || (item.match === '/courses' && pathname.startsWith('/lessons'))
+          if ('group' in item) {
+            const active = item.group.some(isActive)
+            const isOpen = expanded === item.key
+            return (
+              <li className={`nav-item nav-group${isOpen ? ' expanded' : ''}`} key={item.key}>
+                <div className="nav-row">
+                  <button
+                    type="button"
+                    className={`nav-link${active ? ' active' : ''}`}
+                    aria-expanded={isOpen}
+                    onClick={() => setExpanded(isOpen ? null : item.key)}
+                  >
+                    {item.label}
+                    <ChevronIcon />
+                  </button>
+                </div>
+                <div className="dropdown">
+                  {item.group.map((g) => {
+                    const subOpen = expandedSub === g.href
+                    return (
+                      <div className={`sub-item${subOpen ? ' expanded' : ''}`} key={g.href}>
+                        <div className="sub-row">
+                          <Link className={`sub-link${isActive(g) ? ' active' : ''}`} href={g.href}>
+                            {g.label}
+                            <ChevronIcon />
+                          </Link>
+                          <button
+                            type="button"
+                            className="nav-expand"
+                            aria-expanded={subOpen}
+                            aria-label={`Рубрики: ${g.label}`}
+                            onClick={() => setExpandedSub(subOpen ? null : g.href)}
+                          >
+                            <ChevronIcon />
+                          </button>
+                        </div>
+                        <div className="subdropdown">
+                          {g.sub?.map((s) => (
+                            <Link key={s.href} href={s.href}>
+                              {s.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </li>
+            )
+          }
+          const active = isActive(item)
           const isOpen = expanded === item.href
           return (
             <li className={`nav-item${isOpen ? ' expanded' : ''}`} key={item.href}>
