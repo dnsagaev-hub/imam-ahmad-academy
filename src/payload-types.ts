@@ -661,6 +661,16 @@ export interface QuranTranslation {
    * Заполняется из файла, если там есть «С именем Аллаха…»
    */
   basmala?: string | null;
+  /**
+   * Где в суре начинается новая тема (например, «Лицемеры», «Сыны Израиля»): номер первого аята и название темы. На сайте название стоит небольшой подписью над этим аятом. При новой загрузке файла Word темы сохраняются.
+   */
+  topics?:
+    | {
+        from: number;
+        title: string;
+        id?: string | null;
+      }[]
+    | null;
   ayahs?:
     | {
         number: number;
@@ -1578,6 +1588,13 @@ export interface QuranTranslationsSelect<T extends boolean = true> {
   isPublished?: T;
   translator?: T;
   basmala?: T;
+  topics?:
+    | T
+    | {
+        from?: T;
+        title?: T;
+        id?: T;
+      };
   ayahs?:
     | T
     | {
