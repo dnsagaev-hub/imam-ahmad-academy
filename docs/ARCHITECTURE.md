@@ -42,6 +42,11 @@ docker-compose.yml         локальная версия: сайт + PostgreSQ
   (номер в курсе, затем дата). Страница книги библиотеки показывает число уроков по видам (`getBookLessonCounts`).
   Рубрики аудио и видео — все рубрики уроков, включая «Акыду» (`MEDIA_CATEGORIES`).
 - Стартовое наполнение (`SEED_STARTER=true`) — один раз, затем скрытый флаг `starterSeeded` в настройках (`src/seed/starter.ts`).
+- Хадисы (`/hadith`, задача 37): коллекции `hadith-topics` → `hadith-books` → `hadith-sections` (главы, необязательны)
+  и `hadiths` (книга, глава, номер, `arabic`, `translation`, richText `source`/`grade`/`explanation` — кнопки из `HADITH_PARTS`,
+  только у заполненного). Деление книги «معالم السنة النبوية» вставляет миграция `20261023_154658_hadiths`. Запросы —
+  `src/lib/hadithData.ts`, страницы — `src/app/(frontend)/hadith`, вид хадиса и окно — `src/components/hadith/HadithList.tsx`
+  (классы «Корана» `.ayah`, `.cm` и свои `.hd-*`).
 - Коран (`/quran`): арабский текст и шрифт — Комплекс короля Фахда (KFGQPC Uthmanic Hafs v18), постоянные данные в
   `src/data/quran/<номер>.json` и `public/fonts/quran/`; список сур (русское название, смысл, мекканская/мединская по Tanzil,
   число аятов) — `src/lib/quran.ts`. Сведения о суре (кнопки в шапке суры, окно `SurahInfoButtons`) — коллекция

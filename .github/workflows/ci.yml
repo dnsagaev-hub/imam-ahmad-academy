@@ -97,7 +97,7 @@ jobs:
                       "/text?category=fiqh" "/text?book=ahsar-al-muhtasarat" "/audio?category=aqida" "/audio?book=net-takoy-knigi" "/video?book=ahsar-al-muhtasarat" \
                       /articles /articles/tayammum-pri-holodnoy-vode /articles/pochemu-u-imama-ahmada-neskolko-mneniy \
                       /library /library/ahsar-al-muhtasarat /library/kashshaf-al-qina /contact /progress /prayer-times /about /admin \
-                      /quran /quran/114 /quran/2; do
+                      /quran /quran/114 /quran/2 /hadith /hadith/akyda /hadith/akyda/islam-i-iman /hadith/smuty/fitan; do
             code=$(curl -s -o /dev/null -w '%{http_code}' -L "http://127.0.0.1:3000$path")
             echo "$code  $path" | tee -a ci.log
             [ "$code" = "200" ] || fail=1
@@ -138,6 +138,13 @@ jobs:
           # Сведения о суре (задача 31): кнопки только у заполненных пунктов, скрытая запись не показывается
           check "Коран: кнопки сведений о суре" 'has "/quran/114" "sh-info-btn" && has "/quran/114" "Цели суры" && has "/quran/114" "Хадис о достоинстве суры" && hasnt "/quran/114" "Тематика суры"'
           check "Коран: скрытые сведения о суре" 'hasnt "/quran/113" "sh-info-btn" && hasnt "/quran/2" "sh-info-btn"'
+          # Раздел «Хадисы» (задача 37): деление книги из миграции, хадисы по главам, кнопки только у заполненного
+          check "Хадисы: пункт меню и 10 тем" 'has "/" "href=\"/hadith\"" && has "/hadith" "العقيدة" && has "/hadith" "الفتن" && has "/hadith" "Поклонение"'
+          check "Хадисы: книги темы" 'has "/hadith/akyda" "Ислам и иман" && has "/hadith/akyda" "الإيمان بالقدر"'
+          check "Хадисы: хадисы по главам" 'has "/hadith/akyda/islam-i-iman" "بُنِيَ" && has "/hadith/akyda/islam-i-iman" "hd-sec" && has "/hadith/akyda/islam-i-iman" "Столпы ислама и имана"'
+          check "Хадисы: кнопки под хадисом" 'has "/hadith/akyda/islam-i-iman" "Степень достоверности" && [ "$(curl -s http://127.0.0.1:3000/hadith/akyda/islam-i-iman | grep -o ">Разъяснение<" | wc -l)" = "1" ]'
+          check "Хадисы: скрытый хадис не показан" 'hasnt "/hadith/akyda/islam-i-iman" "скрытый"'
+          check "Хадисы: пустая книга и неверный адрес" 'has "/hadith/akyda/vera-v-predopredelenie" "готовятся" && [ "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/hadith/akyda/net-takoy)" = "404" ]'
           check "Коран: адрес разметки аятов" 'has "/quran/timing?r=1&s=67" "\"ayahs\""'
           for r in 1 2 3 4 5 6 7; do
             echo "разметка аятов, чтец $r, сура 67: $(curl -s "http://127.0.0.1:3000/quran/timing?r=$r&s=67" | head -c 160)" | tee -a ci.log
@@ -163,7 +170,7 @@ jobs:
           cat > /tmp/shots.mjs <<'JS'
           import { chromium } from 'playwright'
           const pages = ['/', '/courses/demo-fikh-ochischeniya', '/lessons/pyat-osnov-fetv-imama-ahmada', '/lessons/demo-tayammum', '/courses', '/courses?level=beginner', '/courses/stupen-3-01-fiqh', '/text', '/text?book=ahsar-al-muhtasarat', '/audio', '/video', '/articles',
-            '/articles/tayammum-pri-holodnoy-vode', '/library', '/library/ahsar-al-muhtasarat', '/library/al-madkhal-ibn-badran', '/contact', '/progress', '/prayer-times', '/admin', '/quran', '/quran/114', '/quran/2']
+            '/articles/tayammum-pri-holodnoy-vode', '/library', '/library/ahsar-al-muhtasarat', '/library/al-madkhal-ibn-badran', '/contact', '/progress', '/prayer-times', '/admin', '/quran', '/quran/114', '/quran/2', '/hadith', '/hadith/akyda', '/hadith/akyda/islam-i-iman']
           const browser = await chromium.launch()
           for (const [name, vp] of [['desk', { width: 1440, height: 900 }], ['phone', { width: 390, height: 844 }]]) {
             const ctx = await browser.newContext({ viewport: vp, locale: 'ru-RU', timezoneId: 'Europe/Moscow' })
