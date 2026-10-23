@@ -75,6 +75,10 @@ export interface Config {
     'quran-translations': QuranTranslation;
     'surah-info': SurahInfo;
     reciters: Reciter;
+    'hadith-topics': HadithTopic;
+    'hadith-books': HadithBook;
+    'hadith-sections': HadithSection;
+    hadiths: Hadith;
     users: User;
     'quiz-attempts': QuizAttempt;
     messages: Message;
@@ -83,7 +87,15 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    'hadith-topics': {
+      books: 'hadith-books';
+    };
+    'hadith-books': {
+      sections: 'hadith-sections';
+      hadiths: 'hadiths';
+    };
+  };
   collectionsSelect: {
     courses: CoursesSelect<false> | CoursesSelect<true>;
     lessons: LessonsSelect<false> | LessonsSelect<true>;
@@ -93,6 +105,10 @@ export interface Config {
     'quran-translations': QuranTranslationsSelect<false> | QuranTranslationsSelect<true>;
     'surah-info': SurahInfoSelect<false> | SurahInfoSelect<true>;
     reciters: RecitersSelect<false> | RecitersSelect<true>;
+    'hadith-topics': HadithTopicsSelect<false> | HadithTopicsSelect<true>;
+    'hadith-books': HadithBooksSelect<false> | HadithBooksSelect<true>;
+    'hadith-sections': HadithSectionsSelect<false> | HadithSectionsSelect<true>;
+    hadiths: HadithsSelect<false> | HadithsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'quiz-attempts': QuizAttemptsSelect<false> | QuizAttemptsSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
@@ -865,6 +881,183 @@ export interface Reciter {
   createdAt: string;
 }
 /**
+ * Первая страница раздела «Хадисы» — список тем (в книге «Ма‘алим ас-Сунна» это «مقاصد»: Акыда, Знание и его источники…).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hadith-topics".
+ */
+export interface HadithTopic {
+  id: number;
+  title: string;
+  /**
+   * Как в книге, например: الكتاب الأول: الإسلام والإيمان → «الإسلام والإيمان».
+   */
+  titleAr?: string | null;
+  /**
+   * Чем меньше число, тем выше в списке. Обычно — номер по книге.
+   */
+  order?: number | null;
+  /**
+   * Заполняется автоматически из названия. Например: fikh-namaza
+   */
+  slug?: string | null;
+  /**
+   * Снимите галочку, чтобы временно скрыть с сайта
+   */
+  isPublished?: boolean | null;
+  books?: {
+    docs?: (number | HadithBook)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Книга внутри темы (в «Ма‘алим ас-Сунна» — «كتاب», например «Ислам и иман»). На странице книги хадисы идут подряд по главам.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hadith-books".
+ */
+export interface HadithBook {
+  id: number;
+  title: string;
+  /**
+   * Как в книге, например: الكتاب الأول: الإسلام والإيمان → «الإسلام والإيمان».
+   */
+  titleAr?: string | null;
+  topic: number | HadithTopic;
+  /**
+   * Чем меньше число, тем выше в списке. Обычно — номер по книге.
+   */
+  order?: number | null;
+  /**
+   * Заполняется автоматически из названия. Например: fikh-namaza
+   */
+  slug?: string | null;
+  /**
+   * Снимите галочку, чтобы временно скрыть с сайта
+   */
+  isPublished?: boolean | null;
+  sections?: {
+    docs?: (number | HadithSection)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  hadiths?: {
+    docs?: (number | Hadith)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Глава внутри книги («فصل» или «باب»). Необязательна: в книге без глав хадисы идут одним списком.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hadith-sections".
+ */
+export interface HadithSection {
+  id: number;
+  title: string;
+  /**
+   * Как в книге, например: الكتاب الأول: الإسلام والإيمان → «الإسلام والإيمان».
+   */
+  titleAr?: string | null;
+  book: number | HadithBook;
+  /**
+   * Чем меньше число, тем выше в списке. Обычно — номер по книге.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Справа на сайте — арабский текст с огласовками, слева — перевод. Под хадисом кнопки «Источник», «Степень достоверности», «Разъяснение»: пустая кнопка не показывается.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hadiths".
+ */
+export interface Hadith {
+  id: number;
+  book: number | HadithBook;
+  /**
+   * Необязательно. Сначала выберите книгу — здесь появятся её главы.
+   */
+  section?: (number | null) | HadithSection;
+  /**
+   * По нему хадисы идут по порядку; показывается в кружке рядом с переводом.
+   */
+  number: number;
+  title?: string | null;
+  /**
+   * Снимите галочку, чтобы временно скрыть с сайта
+   */
+  isPublished?: boolean | null;
+  /**
+   * Текст хадиса из сборника, дословно.
+   */
+  arabic: string;
+  /**
+   * Основной текст на сайте — жирный, пояснения в [ ] и ( ) — обычным, как в Коране.
+   */
+  translation: string;
+  /**
+   * Сборник и номер хадиса, например: «Передал Муслим (№ 8)».
+   */
+  source?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Например: «Достоверный (сахих)» или «О достоверности есть разногласия: …».
+   */
+  grade?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  explanation?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -988,6 +1181,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'reciters';
         value: number | Reciter;
+      } | null)
+    | ({
+        relationTo: 'hadith-topics';
+        value: number | HadithTopic;
+      } | null)
+    | ({
+        relationTo: 'hadith-books';
+        value: number | HadithBook;
+      } | null)
+    | ({
+        relationTo: 'hadith-sections';
+        value: number | HadithSection;
+      } | null)
+    | ({
+        relationTo: 'hadiths';
+        value: number | Hadith;
       } | null)
     | ({
         relationTo: 'users';
@@ -1426,6 +1635,66 @@ export interface RecitersSelect<T extends boolean = true> {
         audio?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hadith-topics_select".
+ */
+export interface HadithTopicsSelect<T extends boolean = true> {
+  title?: T;
+  titleAr?: T;
+  order?: T;
+  slug?: T;
+  isPublished?: T;
+  books?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hadith-books_select".
+ */
+export interface HadithBooksSelect<T extends boolean = true> {
+  title?: T;
+  titleAr?: T;
+  topic?: T;
+  order?: T;
+  slug?: T;
+  isPublished?: T;
+  sections?: T;
+  hadiths?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hadith-sections_select".
+ */
+export interface HadithSectionsSelect<T extends boolean = true> {
+  title?: T;
+  titleAr?: T;
+  book?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hadiths_select".
+ */
+export interface HadithsSelect<T extends boolean = true> {
+  book?: T;
+  section?: T;
+  number?: T;
+  title?: T;
+  isPublished?: T;
+  arabic?: T;
+  translation?: T;
+  source?: T;
+  grade?: T;
+  explanation?: T;
   updatedAt?: T;
   createdAt?: T;
 }

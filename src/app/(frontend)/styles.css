@@ -1147,6 +1147,7 @@ body.has-player { padding-bottom: 104px; }
 /* Сведения о суре: кнопки в шапке суры (задача 31) */
 .sh-info { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .sh-info-btn { padding: 8px 16px; border: 1px solid var(--line); border-radius: 99px; background: #fff; color: var(--navy); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: border-color 0.15s, background 0.15s, color 0.15s; }
+a.sh-info-btn { text-decoration: none; }
 .sh-info-btn:hover, .sh-info-btn:focus-visible { border-color: var(--royal); background: var(--royal); color: #fff; }
 .basmala { margin: 0; padding: 26px 0 22px; border-bottom: 1px solid var(--line); text-align: center; font-family: var(--quran); font-size: 36px; line-height: 1.6; color: var(--navy); }
 .ayah { display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: 'tr ar'; gap: 44px; padding: 24px 0; border-bottom: 1px solid var(--line-soft); scroll-margin-top: 90px; }
@@ -1221,6 +1222,34 @@ body.has-player { padding-bottom: 104px; }
   .cm { width: 100%; max-height: 86vh; border-radius: 20px 20px 0 0; }
   .sv-pager { grid-template-columns: 1fr 1fr; }
   .sv-pg-all { grid-column: 1 / -1; grid-row: 2; }
+}
+
+/* ---------- Хадисы: темы → книги → хадисы (задача 37), в том же виде, что «Коран» ---------- */
+.hd-grid { grid-template-columns: repeat(auto-fill, minmax(460px, 1fr)); }
+.hd-head-ar { font-family: var(--arabic); font-weight: 700; }
+.hd-card-ar { max-width: 46%; font-family: var(--arabic); font-size: 22px; font-weight: 700; line-height: 1.5; text-align: right; }
+.hd-soon { padding: 1px 8px; border-radius: 99px; background: var(--ice); color: var(--muted); font-weight: 700; }
+.hd-book-ar { font-family: var(--arabic); font-size: 46px; font-weight: 700; }
+.hd-group { scroll-margin-top: 90px; }
+.hd-group + .hd-group { margin-top: 34px; }
+.hd-sec { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 24px; margin: 0 0 14px; padding: 0 4px; }
+.hd-sec h2 { margin: 0; font-family: var(--display); font-size: 28px; line-height: 1.15; color: var(--navy); }
+.hd-sec p { margin: 0; font-family: var(--arabic); font-size: 24px; font-weight: 700; line-height: 1.5; color: var(--royal); }
+/* Арабский текст хадиса — шрифт Amiri (мусхафный шрифт только для Корана), огласовки не налезают на строки */
+.hd-ar { font-family: var(--arabic); font-size: 27px; line-height: 2.1; white-space: pre-line; }
+.cm .hd-ar { font-size: 22px; }
+.hd-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.hd-btn { padding: 5px 14px; font-size: 13.5px; }
+.saw { font-family: var(--arabic); font-weight: 400; font-size: 1.15em; line-height: 1; }
+@media (max-width: 720px) {
+  .hd-grid { grid-template-columns: 1fr; }
+  .hd-card-ar { max-width: 40%; font-size: 18px; }
+  .hd-book-ar { font-size: 32px; }
+  .hd-sec h2 { font-size: 23px; }
+  .hd-sec p { font-size: 20px; }
+  .hd-ar { font-size: 23px; }
+  .hd-btns { gap: 6px; margin-left: -46px; }
+  .hd-btn { padding: 4px 11px; font-size: 13px; }
 }
 
 /* Загрузка сборника переводов сур (/quran/import, задача 28) */
