@@ -161,6 +161,21 @@ button, input, select, textarea { font: inherit; }
 .nav-item:hover .dropdown, .nav-item:focus-within .dropdown { opacity: 1; visibility: visible; transform: none; }
 .dropdown a { display: block; padding: 10px 14px; border-radius: 8px; color: var(--ink); text-decoration: none; font-weight: 500; font-size: 15px; }
 .dropdown a:hover, .dropdown a:focus { background: var(--ice); color: var(--royal); }
+/* Пункт «Уроки»: в выпадающем списке три раздела, у каждого справа свои рубрики */
+button.nav-link { border: 0; background: transparent; font-family: inherit; cursor: pointer; }
+.sub-item { position: relative; }
+.sub-row { display: flex; align-items: center; }
+.dropdown .sub-link { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: 12px; font-weight: 600; color: var(--navy-2); }
+.dropdown .sub-link.active { color: var(--royal); }
+.sub-link svg { transform: rotate(-90deg); }
+.subdropdown {
+  position: absolute; top: -10px; left: calc(100% + 10px); z-index: 21; min-width: 250px; padding: 10px;
+  background: #fff; border-radius: 14px; border-top: 3px solid var(--gold); box-shadow: 0 24px 48px rgba(0, 61, 44, 0.18);
+  opacity: 0; visibility: hidden; transform: translateX(-6px); transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+}
+.subdropdown::before { content: ''; position: absolute; top: 0; bottom: 0; left: -20px; width: 20px; }
+.sub-item:hover .subdropdown, .sub-item:focus-within .subdropdown { opacity: 1; visibility: visible; transform: none; }
+.sub-item:hover > .sub-row .sub-link, .sub-item:focus-within > .sub-row .sub-link { background: var(--ice); color: var(--royal); }
 
 /* Тёмно-зелёная полоса под шапкой (главный экран, кабинет) */
 .header-band { position: relative; background: var(--navy-2); color: #fff; overflow: hidden; }
@@ -983,6 +998,19 @@ body.has-player { padding-bottom: 104px; }
   .dropdown::before { display: none; }
   .nav-item.expanded .dropdown { display: block; }
   .dropdown a { padding: 9px 12px; }
+  /* «Уроки» на телефоне: нажатие раскрывает три раздела, стрелка у раздела — его рубрики */
+  .nav-group .nav-link { justify-content: space-between; text-align: left; }
+  .nav-group .nav-link svg { display: block; width: 18px; height: 18px; margin-right: 15px; color: var(--royal); }
+  .nav-item.nav-group .nav-link svg { transform: none; }
+  .nav-group.expanded .nav-link svg { transform: rotate(180deg); }
+  .sub-row { justify-content: space-between; }
+  .sub-link svg { display: none; }
+  .nav-group .sub-item .nav-expand svg { transform: none; }
+  .nav-group .sub-item.expanded .nav-expand svg { transform: rotate(180deg); }
+  .sub-item:hover > .sub-row .sub-link, .sub-item:focus-within > .sub-row .sub-link { background: transparent; }
+  .subdropdown { display: none; position: static; min-width: 0; padding: 0 0 8px 14px; box-shadow: none; border-top: 0; border-radius: 0; opacity: 1; visibility: visible; transform: none; transition: none; }
+  .subdropdown::before { display: none; }
+  .sub-item.expanded .subdropdown { display: block; }
 }
 @media (max-width: 560px) {
   .pb-text { display: none; }

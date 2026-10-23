@@ -251,6 +251,34 @@ jobs:
               await page.waitForTimeout(300)
               await page.screenshot({ path: '/tmp/shots/phone_menu.png' })
             }
+            // Пункт «Уроки»: три раздела и их рубрики — компьютер по наведению, телефон по нажатию (задача 36)
+            try {
+              const c4 = name === 'phone' ? await browser.newContext({ viewport: vp, locale: 'ru-RU', timezoneId: 'Europe/Moscow', hasTouch: true, isMobile: true }) : ctx
+              const p4 = name === 'phone' ? await c4.newPage() : page
+              const vis = (s) => p4.evaluate((sel) => { const el = document.querySelector(sel); if (!el) return false; const cs = getComputedStyle(el); return cs.display !== 'none' && cs.visibility === 'visible' && cs.opacity === '1' }, s)
+              const res = []
+              await p4.goto('http://127.0.0.1:3000/text', { waitUntil: 'networkidle' })
+              const labels = await p4.$$eval('#main-menu > li > .nav-row > .nav-link', (els) => els.map((e) => e.textContent.trim()))
+              res.push(['«Уроки» вместо трёх пунктов', labels.includes('Уроки') && !labels.some((l) => /Текстовые уроки|Аудиоуроки|Видеоуроки/.test(l))])
+              if (name === 'desk') {
+                await p4.hover('.nav-group .nav-link', { timeout: 5000 }); await p4.waitForTimeout(400)
+                res.push(['наведение открывает три раздела', await vis('.nav-group .dropdown')])
+                await p4.hover('.nav-group .sub-item:nth-child(2) .sub-link', { timeout: 5000 }); await p4.waitForTimeout(400)
+                res.push(['наведение на раздел открывает рубрики', await vis('.nav-group .sub-item:nth-child(2) .subdropdown')])
+                await p4.screenshot({ path: '/tmp/shots/desk_lessons_menu.png', clip: { x: 0, y: 0, width: 1440, height: 760 } })
+              } else {
+                await p4.tap('.nav-toggle', { timeout: 5000 }); await p4.waitForTimeout(300)
+                await p4.tap('.nav-group .nav-link', { timeout: 5000 }); await p4.waitForTimeout(300)
+                res.push(['нажатие открывает три раздела', await vis('.nav-group .dropdown')])
+                await p4.tap('.nav-group .sub-item:nth-child(1) .nav-expand', { timeout: 5000 }); await p4.waitForTimeout(300)
+                res.push(['стрелка у раздела открывает рубрики', await vis('.nav-group .sub-item:nth-child(1) .subdropdown')])
+                await p4.screenshot({ path: '/tmp/shots/phone_lessons_menu.png', fullPage: true })
+                await c4.close()
+              }
+              for (const [what, ok] of res) console.log(name, 'меню «Уроки»:', what, ok ? 'ok' : 'ОШИБКИ')
+            } catch (e) {
+              console.log(name, 'меню «Уроки»: ОШИБКИ', String(e).slice(0, 300))
+            }
             await ctx.close()
           }
           await browser.close()
