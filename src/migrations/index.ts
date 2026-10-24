@@ -10,6 +10,7 @@ import * as migration_20261022_085619_surah_info_virtues from './20261022_085619
 import * as migration_20261022_100302_ayah_notes from './20261022_100302_ayah_notes';
 import * as migration_20261023_154658_hadiths from './20261023_154658_hadiths';
 import * as migration_20261023_211211_quran_topics from './20261023_211211_quran_topics';
+import * as migration_20261024_064631_reciters_more from './20261024_064631_reciters_more';
 
 export const migrations = [
   {
@@ -70,6 +71,11 @@ export const migrations = [
   {
     up: migration_20261023_211211_quran_topics.up,
     down: migration_20261023_211211_quran_topics.down,
-    name: '20261023_211211_quran_topics'
+    name: '20261023_211211_quran_topics',
+  },
+  {
+    up: migration_20261024_064631_reciters_more.up,
+    down: migration_20261024_064631_reciters_more.down,
+    name: '20261024_064631_reciters_more'
   },
 ];
