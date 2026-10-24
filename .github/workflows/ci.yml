@@ -149,6 +149,9 @@ jobs:
           check "Коран: переключатель арабский и перевод" 'has "/quran/114" "Что показывать" && hasnt "/quran/2" "Что показывать"'
           check "Коран: тема аятов" 'has "/quran/114" "Образец темы аятов" && hasnt "/quran/113" "ayah-topic"'
           check "Коран: новые чтецы из миграции" 'has "/quran/114" "Ясир ад-Даусари" && has "/quran/114" "Абдуррашид Суфи"'
+          # Задача 42: ещё три чтеца и короткое имя аль-Хусари; папки записей отвечают (первая сура)
+          check "Коран: чтецы задачи 42" 'has "/quran/114" "Ахмад ас-Сувейлим" && has "/quran/114" "Раад аль-Курди" && has "/quran/114" "Омар аль-Дарвиз" && has "/quran/114" "Махмуд аль-Хусари" && hasnt "/quran/114" "Махмуд Халиль"'
+          for f in ahmad-suwailem raad-kurdi omar-duraiwiz; do echo "mp3quran $f: $(curl -s -o /dev/null -r 0-0 -w "%{http_code}" https://cdn.mp3quran.net/audio/$f/r1/001.mp3)" | tee -a ci.log; done
           check "Коран: кнопки мусхафа у суры" 'has "/quran/51" "/quran/51/mushaf.pdf" && has "/quran/51" "стр. 520–523"'
           check "Коран: страницы мусхафа суры" 'has "/quran/51/mushaf" "/quran/mushaf/520" && has "/quran/51/mushaf" "/quran/mushaf/523" && hasnt "/quran/51/mushaf" "/quran/mushaf/524"'
           check "Коран: страница мусхафа — картинка" '[ "$(curl -s -o /dev/null -w "%{http_code} %{content_type}" http://127.0.0.1:3000/quran/mushaf/604)" = "200 image/png" ] && [ "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/quran/mushaf/605)" = "404" ]'
