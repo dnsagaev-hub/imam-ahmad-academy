@@ -7,9 +7,9 @@ import { useAudioPlayer, type Track } from '@/components/audio/AudioPlayer'
 import { AYAH_NOTES, SURAHS, audioUrl, splitTranslation, type AyahNoteName, type Reciter, type Surah } from '@/lib/quran'
 import type { AyahTime } from '@/lib/quranTiming'
 
-// Что показывать: арабский, перевод или оба (выбор ученика помнит браузер)
+// Что показывать: арабский, перевод или оба, темы аятов, пояснения (выбор ученика помнит браузер)
 const SHOW_KEY = 'quran-show'
-type Show = { ar: boolean; tr: boolean }
+type Show = { ar: boolean; tr: boolean; topics: boolean; notes: boolean }
 
 // Разметка аятов по «чтец-сура», чтобы не спрашивать сервер повторно
 const timingCache = new Map<string, Promise<AyahTime[]>>()
@@ -89,7 +89,7 @@ export function SurahView({
   const reciters = all.filter((r) => audioUrl(r, surah.n))
   const { current, playing, play, audio } = useAudioPlayer()
   const [tab, setTab] = useState<'read' | 'listen'>('read')
-  const [show, setShow] = useState<Show>({ ar: true, tr: true })
+  const [show, setShow] = useState<Show>({ ar: true, tr: true, topics: true, notes: true })
   const [open, setOpen] = useState<{ no: number; name: AyahNoteName } | null>(null)
   const [timing, setTiming] = useState<AyahTime[] | null>(null)
   const [now, setNow] = useState<number | null>(null)
@@ -146,14 +146,15 @@ export function SurahView({
 
   useEffect(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem(SHOW_KEY) ?? 'null') as Show | null
-      if (saved && (saved.ar || saved.tr)) setShow({ ar: !!saved.ar, tr: !!saved.tr })
+      const saved = JSON.parse(localStorage.getItem(SHOW_KEY) ?? 'null') as Partial<Show> | null
+      // Темы и пояснения по умолчанию видны: скрыты, только если ученик сам снял галочку
+      if (saved && (saved.ar || saved.tr)) setShow({ ar: !!saved.ar, tr: !!saved.tr, topics: saved.topics !== false, notes: saved.notes !== false })
     } catch {
       /* без памяти браузера — арабский и перевод вместе */
     }
   }, [])
 
-  // Снять обе галочки нельзя: если убрать последнюю, включается другая
+  // Арабский и перевод: снять обе галочки нельзя — если убрать последнюю, включается другая
   const toggle = (k: keyof Show) => {
     const other = k === 'ar' ? 'tr' : 'ar'
     const next = { ...show, [k]: !show[k] } as Show
@@ -168,7 +169,10 @@ export function SurahView({
   // Без перевода суры показывается только арабский текст, переключатель не нужен
   const showAr = !translation || show.ar
   const showTr = !!translation && show.tr
-  const topicAt = new Map(topics.map((t) => [t.from, t.title]))
+  const topicAt = new Map(show.topics ? topics.map((t) => [t.from, t.title]) : [])
+  // Галочки тем и пояснений — только если в этой суре они есть (пояснения видны под переводом)
+  const hasNotes = !!translation && Object.keys(notes).length > 0
+  const showNotes = hasNotes && show.notes
 
   useEffect(() => {
     if (open === null) return
@@ -211,16 +215,32 @@ export function SurahView({
           </button>
         </div>
         <div className="sv-tools">
-          {translation ? (
+          {translation || topics.length || hasNotes ? (
             <div className="sv-show" role="group" aria-label="Что показывать">
-              <label className={show.ar ? 'on' : ''}>
-                <input type="checkbox" checked={show.ar} onChange={() => toggle('ar')} />
-                Арабский текст
-              </label>
-              <label className={show.tr ? 'on' : ''}>
-                <input type="checkbox" checked={show.tr} onChange={() => toggle('tr')} />
-                Перевод
-              </label>
+              {translation ? (
+                <>
+                  <label className={show.ar ? 'on' : ''}>
+                    <input type="checkbox" checked={show.ar} onChange={() => toggle('ar')} />
+                    Арабский текст
+                  </label>
+                  <label className={show.tr ? 'on' : ''}>
+                    <input type="checkbox" checked={show.tr} onChange={() => toggle('tr')} />
+                    Перевод
+                  </label>
+                </>
+              ) : null}
+              {topics.length ? (
+                <label className={show.topics ? 'on' : ''}>
+                  <input type="checkbox" checked={show.topics} onChange={() => toggle('topics')} />
+                  Темы
+                </label>
+              ) : null}
+              {hasNotes ? (
+                <label className={show.notes ? 'on' : ''}>
+                  <input type="checkbox" checked={show.notes} onChange={() => toggle('notes')} />
+                  Пояснения
+                </label>
+              ) : null}
             </div>
           ) : null}
           {/* Сура в мусхафе Медины: страницы на сайте и PDF */}
@@ -320,7 +340,7 @@ export function SurahView({
                     <p>
                       <Translation text={translation[i] ?? ''} />
                     </p>
-                    {list ? (
+                    {list && showNotes ? (
                       <>
                         <div className="ayah-notes">
                           {list.map((n) => {
@@ -346,7 +366,7 @@ export function SurahView({
         })}
       </div>
 
-      {open && notes[open.no]?.some((n) => n.name === open.name) ? (
+      {open && showNotes && notes[open.no]?.some((n) => n.name === open.name) ? (
         <div className="cm-back" onClick={() => setOpen(null)}>
           <div className="cm" role="dialog" aria-modal="true" aria-labelledby="cm-title" onClick={(e) => e.stopPropagation()}>
             <div className="cm-head">
