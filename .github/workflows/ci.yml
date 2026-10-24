@@ -156,6 +156,8 @@ jobs:
           check "Коран: страницы мусхафа суры" 'has "/quran/51/mushaf" "/quran/mushaf/520" && has "/quran/51/mushaf" "/quran/mushaf/523" && hasnt "/quran/51/mushaf" "/quran/mushaf/524"'
           check "Коран: страница мусхафа — картинка" '[ "$(curl -s -o /dev/null -w "%{http_code} %{content_type}" http://127.0.0.1:3000/quran/mushaf/604)" = "200 image/png" ] && [ "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/quran/mushaf/605)" = "404" ]'
           check "Коран: PDF суры" '[ "$(curl -s http://127.0.0.1:3000/quran/114/mushaf.pdf | head -c 5)" = "%PDF-" ]'
+          # Задача 44: мусхаф — одна страница или разворот, чтецы прямо на странице мусхафа
+          check "Коран: вид мусхафа и чтецы" 'has "/quran/51/mushaf" "Две страницы" && has "/quran/51/mushaf" "Одна страница" && has "/quran/51/mushaf" "aria-label=\"Чтец\"" && has "/quran/51" "href=\"/quran/51/mushaf\""'
           check "Коран: адрес разметки аятов" 'has "/quran/timing?r=1&s=67" "\"ayahs\""'
           for r in 1 2 3 4 5 6 7; do
             echo "разметка аятов, чтец $r, сура 67: $(curl -s "http://127.0.0.1:3000/quran/timing?r=$r&s=67" | head -c 160)" | tee -a ci.log

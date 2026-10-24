@@ -5,8 +5,10 @@ import { notFound } from 'next/navigation'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { Crumbs } from '@/components/PageHead'
+import { MushafView } from '@/components/quran/MushafView'
 import { mushafPages } from '@/lib/mushaf'
 import { getSurah, plural } from '@/lib/quran'
+import { getReciters } from '@/lib/quranData'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,13 +19,14 @@ export async function generateMetadata({ params }: { params: Promise<{ n: string
   return { title: s ? `Сура ${s.n} «${s.ru}» — мусхаф Медины` : 'Мусхаф' }
 }
 
-/** Сура в мусхафе Медины: её страницы одна под другой и PDF для скачивания. */
+/** Сура в мусхафе Медины: её страницы (по одной или разворотами), чтецы и PDF для скачивания. */
 export default async function SurahMushafPage({ params }: { params: Promise<{ n: string }> }) {
   const n = num((await params).n)
   if (!n) notFound()
   const s = getSurah(n)
   const p = mushafPages(n)!
   const pages = Array.from({ length: p.to - p.from + 1 }, (_, i) => p.from + i)
+  const reciters = await getReciters()
 
   return (
     <>
@@ -56,16 +59,8 @@ export default async function SurahMushafPage({ params }: { params: Promise<{ n:
         </div>
       </div>
       <main className="container qmain">
-        <p className="mp-note">Страницы — как в печатном мусхафе Медины (Комплекс короля Фахда, чтение Хафса). На первой и последней странице могут быть видны соседние суры.</p>
-        <div className="mp-pages">
-          {pages.map((pg, i) => (
-            <figure className="mp-page" key={pg}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={`/quran/mushaf/${pg}`} width={1300} height={2103} alt={`Мусхаф Медины, страница ${pg}`} loading={i < 2 ? 'eager' : 'lazy'} />
-              <figcaption>{pg}</figcaption>
-            </figure>
-          ))}
-        </div>
+        <p className="mp-note">Страницы — как в печатном мусхафе Медины (Комплекс короля Фахда, чтение Хафса). На первой и последней странице могут быть видны соседние суры. Можно смотреть по одной странице или разворотом из двух и слушать суру, не уходя со страницы.</p>
+        <MushafView surah={s} from={p.from} to={p.to} reciters={reciters} />
       </main>
       <Footer />
     </>
