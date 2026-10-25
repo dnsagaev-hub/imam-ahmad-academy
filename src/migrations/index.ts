@@ -11,6 +11,7 @@ import * as migration_20261022_100302_ayah_notes from './20261022_100302_ayah_no
 import * as migration_20261023_154658_hadiths from './20261023_154658_hadiths';
 import * as migration_20261023_211211_quran_topics from './20261023_211211_quran_topics';
 import * as migration_20261024_064631_reciters_more from './20261024_064631_reciters_more';
+import * as migration_20261025_085830_fiqh from './20261025_085830_fiqh';
 
 export const migrations = [
   {
@@ -76,6 +77,11 @@ export const migrations = [
   {
     up: migration_20261024_064631_reciters_more.up,
     down: migration_20261024_064631_reciters_more.down,
-    name: '20261024_064631_reciters_more'
+    name: '20261024_064631_reciters_more',
+  },
+  {
+    up: migration_20261025_085830_fiqh.up,
+    down: migration_20261025_085830_fiqh.down,
+    name: '20261025_085830_fiqh'
   },
 ];

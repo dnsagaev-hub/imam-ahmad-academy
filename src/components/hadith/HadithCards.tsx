@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
-export type HadithCard = { href: string; n: number; title: string; titleAr?: string | null; meta: string; empty?: boolean }
+export type HadithCard = { href: string; n: number; title: string; titleAr?: string | null; meta: string; empty?: boolean; soon?: string }
 
-/** Карточки тем и книг раздела «Хадисы» — в том же виде, что список сур в «Коране». */
+/** Карточки тем и книг разделов «Хадисы» и «Фикх» — в том же виде, что список сур в «Коране». */
 export function HadithCards({ items }: { items: HadithCard[] }) {
   return (
     <ul className="qi-grid hd-grid">
@@ -20,7 +20,7 @@ export function HadithCards({ items }: { items: HadithCard[] }) {
               <span className="qi-ru">{c.title}</span>
               <span className="qi-meta">
                 {c.meta}
-                {c.empty ? <span className="hd-soon">готовится</span> : null}
+                {c.empty ? <span className="hd-soon">{c.soon ?? 'готовится'}</span> : null}
               </span>
             </span>
             {c.titleAr ? (

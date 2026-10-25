@@ -97,7 +97,8 @@ jobs:
                       "/text?category=fiqh" "/text?book=ahsar-al-muhtasarat" "/audio?category=aqida" "/audio?book=net-takoy-knigi" "/video?book=ahsar-al-muhtasarat" \
                       /articles /articles/tayammum-pri-holodnoy-vode /articles/pochemu-u-imama-ahmada-neskolko-mneniy \
                       /library /library/ahsar-al-muhtasarat /library/kashshaf-al-qina /contact /progress /prayer-times /about /admin \
-                      /quran /quran/114 /quran/2 /hadith /hadith/akyda /hadith/akyda/islam-i-iman /hadith/smuty/fitan; do
+                      /quran /quran/114 /quran/2 /hadith /hadith/akyda /hadith/akyda/islam-i-iman /hadith/smuty/fitan \
+                      /fiqh /fiqh/ibadat /fiqh/ibadat/tahara /fiqh/ibadat/tahara/1 /fiqh/ibadat/tahara/2 /fiqh/sudoproizvodstvo/priznanie/1; do
             code=$(curl -s -o /dev/null -w '%{http_code}' -L "http://127.0.0.1:3000$path")
             echo "$code  $path" | tee -a ci.log
             [ "$code" = "200" ] || fail=1
@@ -145,6 +146,13 @@ jobs:
           check "Хадисы: кнопки под хадисом" 'has "/hadith/akyda/islam-i-iman" "Степень достоверности" && [ "$(curl -s http://127.0.0.1:3000/hadith/akyda/islam-i-iman | grep -o ">Разъяснение<" | wc -l)" = "1" ]'
           check "Хадисы: скрытый хадис не показан" 'hasnt "/hadith/akyda/islam-i-iman" "скрытый"'
           check "Хадисы: пустая книга и неверный адрес" 'has "/hadith/akyda/vera-v-predopredelenie" "готовятся" && [ "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/hadith/akyda/net-takoy)" = "404" ]'
+          # Раздел «Фикх» (задача 46): деление и арабский текст «Зад аль-Мустакни‘» из миграции, перевод и пояснения — демо
+          check "Фикх: пункт меню и 6 частей" 'has "/" "href=\"/fiqh\"" && has "/fiqh" "العبادات" && has "/fiqh" "القضاء" && has "/fiqh" "Судопроизводство"'
+          check "Фикх: книги части по порядку" 'has "/fiqh/ibadat" "كتاب الطهارة" && has "/fiqh/ibadat" "كتاب الجهاد" && hasnt "/fiqh/ibadat" "كتاب البيع" && has "/fiqh/muamalat" "كتاب العتق" && hasnt "/fiqh/muamalat" "كتاب الفرائض"'
+          check "Фикх: разделы книги" 'has "/fiqh/ibadat/tahara" "باب الآنية" && has "/fiqh/ibadat/tahara" "باب الحيض" && has "/fiqh/ibadat/tahara" "перевод готовится"'
+          check "Фикх: текст раздела, темы и кнопки" 'has "/fiqh/ibadat/tahara/1" "ارتفاع الحدث" && has "/fiqh/ibadat/tahara/1" "Виды воды" && has "/fiqh/ibadat/tahara/1" "Введение в раздел" && has "/fiqh/ibadat/tahara/1" "Схема раздела" && has "/fiqh/ibadat/tahara/1" ">Фетва<" && has "/fiqh/ibadat/tahara/1" ">Второе мнение<"'
+          check "Фикх: раздел без перевода" 'has "/fiqh/ibadat/tahara/2" "كل إناء طاهر" && has "/fiqh/ibadat/tahara/2" "Перевод этого раздела готовится" && hasnt "/fiqh/ibadat/tahara/2" "Введение в раздел"'
+          check "Фикх: скрытый раздел и неверный адрес" 'hasnt "/fiqh/ibadat/tahara" "скрытый" && [ "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/fiqh/ibadat/tahara/99)" = "404" ] && [ "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/fiqh/net-takoy)" = "404" ]'
           # Задачи 38–41: переключатель «арабский / перевод», мусхаф суры и PDF, темы аятов, новые чтецы
           check "Коран: переключатель арабский и перевод" 'has "/quran/114" "Что показывать" && hasnt "/quran/2" "Что показывать"'
           # Задача 45: галочки «Темы» и «Пояснения», по умолчанию включены
@@ -186,7 +194,7 @@ jobs:
           cat > /tmp/shots.mjs <<'JS'
           import { chromium } from 'playwright'
           const pages = ['/', '/courses/demo-fikh-ochischeniya', '/lessons/pyat-osnov-fetv-imama-ahmada', '/lessons/demo-tayammum', '/courses', '/courses?level=beginner', '/courses/stupen-3-01-fiqh', '/text', '/text?book=ahsar-al-muhtasarat', '/audio', '/video', '/articles',
-            '/articles/tayammum-pri-holodnoy-vode', '/library', '/library/ahsar-al-muhtasarat', '/library/al-madkhal-ibn-badran', '/contact', '/progress', '/prayer-times', '/admin', '/quran', '/quran/114', '/quran/2', '/quran/112/mushaf', '/hadith', '/hadith/akyda', '/hadith/akyda/islam-i-iman']
+            '/articles/tayammum-pri-holodnoy-vode', '/library', '/library/ahsar-al-muhtasarat', '/library/al-madkhal-ibn-badran', '/contact', '/progress', '/prayer-times', '/admin', '/quran', '/quran/114', '/quran/2', '/quran/112/mushaf', '/hadith', '/hadith/akyda', '/hadith/akyda/islam-i-iman', '/fiqh', '/fiqh/ibadat', '/fiqh/ibadat/tahara', '/fiqh/ibadat/tahara/1', '/fiqh/ibadat/tahara/2']
           const browser = await chromium.launch()
           for (const [name, vp] of [['desk', { width: 1440, height: 900 }], ['phone', { width: 390, height: 844 }]]) {
             const ctx = await browser.newContext({ viewport: vp, locale: 'ru-RU', timezoneId: 'Europe/Moscow' })

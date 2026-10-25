@@ -11,6 +11,7 @@ import { fileURLToPath } from 'url'
 import { Articles } from './collections/Articles'
 import { Books } from './collections/Books'
 import { Courses } from './collections/Courses'
+import { FiqhBooks, FiqhChapters, FiqhParts } from './collections/Fiqh'
 import { HadithBooks, HadithSections, HadithTopics, Hadiths } from './collections/Hadiths'
 import { Lessons } from './collections/Lessons'
 import { Media } from './collections/Media'
@@ -44,7 +45,7 @@ export default buildConfig({
     supportedLanguages: { ru },
     fallbackLanguage: 'ru',
   },
-  collections: [Courses, Lessons, Articles, Books, Media, QuranTranslations, SurahInfo, Reciters, HadithTopics, HadithBooks, HadithSections, Hadiths, Users, QuizAttempts, Messages],
+  collections: [Courses, Lessons, Articles, Books, Media, QuranTranslations, SurahInfo, Reciters, HadithTopics, HadithBooks, HadithSections, Hadiths, FiqhParts, FiqhBooks, FiqhChapters, Users, QuizAttempts, Messages],
   globals: [Settings],
   // Почта (письма для смены пароля). Включается, если заданы настройки SMTP.
   email: process.env.SMTP_HOST
