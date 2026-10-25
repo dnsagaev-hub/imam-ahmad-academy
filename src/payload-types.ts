@@ -79,6 +79,9 @@ export interface Config {
     'hadith-books': HadithBook;
     'hadith-sections': HadithSection;
     hadiths: Hadith;
+    'fiqh-parts': FiqhPart;
+    'fiqh-books': FiqhBook;
+    'fiqh-chapters': FiqhChapter;
     users: User;
     'quiz-attempts': QuizAttempt;
     messages: Message;
@@ -95,6 +98,12 @@ export interface Config {
       sections: 'hadith-sections';
       hadiths: 'hadiths';
     };
+    'fiqh-parts': {
+      books: 'fiqh-books';
+    };
+    'fiqh-books': {
+      chapters: 'fiqh-chapters';
+    };
   };
   collectionsSelect: {
     courses: CoursesSelect<false> | CoursesSelect<true>;
@@ -109,6 +118,9 @@ export interface Config {
     'hadith-books': HadithBooksSelect<false> | HadithBooksSelect<true>;
     'hadith-sections': HadithSectionsSelect<false> | HadithSectionsSelect<true>;
     hadiths: HadithsSelect<false> | HadithsSelect<true>;
+    'fiqh-parts': FiqhPartsSelect<false> | FiqhPartsSelect<true>;
+    'fiqh-books': FiqhBooksSelect<false> | FiqhBooksSelect<true>;
+    'fiqh-chapters': FiqhChaptersSelect<false> | FiqhChaptersSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'quiz-attempts': QuizAttemptsSelect<false> | QuizAttemptsSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
@@ -1068,6 +1080,230 @@ export interface Hadith {
   createdAt: string;
 }
 /**
+ * Первая страница раздела «Фикх» — шесть частей: Поклонение, Имущественные отношения, Наследство…
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fiqh-parts".
+ */
+export interface FiqhPart {
+  id: number;
+  title: string;
+  /**
+   * Как в книге, например: كتاب الطهارة или باب الآنية.
+   */
+  titleAr?: string | null;
+  /**
+   * Чем меньше число, тем выше в списке. Обычно — номер по «Зад аль-Мустакни‘».
+   */
+  order?: number | null;
+  /**
+   * Заполняется автоматически из названия. Например: fikh-namaza
+   */
+  slug?: string | null;
+  /**
+   * Снимите галочку, чтобы временно скрыть с сайта
+   */
+  isPublished?: boolean | null;
+  books?: {
+    docs?: (number | FiqhBook)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Книга внутри части (в «Зад аль-Мустакни‘» — «كتاب», например «Книга очищения»).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fiqh-books".
+ */
+export interface FiqhBook {
+  id: number;
+  title: string;
+  /**
+   * Как в книге, например: كتاب الطهارة или باب الآنية.
+   */
+  titleAr?: string | null;
+  part: number | FiqhPart;
+  /**
+   * Чем меньше число, тем выше в списке. Обычно — номер по «Зад аль-Мустакни‘».
+   */
+  order?: number | null;
+  /**
+   * Заполняется автоматически из названия. Например: fikh-namaza
+   */
+  slug?: string | null;
+  /**
+   * Снимите галочку, чтобы временно скрыть с сайта
+   */
+  isPublished?: boolean | null;
+  chapters?: {
+    docs?: (number | FiqhChapter)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Раздел книги («باب»). На странице раздела абзацы идут подряд: справа арабский текст, слева перевод, под переводом кнопки «Разъяснение», «Доводы», «Второе мнение», «Доп. вопрос», «Фетва» — пустая кнопка не показывается. В шапке — кнопки «Введение в раздел» и «Схема раздела».
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fiqh-chapters".
+ */
+export interface FiqhChapter {
+  id: number;
+  title: string;
+  /**
+   * Как в книге, например: كتاب الطهارة или باب الآنية.
+   */
+  titleAr?: string | null;
+  book: number | FiqhBook;
+  /**
+   * По нему идёт список разделов и адрес страницы (…/tahara/2 — второй раздел).
+   */
+  order: number;
+  /**
+   * Снимите галочку, чтобы временно скрыть с сайта
+   */
+  isPublished?: boolean | null;
+  intro?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Картинка со схемой. Открывается в окне, по нажатию — крупно в новой вкладке.
+   */
+  scheme?: (number | null) | Media;
+  schemeNote?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Где в разделе начинается новая тема: номер первого абзаца и название темы. На сайте название стоит подписью над этим абзацем (как темы аятов в суре). Сначала здесь стоят «Фасль» — деление самой книги (فصل); их можно переименовать.
+   */
+  topics?:
+    | {
+        from: number;
+        title: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Номер абзаца на сайте — его место в этом списке (первый — 1). Порядок меняется перетаскиванием.
+   */
+  sentences?:
+    | {
+        arabic: string;
+        /**
+         * Основной текст на сайте — жирный, пояснения в [ ] и ( ) — обычным, как в Коране.
+         */
+        translation?: string | null;
+        explanation?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        evidence?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        otherOpinion?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        question?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        fatwa?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -1207,6 +1443,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'hadiths';
         value: number | Hadith;
+      } | null)
+    | ({
+        relationTo: 'fiqh-parts';
+        value: number | FiqhPart;
+      } | null)
+    | ({
+        relationTo: 'fiqh-books';
+        value: number | FiqhBook;
+      } | null)
+    | ({
+        relationTo: 'fiqh-chapters';
+        value: number | FiqhChapter;
       } | null)
     | ({
         relationTo: 'users';
@@ -1712,6 +1960,70 @@ export interface HadithsSelect<T extends boolean = true> {
   source?: T;
   grade?: T;
   explanation?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fiqh-parts_select".
+ */
+export interface FiqhPartsSelect<T extends boolean = true> {
+  title?: T;
+  titleAr?: T;
+  order?: T;
+  slug?: T;
+  isPublished?: T;
+  books?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fiqh-books_select".
+ */
+export interface FiqhBooksSelect<T extends boolean = true> {
+  title?: T;
+  titleAr?: T;
+  part?: T;
+  order?: T;
+  slug?: T;
+  isPublished?: T;
+  chapters?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fiqh-chapters_select".
+ */
+export interface FiqhChaptersSelect<T extends boolean = true> {
+  title?: T;
+  titleAr?: T;
+  book?: T;
+  order?: T;
+  isPublished?: T;
+  intro?: T;
+  scheme?: T;
+  schemeNote?: T;
+  topics?:
+    | T
+    | {
+        from?: T;
+        title?: T;
+        id?: T;
+      };
+  sentences?:
+    | T
+    | {
+        arabic?: T;
+        translation?: T;
+        explanation?: T;
+        evidence?: T;
+        otherOpinion?: T;
+        question?: T;
+        fatwa?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

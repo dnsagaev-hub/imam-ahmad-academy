@@ -37,6 +37,7 @@ const items: (Item | Group)[] = [
   { label: 'О сайте', href: '/about', match: '/about' },
   { label: 'Коран', href: '/quran', match: '/quran' },
   { label: 'Хадисы', href: '/hadith', match: '/hadith' },
+  { label: 'Фикх', href: '/fiqh', match: '/fiqh' },
   {
     label: 'Курсы',
     href: '/courses',

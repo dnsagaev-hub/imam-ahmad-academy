@@ -4,9 +4,13 @@
  * Демо-курс можно потом удалить или скрыть в админке.
  */
 import config from '@payload-config'
+import path from 'path'
 import { getPayload } from 'payload'
+import { fileURLToPath } from 'url'
 
 import { seedArticles, seedLibrary, seedProgram, seedTextLessons } from './starter'
+
+const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const text = (t: string) => ({ type: 'text', text: t, version: 1, format: 0, detail: 0, mode: 'normal', style: '' })
 const paragraph = (t: string) => ({
@@ -212,6 +216,63 @@ if (islamBook.docs.length && !hadithCount.totalDocs) {
     data: { book, number: 99, isPublished: false, arabic: 'Образец: скрытый текст', translation: 'Образец: скрытый хадис' },
   })
   payload.logger.info('Демо-хадисы созданы.')
+}
+
+// Раздел «Фикх» (задача 46): части, книги, разделы и арабский текст создаёт миграция. Здесь — образец перевода,
+// пояснений, тем, введения и схемы у первого раздела «Книги очищения», чтобы CI проверял их вид. Переводы трёх
+// абзацев — образец; довод — аят 25:48 из мусхафа (src/data/quran/25.json).
+const tahara = await payload.find({ collection: 'fiqh-books', where: { slug: { equals: 'tahara' } }, limit: 1, depth: 0 })
+const firstCh = tahara.docs.length
+  ? await payload.find({ collection: 'fiqh-chapters', where: { and: [{ book: { equals: tahara.docs[0].id } }, { order: { equals: 1 } }] }, limit: 1, depth: 0 })
+  : null
+const fiqhCh = firstCh?.docs[0] as { id: number; sentences?: Record<string, unknown>[]; intro?: unknown } | undefined
+if (fiqhCh && !fiqhCh.intro && fiqhCh.sentences?.length) {
+  const rich = (t: string) => doc(paragraph(t)) as never
+  const ayah = ((await import('../data/quran/25.json')).default as string[])[47].replace(/\s*[٠-٩]+\s*$/, '')
+  const scheme = await payload.create({
+    collection: 'media',
+    data: { alt: 'Образец схемы: три вида воды' },
+    filePath: path.resolve(dirname, 'fiqh-scheme-demo.png'),
+  })
+  const tr = [
+    'Это [очищение] — снятие состояния ритуальной нечистоты (хадаса) и того, что подобно ему, и удаление нечистоты.',
+    'Воды бывают трёх видов. Очищающая (тахур): только она снимает хадас и удаляет попавшую нечистоту; это вода, оставшаяся в своём природном состоянии.',
+    'Если она изменилась от того, что с ней не смешивается, — например, от кусочков камфоры или жира, — или от морской соли, или нагрета нечистым, [её использование] нежелательно.',
+  ]
+  await payload.update({
+    collection: 'fiqh-chapters',
+    id: fiqhCh.id,
+    data: {
+      intro: rich('Образец: здесь владелец пишет введение в раздел — о чём он и что ученик узнает.'),
+      scheme: scheme.id,
+      schemeNote: rich('Образец пояснения к схеме.'),
+      topics: [
+        { from: 1, title: 'Что такое очищение' },
+        { from: 2, title: 'Виды воды' },
+      ],
+      sentences: fiqhCh.sentences.map((s, i) => ({
+        ...s,
+        translation: tr[i] ?? null,
+        ...(i === 1
+          ? {
+              explanation: rich('Образец разъяснения: какая вода называется очищающей и почему.'),
+              evidence: rich(`Образец довода. Слова Всевышнего: «${ayah}» (сура «аль-Фуркан», 25:48).`),
+              otherOpinion: rich('Образец: здесь владелец приводит второе мнение с пометкой, чьё оно.'),
+              question: rich('Образец дополнительного вопроса и ответа на него.'),
+              fatwa: rich('Образец: здесь владелец приводит фетву по теме абзаца.'),
+            }
+          : i === 2
+            ? { explanation: rich('Образец разъяснения третьего абзаца.') }
+            : {}),
+      })) as never,
+    },
+  })
+  // Скрытый раздел: на сайте его быть не должно
+  await payload.create({
+    collection: 'fiqh-chapters',
+    data: { book: tahara.docs[0].id, order: 99, isPublished: false, title: 'Образец: скрытый раздел', sentences: [{ arabic: 'نص' }] },
+  })
+  payload.logger.info('Демо-перевод раздела «Книга очищения · Начало книги» создан.')
 }
 
 payload.logger.info('Готово.')

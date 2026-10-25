@@ -1307,6 +1307,21 @@ a.sh-info-btn { text-decoration: none; }
   .hd-btn { padding: 4px 11px; font-size: 13px; }
 }
 
+/* ---------- Фикх: части → книги → разделы → текст по абзацам (задача 46), в том же виде, что «Коран» и «Хадисы» ---------- */
+/* Арабский текст матна — Amiri, как у хадисов */
+.fq-ar { font-family: var(--arabic); font-size: 27px; line-height: 2.05; }
+.cm .fq-ar { font-size: 22px; }
+.fq-no { display: inline-grid; place-items: center; width: 34px; height: 34px; margin-left: 12px; vertical-align: 6px; border: 1.5px solid var(--gold); border-radius: 99px; font-family: var(--body); font-size: 13px; font-weight: 700; line-height: 1; color: var(--royal); }
+.fq-btns { gap: 8px; margin-top: 14px; }
+.fq-btns .ayah-note { padding: 5px 14px; font-size: 13.5px; }
+.fq-ar-btns { direction: ltr; text-align: left; }
+.fq-scheme { display: block; margin: 0 0 14px; }
+.fq-scheme img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; }
+@media (max-width: 720px) {
+  .fq-ar { font-size: 23px; }
+  .fq-no { width: 30px; height: 30px; margin-left: 8px; font-size: 12px; }
+}
+
 /* Загрузка сборника переводов сур (/quran/import, задача 28) */
 .qimport { display: flex; flex-direction: column; gap: 18px; max-width: 720px; padding: 24px; background: #fff; border: 1px solid var(--line); border-radius: 18px; }
 .qimport-field { display: flex; flex-direction: column; gap: 6px; font-weight: 700; color: var(--ink); }

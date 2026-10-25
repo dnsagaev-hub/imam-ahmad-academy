@@ -47,6 +47,12 @@ docker-compose.yml         локальная версия: сайт + PostgreSQ
   только у заполненного). Деление книги «معالم السنة النبوية» вставляет миграция `20261023_154658_hadiths`. Запросы —
   `src/lib/hadithData.ts`, страницы — `src/app/(frontend)/hadith`, вид хадиса и окно — `src/components/hadith/HadithList.tsx`
   (классы «Корана» `.ayah`, `.cm` и свои `.hd-*`).
+- Фикх (`/fiqh`, задача 46): коллекции `fiqh-parts` → `fiqh-books` → `fiqh-chapters` (раздел-«باب»: `order` — номер
+  и адрес страницы, richText `intro`, картинка `scheme` и `schemeNote` — кнопки в шапке, массив `topics` {from, title},
+  массив `sentences` {arabic, translation, richText из `FIQH_NOTES`}). Номер абзаца — место в массиве. Деление и арабский
+  текст «Зад аль-Мустакни‘» (`src/data/fiqh/zad.json`, из OpenITI `…ZadMustaqnic.Shamela0011230-ara1`) вставляет миграция
+  `20261025_085830_fiqh`. Запросы — `src/lib/fiqhData.ts`, страницы — `src/app/(frontend)/fiqh`, текст и окно —
+  `src/components/fiqh/FiqhText.tsx` (классы «Корана» `.ayah`, `.sv-show`, `.cm` и свои `.fq-*`), кнопки шапки — `SurahInfoButtons`.
 - Коран (`/quran`): арабский текст и шрифт — Комплекс короля Фахда (KFGQPC Uthmanic Hafs v18), постоянные данные в
   `src/data/quran/<номер>.json` и `public/fonts/quran/`; список сур (русское название, смысл, мекканская/мединская по Tanzil,
   число аятов) — `src/lib/quran.ts`. Сведения о суре (кнопки в шапке суры, окно `SurahInfoButtons`) — коллекция
