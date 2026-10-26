@@ -50,3 +50,10 @@ export const Pattern = ({ id = 'star8' }: { id?: string }) => (
     <rect width="100%" height="100%" fill={`url(#${id})`} />
   </svg>
 )
+
+export const SearchIcon = ({ size = 18, color = 'currentColor' }: P) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <circle cx="11" cy="11" r="7" />
+    <path d="M20 20l-4-4" />
+  </svg>
+)
