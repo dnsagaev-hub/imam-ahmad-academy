@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react'
 
 import { useAudioPlayer, type Track } from '@/components/audio/AudioPlayer'
-import { AYAH_NOTES, SURAHS, audioUrl, splitTranslation, type AyahNoteName, type Reciter, type Surah } from '@/lib/quran'
+import { AYAH_NOTES, audioUrl, splitTranslation, type AyahNoteName, type Reciter, type Surah } from '@/lib/quran'
 import type { AyahTime } from '@/lib/quranTiming'
 
 // Что показывать: арабский, перевод или оба, темы аятов, пояснения (выбор ученика помнит браузер)
@@ -25,6 +25,19 @@ const loadTiming = (reciter: string, surah: number) => {
   }
   return p
 }
+
+// аль-Фатиха на сайте без басмалы в счёте, а разметка mp3quran — по мусхафу Медины: аят 1 разметки — басмала (0),
+// аяты 2–6 сдвигаются на один назад, седьмой делится на 6 и 7 по доле текста (примерно)
+const fatihaTiming = (t: AyahTime[], share: number): AyahTime[] =>
+  t.flatMap(([n, s, e]): AyahTime[] => {
+    if (n <= 1) return [[0, s, e]] // вступление и басмала
+    if (n < 7) return [[n - 1, s, e]]
+    const mid = Math.round(s + (e - s) * share)
+    return [
+      [6, s, mid],
+      [7, mid, e],
+    ]
+  })
 
 // Элемент виден на экране: ниже шапки и выше плеера внизу
 const onScreen = (el: Element) => {
@@ -74,6 +87,8 @@ export function SurahView({
   topics,
   mushaf,
   reciters: all,
+  surahs,
+  fatihaShare,
 }: {
   surah: Surah
   arabic: string[]
@@ -84,6 +99,10 @@ export function SurahView({
   topics: AyahTopic[]
   mushaf: { from: number; to: number }
   reciters: Reciter[]
+  /** Все суры с названиями из админки — для очереди плеера */
+  surahs: Surah[]
+  /** аль-Фатиха: доля аята 6 в седьмом аяте мусхафа — разметка чтецов идёт по счёту мусхафа Медины */
+  fatihaShare?: number
 }) {
   // Чтец со своими файлами показывается только у сур, для которых загружена запись
   const reciters = all.filter((r) => audioUrl(r, surah.n))
@@ -103,11 +122,11 @@ export function SurahView({
     setTiming(null)
     if (!playingReciter) return
     let alive = true
-    loadTiming(playingReciter, surah.n).then((t) => alive && setTiming(t))
+    loadTiming(playingReciter, surah.n).then((t) => alive && setTiming(fatihaShare === undefined ? t : fatihaTiming(t, fatihaShare)))
     return () => {
       alive = false
     }
-  }, [playingReciter, surah.n])
+  }, [playingReciter, surah.n, fatihaShare])
 
   // Подсветка: по времени записи находим аят; 0 — вступление (басмала)
   useEffect(() => {
@@ -191,7 +210,7 @@ export function SurahView({
     if (track)
       play(
         track,
-        SURAHS.map((s) => trackOf(r, s)).filter((t): t is Track => t !== null),
+        surahs.map((s) => trackOf(r, s)).filter((t): t is Track => t !== null),
       )
   }
 

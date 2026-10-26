@@ -3,27 +3,27 @@
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 
-import { PLACE_LABEL, SURAHS, searchKey } from '@/lib/quran'
+import { PLACE_LABEL, searchKey, type Surah } from '@/lib/quran'
 import { plural } from '@/lib/quran'
 
 type Filter = 'all' | 'm' | 'd' | 'tr'
 
 /** Список 114 сур: поиск по номеру, названию (по-русски и по-арабски), фильтр по месту ниспослания и переводу. */
-export function QuranIndex({ translated }: { translated: number[] }) {
+export function QuranIndex({ translated, surahs }: { translated: number[]; surahs: Surah[] }) {
   const [q, setQ] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
   const hasTr = useMemo(() => new Set(translated), [translated])
 
   const counts = {
-    all: SURAHS.length,
-    m: SURAHS.filter((s) => s.place === 'm').length,
-    d: SURAHS.filter((s) => s.place === 'd').length,
+    all: surahs.length,
+    m: surahs.filter((s) => s.place === 'm').length,
+    d: surahs.filter((s) => s.place === 'd').length,
     tr: translated.length,
   }
 
   const list = useMemo(() => {
     const needle = searchKey(q.trim())
-    return SURAHS.filter((s) => {
+    return surahs.filter((s) => {
       if (filter === 'm' || filter === 'd') {
         if (s.place !== filter) return false
       } else if (filter === 'tr' && !hasTr.has(s.n)) return false
@@ -31,7 +31,7 @@ export function QuranIndex({ translated }: { translated: number[] }) {
       if (/^\d+$/.test(needle)) return String(s.n) === needle
       return [s.ru, s.meaning, s.ar].some((v) => searchKey(v).includes(needle))
     })
-  }, [q, filter, hasTr])
+  }, [q, filter, hasTr, surahs])
 
   const chips: { v: Filter; label: string }[] = [
     { v: 'all', label: 'Все суры' },

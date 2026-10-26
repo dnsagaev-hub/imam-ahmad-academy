@@ -1,7 +1,7 @@
 import { cache } from 'react'
 
 import { getPayloadClient } from './payload'
-import { currentFolder, type AyahNoteName, type Reciter } from './quran'
+import { SURAHS, currentFolder, type AyahNoteName, type Reciter, type Surah } from './quran'
 import { mediaUrl } from './queries'
 
 /* Запросы раздела «Коран»: переводы сур и чтецы. Скрытое (без галочки «Опубликовано») не показывается. */
@@ -71,6 +71,33 @@ export const getReciters = cache(async (): Promise<Reciter[]> => {
     return { id: String(r.id), name: r.name, nameAr: r.nameAr ?? '', base: r.source === 'link' && r.baseUrl ? currentFolder(r.baseUrl) : null, files }
   })
 })
+
+/**
+ * Суры с названиями, которые владелец поправил в админке («Коран → Сведения о сурах»): пустое поле —
+ * название по умолчанию. Действует и без галочки «Опубликовано»: это не текст, а подпись суры.
+ */
+export const getSurahs = cache(async (): Promise<Surah[]> => {
+  try {
+    const payload = await getPayloadClient()
+    const res = await payload.find({
+      collection: 'surah-info',
+      select: { surah: true, nameRu: true, meaning: true, nameAr: true },
+      depth: 0,
+      limit: 200,
+      pagination: false,
+    })
+    const own = new Map((res.docs as { surah: number; nameRu?: string | null; meaning?: string | null; nameAr?: string | null }[]).map((d) => [Number(d.surah), d]))
+    return SURAHS.map((s) => {
+      const d = own.get(s.n)
+      return d ? { ...s, ru: d.nameRu?.trim() || s.ru, meaning: d.meaning?.trim() || s.meaning, ar: d.nameAr?.trim() || s.ar } : s
+    })
+  } catch {
+    return SURAHS
+  }
+})
+
+/** Сура с названием из админки (номер 1–114). */
+export const getSurahNamed = async (n: number): Promise<Surah | undefined> => (await getSurahs())[n - 1]
 
 /** Сведения о суре (кнопки в шапке): опубликованная запись или null. */
 export async function getSurahInfo(n: number): Promise<Record<string, unknown> | null> {

@@ -167,7 +167,8 @@ if (!demoInfo.docs.length) {
     collection: 'surah-info',
     data: { surah: 114, nameInfo: sample('о названии суры'), goals: sample('о целях суры'), revelation: sample('о месте ниспослания'), virtues: sample('хадис о достоинстве суры') },
   })
-  await payload.create({ collection: 'surah-info', data: { surah: 113, isPublished: false, goals: sample('о целях суры') } })
+  // У суры 113 — перевод названия из админки (задача 48): действует и у записи без галочки «Опубликовано»
+  await payload.create({ collection: 'surah-info', data: { surah: 113, isPublished: false, goals: sample('о целях суры'), meaning: 'Рассвет (образец названия из админки)' } })
   payload.logger.info('Демо-сведения о сурах 113 и 114 созданы.')
 }
 

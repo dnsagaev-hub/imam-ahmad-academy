@@ -10,8 +10,8 @@ import { SurahInfoButtons, type SurahInfoPart } from '@/components/quran/SurahIn
 import { SurahView, type AyahNote } from '@/components/quran/SurahView'
 import { SURAH_INFO_PARTS } from '@/collections/SurahInfo'
 import { mushafPages } from '@/lib/mushaf'
-import { AYAH_NOTES, PLACE_LABEL, getSurah, plural } from '@/lib/quran'
-import { getReciters, getSurahInfo, getTranslation } from '@/lib/quranData'
+import { AYAH_NOTES, PLACE_LABEL, fatihaAyahs, plural, stripAyahMark } from '@/lib/quran'
+import { getReciters, getSurahInfo, getSurahNamed, getSurahs, getTranslation } from '@/lib/quranData'
 
 export const dynamic = 'force-dynamic'
 
@@ -27,7 +27,7 @@ const hasText = (v: unknown) => {
 const num = (n: string) => (/^[1-9]\d{0,2}$/.test(n) && Number(n) >= 1 && Number(n) <= 114 ? Number(n) : 0)
 
 export async function generateMetadata({ params }: { params: Promise<{ n: string }> }): Promise<Metadata> {
-  const s = getSurah(num((await params).n))
+  const s = await getSurahNamed(num((await params).n))
   return { title: s ? `Сура ${s.n} «${s.ru}»` : 'Коран' }
 }
 
@@ -38,10 +38,12 @@ async function loadArabic(n: number): Promise<string[]> {
 export default async function SurahPage({ params }: { params: Promise<{ n: string }> }) {
   const n = num((await params).n)
   if (!n) notFound()
-  const s = getSurah(n)
-  const arabic = await loadArabic(n)
-  // Басмала стоит перед каждой сурой, кроме ат-Таубы; в аль-Фатихе она — первый аят
-  const basmala = n !== 1 && n !== 9 ? (await loadArabic(1))[0].replace(/\s*[٠-٩]+\s*$/, '') : null
+  const surahs = await getSurahs()
+  const s = surahs[n - 1]
+  // Басмала стоит перед каждой сурой, кроме ат-Таубы; в аль-Фатихе она тоже отдельно, без номера (выбор владельца)
+  const fatiha = n === 1 ? fatihaAyahs(await loadArabic(1)) : null
+  const arabic = fatiha ? fatiha.ayahs : await loadArabic(n)
+  const basmala = fatiha ? fatiha.basmala : n !== 9 ? stripAyahMark((await loadArabic(1))[0]) : null
   const [tr, reciters] = await Promise.all([getTranslation(n), getReciters()])
   const ayahs = tr?.ayahs?.length ? [...tr.ayahs].sort((a, b) => a.number - b.number) : null
   const translation = ayahs ? Array.from({ length: s.ayahs }, (_, i) => ayahs.find((a) => a.number === i + 1)?.text ?? '') : null
@@ -59,8 +61,8 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
     body: <RichText data={info![p.name] as never} />,
   }))
   const pages = mushafPages(n)!
-  const prev = n > 1 ? getSurah(n - 1) : null
-  const next = n < 114 ? getSurah(n + 1) : null
+  const prev = n > 1 ? surahs[n - 2] : null
+  const next = n < 114 ? surahs[n] : null
 
   return (
     <>
@@ -89,7 +91,7 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
         </div>
       </div>
       <main className="container qmain">
-        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? tr?.basmala || BASMALA_RU : null} translation={translation} notes={notes} mushaf={pages} topics={(tr?.topics ?? []).filter((t) => t.title?.trim()).map((t) => ({ from: Number(t.from), title: t.title.trim() }))} reciters={reciters} />
+        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? tr?.basmala || BASMALA_RU : null} translation={translation} notes={notes} mushaf={pages} topics={(tr?.topics ?? []).filter((t) => t.title?.trim()).map((t) => ({ from: Number(t.from), title: t.title.trim() }))} reciters={reciters} surahs={surahs} fatihaShare={fatiha?.share} />
         <nav className="sv-pager" aria-label="Соседние суры">
           {prev ? (
             <Link href={`/quran/${prev.n}`} className="sv-pg">
