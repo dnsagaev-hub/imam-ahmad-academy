@@ -4,13 +4,13 @@ import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { PageHead } from '@/components/PageHead'
 import { QuranIndex } from '@/components/quran/QuranIndex'
-import { getTranslatedSurahs } from '@/lib/quranData'
+import { getSurahs, getTranslatedSurahs } from '@/lib/quranData'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'Коран' }
 
 export default async function QuranPage() {
-  const translated = await getTranslatedSurahs()
+  const [translated, surahs] = await Promise.all([getTranslatedSurahs(), getSurahs()])
   return (
     <>
       <Header />
@@ -25,7 +25,7 @@ export default async function QuranPage() {
         </p>
       </PageHead>
       <main className="container qmain">
-        <QuranIndex translated={translated} />
+        <QuranIndex translated={translated} surahs={surahs} />
       </main>
       <Footer />
     </>

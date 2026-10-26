@@ -2,14 +2,14 @@ import fs from 'fs/promises'
 import path from 'path'
 
 import { buildPdf, mushafPage, mushafPages } from '@/lib/mushaf'
-import { getSurah } from '@/lib/quran'
+import { getSurahNamed } from '@/lib/quranData'
 
 const DIR = path.resolve(process.cwd(), 'media/mushaf')
 
 /** GET /quran/<сура>/mushaf.pdf → страницы суры из мусхафа Медины одним PDF (готовый файл хранится рядом со страницами). */
 export async function GET(_req: Request, { params }: { params: Promise<{ n: string }> }) {
   const raw = (await params).n
-  const s = /^\d{1,3}$/.test(raw) ? getSurah(Number(raw)) : undefined
+  const s = /^\d{1,3}$/.test(raw) ? await getSurahNamed(Number(raw)) : undefined
   const pages = s ? mushafPages(s.n) : null
   if (!s || !pages) return new Response('Нет такой суры', { status: 404 })
   const file = path.join(DIR, `sura-${String(s.n).padStart(3, '0')}.pdf`)

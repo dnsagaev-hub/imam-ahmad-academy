@@ -779,6 +779,9 @@ export interface SurahInfo {
    * Снимите галочку, чтобы временно скрыть с сайта
    */
   isPublished?: boolean | null;
+  nameRu?: string | null;
+  meaning?: string | null;
+  nameAr?: string | null;
   /**
    * Смысл названия, другие названия суры.
    */
@@ -1874,6 +1877,9 @@ export interface SurahInfoSelect<T extends boolean = true> {
   surah?: T;
   title?: T;
   isPublished?: T;
+  nameRu?: T;
+  meaning?: T;
+  nameAr?: T;
   nameInfo?: T;
   goals?: T;
   themes?: T;

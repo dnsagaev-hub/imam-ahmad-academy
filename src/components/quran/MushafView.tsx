@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { useAudioPlayer, type Track } from '@/components/audio/AudioPlayer'
 import { trackOf } from '@/components/quran/SurahView'
-import { SURAHS, audioUrl, type Reciter, type Surah } from '@/lib/quran'
+import { audioUrl, type Reciter, type Surah } from '@/lib/quran'
 
 // Вид мусхафа: одна страница или разворот из двух (выбор ученика помнит браузер)
 const MODE_KEY = 'mushaf-mode'
@@ -13,7 +13,7 @@ type Mode = 'one' | 'two'
 const TOTAL = 604
 
 /** Страницы суры в мусхафе Медины: по одной или разворотами, и плеер чтеца. */
-export function MushafView({ surah, from, to, reciters: all }: { surah: Surah; from: number; to: number; reciters: Reciter[] }) {
+export function MushafView({ surah, from, to, reciters: all, surahs }: { surah: Surah; from: number; to: number; reciters: Reciter[]; surahs: Surah[] }) {
   const reciters = all.filter((r) => audioUrl(r, surah.n))
   const { current, playing, play } = useAudioPlayer()
   const [mode, setMode] = useState<Mode>('one')
@@ -45,7 +45,7 @@ export function MushafView({ surah, from, to, reciters: all }: { surah: Surah; f
     if (r && track)
       play(
         track,
-        SURAHS.map((s) => trackOf(r, s)).filter((t): t is Track => t !== null),
+        surahs.map((s) => trackOf(r, s)).filter((t): t is Track => t !== null),
       )
   }
   // Другой чтец, пока сура звучит, — сразу его запись

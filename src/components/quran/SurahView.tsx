@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react'
 
 import { useAudioPlayer, type Track } from '@/components/audio/AudioPlayer'
-import { AYAH_NOTES, SURAHS, audioUrl, splitTranslation, type AyahNoteName, type Reciter, type Surah } from '@/lib/quran'
+import { AYAH_NOTES, audioUrl, splitTranslation, type AyahNoteName, type Reciter, type Surah } from '@/lib/quran'
 import type { AyahTime } from '@/lib/quranTiming'
 
 // Что показывать: арабский, перевод или оба, темы аятов, пояснения (выбор ученика помнит браузер)
@@ -74,6 +74,7 @@ export function SurahView({
   topics,
   mushaf,
   reciters: all,
+  surahs,
 }: {
   surah: Surah
   arabic: string[]
@@ -84,6 +85,8 @@ export function SurahView({
   topics: AyahTopic[]
   mushaf: { from: number; to: number }
   reciters: Reciter[]
+  /** Все суры с названиями из админки — для очереди плеера */
+  surahs: Surah[]
 }) {
   // Чтец со своими файлами показывается только у сур, для которых загружена запись
   const reciters = all.filter((r) => audioUrl(r, surah.n))
@@ -191,7 +194,7 @@ export function SurahView({
     if (track)
       play(
         track,
-        SURAHS.map((s) => trackOf(r, s)).filter((t): t is Track => t !== null),
+        surahs.map((s) => trackOf(r, s)).filter((t): t is Track => t !== null),
       )
   }
 
@@ -328,7 +331,8 @@ export function SurahView({
                   <span>{topic}</span>
                 </p>
               ) : null}
-              <div className={`ayah${now === no ? ' now' : ''}`} id={`a${no}`} aria-current={now === no ? 'true' : undefined}>
+              {/* аль-Фатиха: басмала — первый аят (счёт мусхафа Медины), стоит отдельно, как басмала в других сурах */}
+              <div className={`ayah${surah.n === 1 && no === 1 ? ' ayah-basmala' : ''}${now === no ? ' now' : ''}`} id={`a${no}`} aria-current={now === no ? 'true' : undefined}>
                 {showAr ? (
                   <div className="ayah-ar" lang="ar" dir="rtl">
                     {ar}

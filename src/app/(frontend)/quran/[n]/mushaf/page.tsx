@@ -7,15 +7,15 @@ import { Header } from '@/components/Header'
 import { Crumbs } from '@/components/PageHead'
 import { MushafView } from '@/components/quran/MushafView'
 import { mushafPages } from '@/lib/mushaf'
-import { getSurah, plural } from '@/lib/quran'
-import { getReciters } from '@/lib/quranData'
+import { plural } from '@/lib/quran'
+import { getReciters, getSurahNamed, getSurahs } from '@/lib/quranData'
 
 export const dynamic = 'force-dynamic'
 
 const num = (n: string) => (/^[1-9]\d{0,2}$/.test(n) && Number(n) >= 1 && Number(n) <= 114 ? Number(n) : 0)
 
 export async function generateMetadata({ params }: { params: Promise<{ n: string }> }): Promise<Metadata> {
-  const s = getSurah(num((await params).n))
+  const s = await getSurahNamed(num((await params).n))
   return { title: s ? `Сура ${s.n} «${s.ru}» — мусхаф Медины` : 'Мусхаф' }
 }
 
@@ -23,7 +23,8 @@ export async function generateMetadata({ params }: { params: Promise<{ n: string
 export default async function SurahMushafPage({ params }: { params: Promise<{ n: string }> }) {
   const n = num((await params).n)
   if (!n) notFound()
-  const s = getSurah(n)
+  const surahs = await getSurahs()
+  const s = surahs[n - 1]
   const p = mushafPages(n)!
   const pages = Array.from({ length: p.to - p.from + 1 }, (_, i) => p.from + i)
   const reciters = await getReciters()
@@ -60,7 +61,7 @@ export default async function SurahMushafPage({ params }: { params: Promise<{ n:
       </div>
       <main className="container qmain">
         <p className="mp-note">Страницы — как в печатном мусхафе Медины (Комплекс короля Фахда, чтение Хафса). На первой и последней странице могут быть видны соседние суры. Можно смотреть по одной странице или разворотом из двух и слушать суру, не уходя со страницы.</p>
-        <MushafView surah={s} from={p.from} to={p.to} reciters={reciters} />
+        <MushafView surah={s} from={p.from} to={p.to} reciters={reciters} surahs={surahs} />
       </main>
       <Footer />
     </>

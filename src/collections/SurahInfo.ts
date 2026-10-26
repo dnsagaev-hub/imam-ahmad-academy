@@ -25,7 +25,7 @@ export const SurahInfo: CollectionConfig = {
     defaultColumns: ['title', 'isPublished', 'updatedAt'],
     group: 'Коран',
     description:
-      'Кнопки над сурой: «Название суры», «Цели суры», «Тематика суры», «Место ниспослания», «Хадис о достоинстве суры». По нажатию текст открывается в окне. Пустой пункт на сайте не показывается.',
+      'Кнопки над сурой: «Название суры», «Цели суры», «Тематика суры», «Место ниспослания», «Хадис о достоинстве суры». По нажатию текст открывается в окне. Пустой пункт на сайте не показывается. Здесь же можно поправить название суры на сайте: создайте запись с номером суры и заполните «Название суры на сайте».',
   },
   defaultSort: 'surah',
   access: {
@@ -47,6 +47,25 @@ export const SurahInfo: CollectionConfig = {
     },
     { name: 'title', type: 'text', admin: { hidden: true } },
     publishedField,
+    {
+      type: 'collapsible',
+      label: 'Название суры на сайте',
+      admin: {
+        initCollapsed: false,
+        description:
+          'Если поле пустое, на сайте остаётся название по умолчанию. Новое название видно везде: в списке сур, на странице суры, в мусхафе и в плеере — даже без галочки «Опубликовано».',
+      },
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            { name: 'nameRu', label: 'Название по-русски', type: 'text', admin: { placeholder: 'например: аль-Фатиха' } },
+            { name: 'meaning', label: 'Перевод названия', type: 'text', admin: { placeholder: 'например: Открывающая' } },
+            { name: 'nameAr', label: 'Название по-арабски', type: 'text', admin: { rtl: true, placeholder: 'например: الفَاتِحة' } },
+          ],
+        },
+      ],
+    },
     {
       name: 'nameInfo',
       label: 'Название суры',
@@ -77,7 +96,7 @@ export const SurahInfo: CollectionConfig = {
           e.name = 'SurahInfoError'
           throw e
         }
-        data.title = `${s.n}. ${s.ru}`
+        data.title = `${s.n}. ${String(data.nameRu ?? '').trim() || s.ru}`
         return data
       },
     ],
