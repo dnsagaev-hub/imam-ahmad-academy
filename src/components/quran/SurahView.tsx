@@ -30,7 +30,7 @@ const loadTiming = (reciter: string, surah: number) => {
 // аяты 2–6 сдвигаются на один назад, седьмой делится на 6 и 7 по доле текста (примерно)
 const fatihaTiming = (t: AyahTime[], share: number): AyahTime[] =>
   t.flatMap(([n, s, e]): AyahTime[] => {
-    if (n === 1) return [[0, s, e]]
+    if (n <= 1) return [[0, s, e]] // вступление и басмала
     if (n < 7) return [[n - 1, s, e]]
     const mid = Math.round(s + (e - s) * share)
     return [
