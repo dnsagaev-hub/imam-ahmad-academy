@@ -6,7 +6,7 @@ import { getCurrentUser } from '@/lib/payload'
 import { toLeanCourse } from '@/lib/learning'
 import { getCourses, getPrayerDefaults } from '@/lib/queries'
 
-import { Pattern } from './Icons'
+import { Pattern, SearchIcon } from './Icons'
 import { NavMenu } from './NavMenu'
 import { TopBar } from './PrayerWidgets'
 import { ProgressButton } from './progress/ProgressButton'
@@ -61,6 +61,10 @@ export async function Header({ children, plain = false }: { children?: React.Rea
           <Brand />
           <Quote />
           <div className="header-actions">
+            <Link href="/search" className="hs-btn" aria-label="Поиск по сайту">
+              <SearchIcon size={20} />
+              <span className="hs-text">Поиск</span>
+            </Link>
             {!REGISTRATION_ENABLED ? (
               <ProgressButton courses={leanCourses} />
             ) : user ? (
