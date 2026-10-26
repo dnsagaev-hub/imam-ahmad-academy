@@ -10,7 +10,7 @@ import { SurahInfoButtons, type SurahInfoPart } from '@/components/quran/SurahIn
 import { SurahView, type AyahNote } from '@/components/quran/SurahView'
 import { SURAH_INFO_PARTS } from '@/collections/SurahInfo'
 import { mushafPages } from '@/lib/mushaf'
-import { AYAH_NOTES, PLACE_LABEL, plural } from '@/lib/quran'
+import { AYAH_NOTES, PLACE_LABEL, fatihaAyahs, plural, stripAyahMark } from '@/lib/quran'
 import { getReciters, getSurahInfo, getSurahNamed, getSurahs, getTranslation } from '@/lib/quranData'
 
 export const dynamic = 'force-dynamic'
@@ -40,9 +40,10 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
   if (!n) notFound()
   const surahs = await getSurahs()
   const s = surahs[n - 1]
-  const arabic = await loadArabic(n)
-  // Басмала стоит перед каждой сурой, кроме ат-Таубы; в аль-Фатихе она — первый аят
-  const basmala = n !== 1 && n !== 9 ? (await loadArabic(1))[0].replace(/\s*[٠-٩]+\s*$/, '') : null
+  // Басмала стоит перед каждой сурой, кроме ат-Таубы; в аль-Фатихе она тоже отдельно, без номера (выбор владельца)
+  const fatiha = n === 1 ? fatihaAyahs(await loadArabic(1)) : null
+  const arabic = fatiha ? fatiha.ayahs : await loadArabic(n)
+  const basmala = fatiha ? fatiha.basmala : n !== 9 ? stripAyahMark((await loadArabic(1))[0]) : null
   const [tr, reciters] = await Promise.all([getTranslation(n), getReciters()])
   const ayahs = tr?.ayahs?.length ? [...tr.ayahs].sort((a, b) => a.number - b.number) : null
   const translation = ayahs ? Array.from({ length: s.ayahs }, (_, i) => ayahs.find((a) => a.number === i + 1)?.text ?? '') : null
@@ -90,7 +91,7 @@ export default async function SurahPage({ params }: { params: Promise<{ n: strin
         </div>
       </div>
       <main className="container qmain">
-        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? tr?.basmala || BASMALA_RU : null} translation={translation} notes={notes} mushaf={pages} topics={(tr?.topics ?? []).filter((t) => t.title?.trim()).map((t) => ({ from: Number(t.from), title: t.title.trim() }))} reciters={reciters} surahs={surahs} />
+        <SurahView surah={s} arabic={arabic} basmala={basmala} basmalaRu={translation ? tr?.basmala || BASMALA_RU : null} translation={translation} notes={notes} mushaf={pages} topics={(tr?.topics ?? []).filter((t) => t.title?.trim()).map((t) => ({ from: Number(t.from), title: t.title.trim() }))} reciters={reciters} surahs={surahs} fatihaShare={fatiha?.share} />
         <nav className="sv-pager" aria-label="Соседние суры">
           {prev ? (
             <Link href={`/quran/${prev.n}`} className="sv-pg">

@@ -1187,12 +1187,6 @@ a.sh-info-btn { text-decoration: none; }
 .ayah-topic::after { content: ''; flex: 1; min-width: 24px; height: 1px; background: linear-gradient(90deg, var(--line-2), transparent); }
 .ayah-topic + .ayah { padding-top: 14px; }
 /* Аят, который сейчас читает чтец (вкладка «Слушать», если у записи есть разметка аятов) */
-.ayah.ayah-basmala { grid-template-columns: 1fr; grid-template-areas: 'ar' 'tr'; gap: 4px; padding: 26px 0 22px; border-bottom: 1px solid var(--line); text-align: center; }
-.ayah-basmala .ayah-ar { font-size: 36px; line-height: 1.6; text-align: center; color: var(--navy); }
-.ayah-basmala .ayah-tr { display: flex; flex-direction: column; align-items: center; gap: 8px; padding-left: 0; }
-.ayah-basmala .ayah-no { position: static; }
-.ayah-basmala .ayah-tr p { font-weight: 700; color: var(--ink); font-size: 16px; }
-.tr-only .ayah-basmala .ayah-tr { max-width: none; }
 .ayah, .basmala { transition: background 0.35s ease, box-shadow 0.35s ease; }
 .ayah.now, .basmala.now { margin: 0 -32px; padding-left: 32px; padding-right: 32px; background: var(--ice); box-shadow: inset 4px 0 0 var(--gold); }
 .ayah.now .ayah-ar { color: var(--navy); }
@@ -1261,8 +1255,6 @@ a.sh-info-btn { text-decoration: none; }
   .sv-listen { padding: 16px; }
   .ayahs { padding: 4px 16px; }
   .basmala { font-size: 28px; }
-  .ayah-basmala .ayah-ar { font-size: 28px; }
-  .ayah-basmala .ayah-tr { padding-left: 0; }
   .ayah { grid-template-columns: 1fr; grid-template-areas: 'ar' 'tr'; gap: 12px; padding: 20px 0; }
   .ayah.now, .basmala.now { margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
   .ayah-ar { font-size: 27px; }

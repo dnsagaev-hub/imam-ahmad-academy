@@ -131,6 +131,30 @@ export const getSurah = (n: number) => SURAHS[n - 1]
 
 export const PLACE_LABEL = { m: 'Мекканская', d: 'Мединская' } as const
 
+const AR_DIGITS = '٠١٢٣٤٥٦٧٨٩'
+/** Номер аята арабскими цифрами — знак конца аята в шрифте мусхафа. */
+const ayahMark = (n: number) => String(n).replace(/\d/g, (d) => AR_DIGITS[Number(d)])
+/** Текст аята без знака конца аята с номером. */
+export const stripAyahMark = (t: string) => t.replace(/\s*[٠-٩]+\s*$/, '')
+
+/**
+ * аль-Фатиха по выбору владельца (26.10.2026): басмала стоит отдельно, без номера; «الحمد لله» — аят 1,
+ * а седьмой аят мусхафа Медины делится на 6 и 7 перед словом «غَيۡرِ» — счёт, в котором басмала не аят
+ * «аль-Фатихи». Слова те же, из мусхафа; меняются только границы и номера аятов.
+ * share — доля шестого аята в седьмом аяте мусхафа (по длине текста): для подсветки при чтении.
+ */
+export function fatihaAyahs(mushaf: string[]): { basmala: string; ayahs: string[]; share: number } {
+  const [basmala, ...rest] = mushaf.map(stripAyahMark)
+  const last = rest.pop() ?? ''
+  const cut = last.search(/\sغ/)
+  const parts = cut > 0 ? [last.slice(0, cut), last.slice(cut + 1)] : [last]
+  return {
+    basmala,
+    ayahs: [...rest, ...parts].map((t, i) => `${t} ${ayahMark(i + 1)}`),
+    share: parts.length > 1 ? parts[0].length / (parts[0].length + parts[1].length) : 1,
+  }
+}
+
 /** Чтец для страницы суры: либо папка с файлами 001.mp3…114.mp3, либо свои файлы по номерам сур. */
 export type Reciter = { id: string; name: string; nameAr: string; base: string | null; files: Record<number, string> }
 
