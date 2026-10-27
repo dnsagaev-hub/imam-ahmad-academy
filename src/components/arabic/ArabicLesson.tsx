@@ -33,9 +33,12 @@ export function ArabicLessonBody({
   a,
   stage,
   lexicon,
+  lead,
   children,
 }: {
   a: ArabicData
+  /** цель урока — поле «Краткое описание» */
+  lead?: string | null
   stage: Stage
   lexicon: LexEntry[]
   /** задания и тест — внутри, чтобы переключатель огласовки и подсказки работали и там */
@@ -49,6 +52,7 @@ export function ArabicLessonBody({
 
   return (
     <LexiconProvider entries={lexicon} stage={stage}>
+      {lead?.trim() ? <p className="lead ar-lead">{lead}</p> : null}
       <div className="ar-meta">
         {a.isReview ? <span className="word-tag word-tag-review">Обобщающий урок</span> : null}
         <span className="muted">{STAGE_LABEL[stage]}</span>

@@ -4,6 +4,7 @@ import { SAMPLE_ARTICLES } from './sampleArticles'
 import { PROGRAM_BOOKS, PROGRAM_COURSES, programCourseSlug } from './program'
 import { SAMPLE_BOOKS } from './sampleBooks'
 import { SAMPLE_LESSONS } from './sampleLessons'
+import { installArabicLessons } from './arabicLessons'
 
 /*
  * Стартовое наполнение для настоящего сайта: каталог библиотеки, три текстовых урока
@@ -138,6 +139,8 @@ export async function seedStarter(payload: Payload) {
   }
   const bookIds = await seedLibrary(payload)
   await seedProgram(payload, bookIds)
+  // уроки арабского создала миграция раньше курса — ставим их в курс
+  await installArabicLessons(payload)
   await seedTextLessons(payload, bookIds)
   await seedArticles(payload)
   await payload.updateGlobal({ slug: 'settings', data: { starterSeeded: true } as any })

@@ -99,7 +99,7 @@ jobs:
                       /library /library/ahsar-al-muhtasarat /library/kashshaf-al-qina /contact /progress /prayer-times /about /admin \
                       /quran /quran/114 /quran/2 /hadith /hadith/akyda /hadith/akyda/islam-i-iman /hadith/smuty/fitan \
                       /fiqh /fiqh/ibadat /fiqh/ibadat/tahara /fiqh/ibadat/tahara/1 /fiqh/ibadat/tahara/2 /fiqh/sudoproizvodstvo/priznanie/1 \
-                      /courses/demo-arabskiy-yazyk /lessons/demo-arabic-1 /lessons/demo-arabic-2 /courses/demo-arabskiy-yazyk/slovar /courses/demo-arabskiy-yazyk/kartochki \
+                      /courses/demo-arabskiy-yazyk /lessons/demo-arabic-1 /lessons/demo-arabic-2 /lessons/arabskiy-urok-1 /courses/stupen-1-01-arabic/slovar /courses/demo-arabskiy-yazyk/slovar /courses/demo-arabskiy-yazyk/kartochki \
                       /search "/search?q=%D1%82%D0%B0%D1%8F%D0%BC%D0%BC%D1%83%D0%BC" "/search?q=%D0%B0%D0%BD-%D0%9D%D0%B0%D1%81&in=quran" "/search?q=x" "/search?q=$(printf '%0300d' 0)"; do
             code=$(curl -s -o /dev/null -w '%{http_code}' -L "http://127.0.0.1:3000$path")
             echo "$code  $path" | tee -a ci.log
@@ -180,6 +180,7 @@ jobs:
           check "Арабский: ответы заданий не уходят в браузер" 'hasnt "/lessons/demo-arabic-1" "هَذَا كِتَابٌ وَهَذَا قَلَمٌ" && hasnt "/lessons/demo-arabic-1" "Это дом? Да, это дом." && hasnt "/api/lessons?where%5Bslug%5D%5Bequals%5D=demo-arabic-1" "Это дом? Да" && hasnt "/api/lessons?where%5Bslug%5D%5Bequals%5D=demo-arabic-1" "\"right\":\"мечеть\""'
           check "Арабский: огласовка снята на уроке без огласовки" 'has "/lessons/demo-arabic-2" ">الكتاب<" && has "/lessons/demo-arabic-2" "Показать огласовку" && hasnt "/lessons/demo-arabic-1" "Показать огласовку"'
           check "Арабский: словарь курса и карточки" 'has "/courses/demo-arabskiy-yazyk" "/courses/demo-arabskiy-yazyk/slovar" && has "/courses/demo-arabskiy-yazyk/slovar" "كُتُبٌ" && has "/courses/demo-arabskiy-yazyk/kartochki" "Уроки с"'
+          check "Арабский: урок 1 авторского учебника в курсе Тамхиди" 'has "/courses/stupen-1-01-arabic" "/lessons/arabskiy-urok-1" && has "/courses/stupen-1-01-arabic" "Арабский язык для чтения религиозных текстов" && has "/lessons/arabskiy-urok-1" "سَجَّادَةٌ" && has "/courses/stupen-1-01-arabic/slovar" "مُصْحَفٌ"'
           check "Арабский: у курса без уроков арабского словаря нет" '[ "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/courses/demo-fikh-ochischeniya/slovar)" = "404" ]'
           # Поиск по сайту (задача 49): кнопка в шапке, разделы, переход к месту, без огласовок, отказ и граница
           check "Поиск: кнопка в шапке" 'has "/" "href=\"/search\"" && has "/quran/114" "class=\"hs-btn\"" && has "/search" "name=\"q\""'
@@ -218,7 +219,7 @@ jobs:
           import { chromium } from 'playwright'
           const pages = ['/', '/courses/demo-fikh-ochischeniya', '/lessons/pyat-osnov-fetv-imama-ahmada', '/lessons/demo-tayammum', '/courses', '/courses?level=beginner', '/courses/stupen-3-01-fiqh', '/text', '/text?book=ahsar-al-muhtasarat', '/audio', '/video', '/articles',
             '/articles/tayammum-pri-holodnoy-vode', '/library', '/library/ahsar-al-muhtasarat', '/library/al-madkhal-ibn-badran', '/contact', '/progress', '/prayer-times', '/admin', '/quran', '/quran/114', '/quran/2', '/quran/112/mushaf', '/hadith', '/hadith/akyda', '/hadith/akyda/islam-i-iman', '/fiqh', '/fiqh/ibadat', '/fiqh/ibadat/tahara', '/fiqh/ibadat/tahara/1', '/fiqh/ibadat/tahara/2', '/search?q=%D1%82%D0%B0%D1%8F%D0%BC%D0%BC%D1%83%D0%BC',
-            '/courses/demo-arabskiy-yazyk', '/lessons/demo-arabic-1', '/courses/demo-arabskiy-yazyk/slovar', '/courses/demo-arabskiy-yazyk/kartochki']
+            '/courses/demo-arabskiy-yazyk', '/lessons/demo-arabic-1', '/lessons/arabskiy-urok-1', '/courses/demo-arabskiy-yazyk/slovar', '/courses/demo-arabskiy-yazyk/kartochki']
           const browser = await chromium.launch()
           for (const [name, vp] of [['desk', { width: 1440, height: 900 }], ['phone', { width: 390, height: 844 }]]) {
             const ctx = await browser.newContext({ viewport: vp, locale: 'ru-RU', timezoneId: 'Europe/Moscow' })

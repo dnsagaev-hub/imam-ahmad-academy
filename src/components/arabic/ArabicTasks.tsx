@@ -153,7 +153,7 @@ export function ArabicTasks({
             {counts ? `Тест урока · проходной балл ${passingScore}%${isLocal ? ` · попытка ${attempts + (result ? 0 : 1)}` : ''}` : 'Тренировка перед контрольным тестом'}
           </p>
         </div>
-        <div className="dots" aria-hidden="true">
+        <div className={`dots${tasks.length > 10 ? ' dots-many' : ''}`} aria-hidden="true">
           {tasks.map((_, k) => (
             <span key={k} className={k < done.length ? (done[k] ? 'ok' : 'bad') : k === i && !result ? 'cur' : ''} />
           ))}
