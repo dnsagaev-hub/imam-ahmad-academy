@@ -434,7 +434,7 @@ textarea.input { padding: 12px 16px; resize: vertical; min-height: 120px; }
 
 /* Тест */
 .quiz { border-top: 4px solid var(--navy); padding: 32px; display: flex; flex-direction: column; gap: 22px; }
-.dots { display: flex; gap: 8px; }
+.dots { display: flex; flex-wrap: wrap; gap: 8px; max-width: 100%; }
 .dots span { width: 28px; height: 6px; border-radius: 99px; background: var(--line); }
 .dots .cur { background: var(--gold); }
 .dots .ok { background: var(--royal); }
@@ -1504,3 +1504,6 @@ a.sh-info-btn { text-decoration: none; }
   .task-pair { grid-template-columns: 1fr; gap: 6px; }
   .flashcard-ar { font-size: 40px; }
 }
+.ar-lead { margin: 0; font-size: 17px; max-width: 760px; }
+/* Много заданий в уроке — полоски тоньше, чтобы ряд помещался */
+.dots-many span { width: 14px; }

@@ -287,7 +287,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
             ) : null}
 
             {isArabic ? (
-              <ArabicLessonBody a={ar} stage={arStage} lexicon={lexicon}>
+              <ArabicLessonBody a={ar} stage={arStage} lexicon={lexicon} lead={l.excerpt}>
                 {tasks.length ? (
                   <ArabicTasks
                     lessonId={lesson.id}

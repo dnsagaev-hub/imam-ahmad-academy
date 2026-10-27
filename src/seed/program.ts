@@ -550,7 +550,7 @@ export type ProgramCourse = {
 
 export const PROGRAM_COURSES: ProgramCourse[] = [
   // I
-  { level: 'prep', no: 1, discipline: 'arabic', title: 'Арабский язык: первый год', books: ['uchebnik-arabskogo-bagauddin'], scope: 'Учебник Мухаммада Багауддина — полностью, первый год курса.' },
+  { level: 'prep', no: 1, discipline: 'arabic', title: 'Арабский язык для чтения религиозных текстов', books: [], scope: 'Авторский учебник академии: 120 уроков, от именного предложения до разбора оригинальных матнов.' },
   { level: 'prep', no: 2, discipline: 'tajwid', title: 'Коран и таджвид: «Тухфат аль-атфаль»', books: ['tuhfat-al-atfal'], scope: 'Весь матн с практикой чтения и заучиванием.' },
   { level: 'prep', no: 3, discipline: 'fiqh-ibadat', title: 'Фикх поклонения: «Аль-Масаиль аль-фикхийя»', books: ['al-masail-al-fiqhiyya'], scope: 'Разделы поклонения.' },
   { level: 'prep', no: 4, discipline: 'hadith', title: 'Хадисы: подборка академии', books: [], scope: 'Авторская подборка 20–25 достоверных хадисов о вере, поклонении и нравственности. Пособие составляют преподаватели; текст предстоит подготовить.', status: 'draft' },
