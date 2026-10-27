@@ -8,6 +8,7 @@ import path from 'path'
 import { getPayload } from 'payload'
 import { fileURLToPath } from 'url'
 
+import { seedArabicDemo } from './sampleArabic'
 import { seedArticles, seedLibrary, seedProgram, seedTextLessons } from './starter'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -275,6 +276,8 @@ if (fiqhCh && !fiqhCh.intro && fiqhCh.sentences?.length) {
   })
   payload.logger.info('Демо-перевод раздела «Книга очищения · Начало книги» создан.')
 }
+
+await seedArabicDemo(payload)
 
 payload.logger.info('Готово.')
 process.exit(0)

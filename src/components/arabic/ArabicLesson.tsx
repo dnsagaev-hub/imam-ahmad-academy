@@ -1,0 +1,204 @@
+import { type LexEntry, type Stage, verbForms } from '@/lib/arabic'
+import type { ArabicData } from '@/lib/arabicCourse'
+import { mediaUrl } from '@/lib/queries'
+
+import { ArText, LexiconProvider, VowelToggle } from './Lexicon'
+
+/*
+ * Урок арабского языка: словарь, грамматическая заметка, предложения, текст и ключи.
+ * Задания и контрольный тест показывает страница урока ниже.
+ */
+
+const STAGE_LABEL: Record<Stage, string> = {
+  full: 'Полная огласовка',
+  endings: 'Огласовка только на окончаниях',
+  none: 'Без огласовки, как в матне',
+}
+
+const TAG: Record<string, string> = { term: 'термин', book: 'книжное', daily: 'быт' }
+
+const paragraphs = (text?: string | null) =>
+  String(text ?? '')
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+
+// **жирный** — как в пояснениях текстовых уроков
+function Rich({ text }: { text: string }) {
+  const parts = text.split(/\*\*(.+?)\*\*/)
+  return <p>{parts.map((t, i) => (i % 2 ? <strong key={i}>{t}</strong> : t))}</p>
+}
+
+export function ArabicLessonBody({
+  a,
+  stage,
+  lexicon,
+  children,
+}: {
+  a: ArabicData
+  stage: Stage
+  lexicon: LexEntry[]
+  /** задания и тест — внутри, чтобы переключатель огласовки и подсказки работали и там */
+  children?: React.ReactNode
+}) {
+  const words = (a.words ?? []).filter((w) => w.word && w.translation)
+  const sentences = (a.sentences ?? []).filter((s) => s.arabic?.trim())
+  const examples = (a.grammarExamples ?? []).filter((s) => s.arabic?.trim())
+  const textParas = paragraphs(a.text)
+  const hasKeys = sentences.some((s) => s.translation) || Boolean(a.textTranslation?.trim())
+
+  return (
+    <LexiconProvider entries={lexicon} stage={stage}>
+      <div className="ar-meta">
+        {a.isReview ? <span className="word-tag word-tag-review">Обобщающий урок</span> : null}
+        <span className="muted">{STAGE_LABEL[stage]}</span>
+        <VowelToggle />
+      </div>
+
+      {words.length ? (
+        <section className="card ar-sec" id="slovar" aria-labelledby="slovar-h">
+          <h2 className="ar-h" id="slovar-h">
+            <span className="ar-h-n">1</span> Словарь урока
+          </h2>
+          <div className="word-grid">
+            {words.map((w, i) => {
+              const img = mediaUrl(w.image)
+              const verb = verbForms(w)
+              return (
+                <article key={w.id ?? i} className="word-card">
+                  {img ? <img className="word-img" src={img} alt={w.translation} loading="lazy" /> : null}
+                  <div className="word-ar ar" lang="ar" dir="rtl">
+                    {w.word}
+                  </div>
+                  <div className="word-tr">{w.translation}</div>
+                  <dl className="word-dl">
+                    {w.root ? (
+                      <>
+                        <dt>Корень</dt>
+                        <dd className="ar" lang="ar" dir="rtl">
+                          {w.root}
+                        </dd>
+                      </>
+                    ) : null}
+                    {w.plural ? (
+                      <>
+                        <dt>Мн. ч.</dt>
+                        <dd className="ar" lang="ar" dir="rtl">
+                          {w.plural}
+                        </dd>
+                      </>
+                    ) : null}
+                    {verb ? (
+                      <>
+                        <dt>Формы</dt>
+                        <dd className="ar" lang="ar" dir="rtl">
+                          {verb}
+                        </dd>
+                      </>
+                    ) : null}
+                  </dl>
+                  {w.note ? <div className="word-note">{w.note}</div> : null}
+                  <div className="word-tags">
+                    {w.tag && TAG[w.tag] ? <span className={`word-tag word-tag-${w.tag}`}>{TAG[w.tag]}</span> : null}
+                    {w.theme ? <span className="word-theme">{w.theme}</span> : null}
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        </section>
+      ) : null}
+
+      {a.grammar?.trim() || examples.length ? (
+        <section className="card ar-sec" aria-labelledby="grammar-h">
+          <h2 className="ar-h" id="grammar-h">
+            <span className="ar-h-n">2</span> Грамматика{a.grammarTitle ? `: ${a.grammarTitle}` : ''}
+          </h2>
+          <div className="prose ar-grammar">
+            {paragraphs(a.grammar).map((p, i) => (
+              <Rich key={i} text={p} />
+            ))}
+          </div>
+          {examples.length ? (
+            <ul className="ar-examples">
+              {examples.map((e, i) => (
+                <li key={i}>
+                  <ArText className="ar ar-line" text={e.arabic} />
+                  {e.translation ? <span className="ar-ex-tr">{e.translation}</span> : null}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </section>
+      ) : null}
+
+      {sentences.length ? (
+        <section className="card ar-sec" aria-labelledby="sent-h">
+          <h2 className="ar-h" id="sent-h">
+            <span className="ar-h-n">3</span> Предложения
+          </h2>
+          <p className="muted ar-hint">Наведите на слово или нажмите на него — появится перевод. Попробуйте перевести сами, затем откройте перевод.</p>
+          <ol className="ar-sentences">
+            {sentences.map((s, i) => (
+              <li key={i}>
+                <span className="ar-sn">{i + 1}</span>
+                <div className="ar-s-body">
+                  <ArText className="ar ar-line" text={s.arabic} />
+                  {s.translation ? (
+                    <details className="ar-tr">
+                      <summary>Перевод</summary>
+                      <span>{s.translation}</span>
+                    </details>
+                  ) : null}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ) : null}
+
+      {textParas.length ? (
+        <section className="card ar-sec" aria-labelledby="text-h">
+          <h2 className="ar-h" id="text-h">
+            <span className="ar-h-n">4</span> Текст
+          </h2>
+          {a.textTitle ? <ArText className="ar ar-text-title" text={a.textTitle} /> : null}
+          <div className="ar-text ar" lang="ar" dir="rtl">
+            {textParas.map((p, i) => (
+              <p key={i}>
+                <ArText text={p} />
+              </p>
+            ))}
+          </div>
+          {a.textSource ? <div className="tl-src">{a.textSource}</div> : null}
+        </section>
+      ) : null}
+
+      {children}
+
+      {hasKeys ? (
+        <details className="card ar-sec ar-keys" id="keys">
+          <summary className="ar-h">
+            <span className="ar-h-n">6</span> Ключи: переводы
+          </summary>
+          {sentences.some((s) => s.translation) ? (
+            <ol className="ar-keys-list">
+              {sentences.map((s, i) => (s.translation ? <li key={i} value={i + 1}>{s.translation}</li> : null))}
+            </ol>
+          ) : null}
+          {a.textTranslation?.trim() ? (
+            <div className="prose">
+              <h3 style={{ margin: '8px 0' }}>Перевод текста</h3>
+              {paragraphs(a.textTranslation).map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+          ) : null}
+          <p className="muted" style={{ margin: 0, fontSize: 14 }}>
+            Ответы к заданиям показываются сразу после ответа на каждое задание.
+          </p>
+        </details>
+      ) : null}
+    </LexiconProvider>
+  )
+}

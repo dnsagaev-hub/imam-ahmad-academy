@@ -183,3 +183,30 @@ export const CATEGORY_AR: Record<string, string> = {
   sira: 'السيرة النبوية',
   akhlaq: 'الأخلاق والتزكية',
 }
+
+/** Курс арабского языка: огласовка в уроке. «Авто» — по номеру урока (1–50 полная, 51–85 окончания, с 86 без огласовки). */
+export const ARABIC_STAGES = [
+  { label: 'Авто — по номеру урока', value: 'auto' },
+  { label: 'Полная огласовка', value: 'full' },
+  { label: 'Только окончания', value: 'endings' },
+  { label: 'Без огласовки', value: 'none' },
+] as const
+
+/** Пометка слова в словаре урока. */
+export const ARABIC_WORD_TAGS = [
+  { label: 'Термин', value: 'term' },
+  { label: 'Книжное', value: 'book' },
+  { label: 'Быт', value: 'daily' },
+] as const
+
+/** Виды заданий урока арабского. Первые четыре сайт проверяет сам, остальные ученик сверяет с ключом. */
+export const ARABIC_TASK_KINDS = [
+  { label: 'Выбрать ответ', value: 'choice', auto: true },
+  { label: 'Вписать ответ', value: 'input', auto: true },
+  { label: 'Соединить пары', value: 'match', auto: true },
+  { label: 'Собрать предложение', value: 'order', auto: true },
+  { label: 'Перевод с арабского', value: 'toRu', auto: false },
+  { label: 'Перевод на арабский', value: 'toAr', auto: false },
+  { label: 'И‘раб', value: 'irab', auto: false },
+  { label: 'Расставить огласовку', value: 'vowel', auto: false },
+] as const

@@ -86,7 +86,7 @@ export function toLeanCourse(course: CourseDoc): CourseDoc {
         slug: l.slug,
         duration: l.duration ?? null,
         isPublished: l.isPublished,
-        hasTest: Boolean(l.questions?.length),
+        hasTest: Boolean(l.questions?.length) || Boolean((l as any).arabic?.tasks?.length),
       })),
     })),
   }

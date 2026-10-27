@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
+import { sameAnswer } from '@/lib/arabic'
 import { REGISTRATION_ENABLED } from '@/lib/config'
 import { canOpenLesson, findCourseForLesson, getProgress, type LessonDoc } from '@/lib/learning'
 import { getCurrentUser, getPayloadClient } from '@/lib/payload'
@@ -38,7 +39,6 @@ export async function checkAnswer(lessonId: string | number, questionIndex: numb
 
 /** Итог теста: считает балл, сохраняет результат в кабинет ученика. */
 export async function submitQuiz(lessonId: string | number, answers: number[]) {
-  const payload = await getPayloadClient()
   // Без регистрации результаты хранит браузер ученика, сервер только проверяет ответы
   const user = REGISTRATION_ENABLED ? await getCurrentUser() : null
   const lesson = await loadLesson(lessonId)
@@ -60,9 +60,20 @@ export async function submitQuiz(lessonId: string | number, answers: number[]) {
   if (!user) {
     return { ok: true as const, saved: false, score, passed, correctCount, total, passing, review, attempt: 1 }
   }
+  const saved = await saveAttempt(user.id, lesson, { score, correctCount, total, passed, answers })
+  if (!saved.ok) return saved
+  return { ok: true as const, saved: true, score, passed, correctCount, total, passing, review, attempt: saved.attempt }
+}
 
+/** Результат теста — в кабинет ученика (только с регистрацией). */
+async function saveAttempt(
+  userId: string | number,
+  lesson: LessonDoc,
+  r: { score: number; correctCount: number; total: number; passed: boolean; answers: unknown },
+) {
+  const payload = await getPayloadClient()
   const course = await findCourseForLesson(payload, lesson.id)
-  const progress = await getProgress(payload, user.id)
+  const progress = await getProgress(payload, userId)
   if (course && !canOpenLesson(course, lesson.id, progress)) {
     return { ok: false as const, error: 'Этот урок ещё закрыт: сначала сдайте тест предыдущего урока.' }
   }
@@ -72,22 +83,87 @@ export async function submitQuiz(lessonId: string | number, answers: number[]) {
     collection: 'quiz-attempts',
     overrideAccess: true,
     data: {
-      user: user.id,
+      user: userId,
       lesson: lesson.id,
       course: course?.id,
-      score,
-      correctCount,
-      totalCount: total,
-      passed,
+      score: r.score,
+      correctCount: r.correctCount,
+      totalCount: r.total,
+      passed: r.passed,
       attempt,
-      answers,
+      answers: r.answers,
     } as any,
   })
 
   revalidatePath('/cabinet')
   if (course?.slug) revalidatePath(`/courses/${course.slug}`)
+  return { ok: true as const, attempt }
+}
 
-  return { ok: true as const, saved: true, score, passed, correctCount, total, passing, review, attempt }
+/* ---------- Задания урока арабского ---------- */
+
+export type TaskAnswer = { choice?: number; text?: string; pairs?: string[]; picked?: number[] }
+
+const AUTO_KINDS = new Set(['choice', 'input', 'match', 'order'])
+
+function gradeTask(t: Record<string, any>, a: TaskAnswer | undefined) {
+  const kind = String(t.kind ?? 'choice')
+  const options: string[] = (t.options ?? []).map((o: any) => String(o.text ?? ''))
+  const pairs: { left: string; right: string }[] = (t.pairs ?? []).map((p: any) => ({ left: String(p.left ?? ''), right: String(p.right ?? '') }))
+  const answers = String(t.answer ?? '')
+    .split('\n')
+    .map((x) => x.trim())
+    .filter(Boolean)
+  let key = String(t.answer ?? '').trim()
+  let isCorrect: boolean | undefined
+  if (kind === 'choice') {
+    const correctIndex = (Number(t.correct) || 1) - 1
+    key = options[correctIndex] ?? ''
+    isCorrect = a?.choice === correctIndex
+  } else if (kind === 'match') {
+    key = pairs.map((p) => `${p.left} — ${p.right}`).join('\n')
+    isCorrect = pairs.length > 0 && pairs.every((p, i) => sameAnswer(a?.pairs?.[i] ?? '', p.right))
+  } else if (kind === 'input') {
+    key = answers.join(' / ')
+    isCorrect = answers.some((x) => sameAnswer(a?.text ?? '', x))
+  } else if (kind === 'order') {
+    isCorrect = sameAnswer(a?.text ?? '', key)
+  }
+  return { kind, auto: AUTO_KINDS.has(kind), isCorrect, key, explanation: String(t.explanation ?? '') }
+}
+
+/** Проверка одного задания: верно ли (для заданий с проверкой) и ключ. Ключ хранится только на сервере. */
+export async function checkArabicTask(lessonId: string | number, index: number, answer: TaskAnswer) {
+  const lesson = await loadLesson(lessonId)
+  const t = (lesson as any)?.arabic?.tasks?.[index]
+  if (!t) return { ok: false as const, error: 'Задание не найдено' }
+  return { ok: true as const, ...gradeTask(t, answer) }
+}
+
+/**
+ * Итог заданий. Задания с проверкой сервер проверяет заново, остальные ученик отметил сам по ключу.
+ * Если у урока есть тест (вкладка «Тест»), задания — тренировка и в прогресс не идут.
+ */
+export async function submitArabicTasks(lessonId: string | number, answers: TaskAnswer[], selfMarks: boolean[]) {
+  const lesson = await loadLesson(lessonId)
+  if (!lesson) return { ok: false as const, error: 'Урок не найден' }
+  const tasks: Record<string, any>[] = (lesson as any).arabic?.tasks ?? []
+  const results = tasks.map((t, i) => {
+    const g = gradeTask(t, answers[i])
+    return g.auto ? Boolean(g.isCorrect) : Boolean(selfMarks[i])
+  })
+  const total = tasks.length
+  const correctCount = results.filter(Boolean).length
+  const score = total ? Math.round((correctCount / total) * 100) : 100
+  const passing = lesson.passingScore ?? 70
+  const passed = score >= passing
+  const counts = !(lesson.questions ?? []).length
+
+  const user = REGISTRATION_ENABLED && counts ? await getCurrentUser() : null
+  if (!user) return { ok: true as const, saved: false, counts, score, passed, correctCount, total, passing }
+  const saved = await saveAttempt(user.id, lesson, { score, correctCount, total, passed, answers: results })
+  if (!saved.ok) return saved
+  return { ok: true as const, saved: true, counts, score, passed, correctCount, total, passing }
 }
 
 /** Для уроков без теста: «Отметить урок пройденным». */
