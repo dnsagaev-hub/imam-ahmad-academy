@@ -23,10 +23,36 @@ const paragraphs = (text?: string | null) =>
     .map((p) => p.trim())
     .filter(Boolean)
 
+// Арабские слова внутри русского текста — отдельно, в порядке написания: «هُنَا كِتَابٌ, هُنَاكَ مَسْجِدٌ» не переставляются
+const AR_RUN = /([\u0600-\u06FF](?:[\u0600-\u06FF ]*[\u0600-\u06FF])?)/
+function Bidi({ text }: { text: string }) {
+  return text.split(AR_RUN).map((t, i) =>
+    i % 2 ? (
+      <bdi key={i} className="ar ar-inline" lang="ar">
+        {t}
+      </bdi>
+    ) : (
+      t
+    ),
+  )
+}
+
 // **жирный** — как в пояснениях текстовых уроков
 function Rich({ text }: { text: string }) {
   const parts = text.split(/\*\*(.+?)\*\*/)
-  return <p>{parts.map((t, i) => (i % 2 ? <strong key={i}>{t}</strong> : t))}</p>
+  return (
+    <p>
+      {parts.map((t, i) =>
+        i % 2 ? (
+          <strong key={i}>
+            <Bidi text={t} />
+          </strong>
+        ) : (
+          <Bidi key={i} text={t} />
+        ),
+      )}
+    </p>
+  )
 }
 
 export function ArabicLessonBody({
@@ -116,7 +142,11 @@ export function ArabicLessonBody({
       {a.grammar?.trim() || examples.length ? (
         <section className="card ar-sec" aria-labelledby="grammar-h">
           <h2 className="ar-h" id="grammar-h">
-            <span className="ar-h-n">2</span> Грамматика{a.grammarTitle ? `: ${a.grammarTitle}` : ''}
+            <span className="ar-h-n">2</span>
+            <span>
+              Грамматика{a.grammarTitle ? ': ' : ''}
+              {a.grammarTitle ? <Bidi text={a.grammarTitle} /> : null}
+            </span>
           </h2>
           <div className="prose ar-grammar">
             {paragraphs(a.grammar).map((p, i) => (
@@ -187,7 +217,13 @@ export function ArabicLessonBody({
           </summary>
           {sentences.some((s) => s.translation) ? (
             <ol className="ar-keys-list">
-              {sentences.map((s, i) => (s.translation ? <li key={i} value={i + 1}>{s.translation}</li> : null))}
+              {sentences.map((s, i) =>
+                s.translation ? (
+                  <li key={i} value={i + 1}>
+                    {s.translation}
+                  </li>
+                ) : null,
+              )}
             </ol>
           ) : null}
           {a.textTranslation?.trim() ? (

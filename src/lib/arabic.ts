@@ -80,6 +80,8 @@ export function candidates(word: string): string[] {
   for (const s of [...stems]) if (s.startsWith('ال') && s.length > 3) stems.add(s.slice(2))
   const list = [...stems]
   list.forEach((s, i) => add(s, i === 0 ? 1 : 3))
+  // союз перед коротким служебным словом: وَمَنْ، وَمَا، فَلَا
+  if (w.length === 3 && PREFIX_1.includes(w[0])) add(w.slice(1), 2)
   for (const s of list) {
     for (const suf of SUFFIXES) {
       if (!s.endsWith(suf)) continue
