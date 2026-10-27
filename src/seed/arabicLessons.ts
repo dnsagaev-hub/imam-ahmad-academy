@@ -38,6 +38,10 @@ export async function installArabicLessons(payload: Payload, req?: Partial<Paylo
     for (const l of m.lessons) {
       const found = await payload.find({ collection: 'lessons', where: { slug: { equals: l.slug } }, limit: 1, depth: 0, ...opts })
       const doc = found.docs[0] ?? (await payload.create({ collection: 'lessons', data: l as never, ...opts }))
+      // Номер урока сайт пишет сам: «Урок 1. Урок 1. …» → «Урок 1. …» (только если название не меняли)
+      if (found.docs[0] && doc.title !== l.title && doc.title.replace(/^Урок \d+\.\s*/, '') === l.title) {
+        await payload.update({ collection: 'lessons', id: doc.id, data: { title: l.title }, ...opts })
+      }
       ids.push(doc.id)
     }
     created.push({ module: m.module, ids })
