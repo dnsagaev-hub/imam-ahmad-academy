@@ -3,6 +3,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import { ArabicLessonBody } from '@/components/arabic/ArabicLesson'
+import { ArabicTasks } from '@/components/arabic/ArabicTasks'
+import { VocabDock } from '@/components/arabic/VocabDock'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { FileIcon, LockIcon } from '@/components/Icons'
@@ -13,6 +16,8 @@ import { Crumbs } from '@/components/PageHead'
 import { LessonGate, LessonNav, ModuleSide } from '@/components/progress/LessonParts'
 import { serverSource, type ProgressSource } from '@/components/progress/useProgress'
 import { Quiz } from '@/components/Quiz'
+import { stageFor, toLexEntry, verbForms } from '@/lib/arabic'
+import { arabicOf, buildArabicCourse, clientTasks, isArabicLesson, lexiconUpTo } from '@/lib/arabicCourse'
 import { REGISTRATION_ENABLED } from '@/lib/config'
 import { LESSON_CATEGORIES, labelOf } from '@/lib/constants'
 import { canOpenLesson, emptyProgress, findCourseForLesson, flattenCourse, getProgress, toLeanCourse } from '@/lib/learning'
@@ -65,7 +70,17 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
             <Crumbs items={crumbs} />
           </div>
         </div>
-        <main className="container section" style={{ maxWidth: 720, textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'center' }}>
+        <main
+          className="container section"
+          style={{
+            maxWidth: 720,
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 16,
+            alignItems: 'center',
+          }}
+        >
           <span className="st st-locked" style={{ width: 64, height: 64 }}>
             <LockIcon size={26} />
           </span>
@@ -78,7 +93,14 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
               ? 'Этот урок откроется после того, как вы сдадите тест предыдущего урока.'
               : 'Чтобы продолжить курс, войдите или зарегистрируйтесь — уроки открываются по порядку.'}
           </p>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <div
+            style={{
+              display: 'flex',
+              gap: 10,
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+            }}
+          >
             {!user ? (
               <>
                 <Link className="btn" href="/register">
@@ -108,6 +130,52 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
   }))
   const mode = REGISTRATION_ENABLED ? 'server' : 'local'
 
+  // Урок арабского языка: словарь сбоку, подсказки к словам, этапы огласовки, задания
+  const isArabic = isArabicLesson(l)
+  const ar = arabicOf(l)
+  const arNumber = here?.number ?? 1
+  const arStage = stageFor(ar.stage, arNumber)
+  const arWords = (ar.words ?? []).filter((w) => w.word && w.translation)
+  const lexicon = isArabic ? (course ? lexiconUpTo(buildArabicCourse(course), arNumber) : arWords.map((w) => toLexEntry(w, arNumber))) : []
+  const tasks = isArabic ? clientTasks(lesson.id, ar) : []
+  const dockWords = arWords.map((w, i) => ({
+    key: String(w.id ?? i),
+    word: w.word,
+    translation: w.translation,
+    root: w.root ?? undefined,
+    plural: w.plural ?? undefined,
+    verb: verbForms(w),
+    tag: w.tag ?? undefined,
+    image: mediaUrl(w.image),
+  }))
+  const cardsHref = course && isArabic ? `/courses/${course.slug}/kartochki?from=${arNumber}&to=${arNumber}` : undefined
+
+  const testBlock = questions.length ? (
+    <Quiz
+      lessonId={lesson.id}
+      lessonNumber={here?.number}
+      questions={questions}
+      passingScore={l.passingScore ?? 70}
+      loggedIn={Boolean(user)}
+      nextHref={next ? `/lessons/${next.lesson.slug}` : undefined}
+      nextLabel={next ? `Урок ${next.number}` : undefined}
+      previousAttempts={progress.attempts.get(String(lesson.id)) ?? 0}
+      mode={mode}
+      lessonTitle={l.title}
+      courseTitle={course?.title}
+    />
+  ) : course && !tasks.length ? (
+    <MarkComplete
+      lessonId={lesson.id}
+      done={progress.passed.has(String(lesson.id))}
+      loggedIn={Boolean(user)}
+      nextHref={next ? `/lessons/${next.lesson.slug}` : undefined}
+      mode={mode}
+      lessonTitle={l.title}
+      courseTitle={course.title}
+    />
+  ) : null
+
   return (
     <>
       <Header />
@@ -119,7 +187,15 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
 
       <LessonGate course={lean} lessonId={lesson.id} source={source}>
         <div className="container two-col" style={{ paddingTop: 36 }}>
-          {here && lean ? (
+          {isArabic && dockWords.length ? (
+            <VocabDock words={dockWords} cardsHref={cardsHref}>
+              {course ? (
+                <Link href={`/courses/${course.slug}`} className="btn btn-outline">
+                  ← Вся программа курса
+                </Link>
+              ) : null}
+            </VocabDock>
+          ) : here && lean ? (
             <aside className="col-side-left">
               <ModuleSide course={lean} lessonId={lesson.id} source={source} />
               <Link href={`/courses/${course!.slug}`} className="btn btn-outline">
@@ -152,9 +228,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
               teacher={l.teacher}
             />
 
-            {Array.isArray(l.content) && l.content.length ? (
-              <LessonText blocks={l.content} sourceRef={l.sourceRef} readingMinutes={l.readingMinutes} />
-            ) : null}
+            {Array.isArray(l.content) && l.content.length ? <LessonText blocks={l.content} sourceRef={l.sourceRef} readingMinutes={l.readingMinutes} /> : null}
 
             {l.body ? (
               <article className="card prose lesson-text" style={{ padding: 36 }}>
@@ -163,7 +237,15 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
             ) : null}
 
             {l.definitionAr || l.summary || (l.files ?? []).length ? (
-              <section className="card" style={{ padding: 32, display: 'flex', flexDirection: 'column', gap: 18 }}>
+              <section
+                className="card"
+                style={{
+                  padding: 32,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 18,
+                }}
+              >
                 <h2 className="h2" style={{ margin: 0, fontSize: 34 }}>
                   Конспект урока
                 </h2>
@@ -173,7 +255,16 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
                       {l.definitionAr}
                     </p>
                     {l.definitionRu ? (
-                      <p style={{ margin: 0, fontSize: 15, color: 'var(--muted)', fontStyle: 'italic' }}>{l.definitionRu}</p>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: 15,
+                          color: 'var(--muted)',
+                          fontStyle: 'italic',
+                        }}
+                      >
+                        {l.definitionRu}
+                      </p>
                     ) : null}
                   </div>
                 ) : null}
@@ -195,31 +286,27 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
               </section>
             ) : null}
 
-            {questions.length ? (
-              <Quiz
-                lessonId={lesson.id}
-                lessonNumber={here?.number}
-                questions={questions}
-                passingScore={l.passingScore ?? 70}
-                loggedIn={Boolean(user)}
-                nextHref={next ? `/lessons/${next.lesson.slug}` : undefined}
-                nextLabel={next ? `Урок ${next.number}` : undefined}
-                previousAttempts={progress.attempts.get(String(lesson.id)) ?? 0}
-                mode={mode}
-                lessonTitle={l.title}
-                courseTitle={course?.title}
-              />
-            ) : course ? (
-              <MarkComplete
-                lessonId={lesson.id}
-                done={progress.passed.has(String(lesson.id))}
-                loggedIn={Boolean(user)}
-                nextHref={next ? `/lessons/${next.lesson.slug}` : undefined}
-                mode={mode}
-                lessonTitle={l.title}
-                courseTitle={course.title}
-              />
-            ) : null}
+            {isArabic ? (
+              <ArabicLessonBody a={ar} stage={arStage} lexicon={lexicon}>
+                {tasks.length ? (
+                  <ArabicTasks
+                    lessonId={lesson.id}
+                    tasks={tasks}
+                    counts={!questions.length}
+                    passingScore={l.passingScore ?? 70}
+                    mode={mode}
+                    loggedIn={Boolean(user)}
+                    lessonTitle={l.title}
+                    courseTitle={course?.title}
+                    nextHref={next ? `/lessons/${next.lesson.slug}` : undefined}
+                    nextLabel={next ? `Урок ${next.number}` : undefined}
+                  />
+                ) : null}
+                {testBlock}
+              </ArabicLessonBody>
+            ) : (
+              <>{testBlock}</>
+            )}
 
             {here && lean ? <LessonNav course={lean} lessonId={lesson.id} source={source} /> : null}
           </main>

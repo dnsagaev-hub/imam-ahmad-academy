@@ -486,6 +486,95 @@ export interface Lesson {
     };
     [k: string]: unknown;
   } | null;
+  arabic?: {
+    stage?: ('auto' | 'full' | 'endings' | 'none') | null;
+    isReview?: boolean | null;
+    /**
+     * Слова попадают в словарь курса, в подсказки над словами в следующих уроках и в карточки.
+     */
+    words?:
+      | {
+          word: string;
+          translation: string;
+          root?: string | null;
+          plural?: string | null;
+          past?: string | null;
+          present?: string | null;
+          masdar?: string | null;
+          tag?: ('term' | 'book' | 'daily') | null;
+          theme?: string | null;
+          /**
+           * Например, женский род или формы спряжения — чтобы подсказка узнавала слово и в них.
+           */
+          forms?: string | null;
+          image?: (number | null) | Media;
+          note?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    grammarTitle?: string | null;
+    /**
+     * Абзацы разделяйте пустой строкой. Жирный шрифт: **слова в двух звёздочках**.
+     */
+    grammar?: string | null;
+    grammarExamples?:
+      | {
+          arabic: string;
+          translation?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Перевод ученик видит в «Ключах» и по кнопке у предложения.
+     */
+    sentences?:
+      | {
+          arabic: string;
+          translation?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    textTitle?: string | null;
+    /**
+     * Абзацы разделяйте пустой строкой.
+     */
+    text?: string | null;
+    textTranslation?: string | null;
+    textSource?: string | null;
+    /**
+     * Ученик выполняет задания по одному и сразу видит, верно ли. Если во вкладке «Тест» нет вопросов, задания и есть тест урока: от проходного балла урок засчитывается. Ответы ученику не видны, пока он не ответит.
+     */
+    tasks?:
+      | {
+          kind: 'choice' | 'input' | 'match' | 'order' | 'toRu' | 'toAr' | 'irab' | 'vowel';
+          prompt: string;
+          /**
+           * Слово, предложение или вопрос. Для «Расставить огласовку» оставьте пустым: сайт снимет огласовку с ответа сам. Для «Собрать предложение» — пусто или русский перевод.
+           */
+          material?: string | null;
+          options?:
+            | {
+                text: string;
+                id?: string | null;
+              }[]
+            | null;
+          correct?: number | null;
+          pairs?:
+            | {
+                left: string;
+                right: string;
+                id?: string | null;
+              }[]
+            | null;
+          /**
+           * «Вписать ответ»: несколько верных ответов — каждый с новой строки. «Собрать предложение»: верное предложение. Перевод, и‘раб, огласовка: ключ, с которым ученик сверит себя.
+           */
+          answer?: string | null;
+          explanation?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
   definitionAr?: string | null;
   definitionRu?: string | null;
   summary?: {
@@ -763,7 +852,7 @@ export interface QuranTranslation {
   focalY?: number | null;
 }
 /**
- * Кнопки над сурой: «Название суры», «Цели суры», «Тематика суры», «Место ниспослания», «Хадис о достоинстве суры». По нажатию текст открывается в окне. Пустой пункт на сайте не показывается.
+ * Кнопки над сурой: «Название суры», «Цели суры», «Тематика суры», «Место ниспослания», «Хадис о достоинстве суры». По нажатию текст открывается в окне. Пустой пункт на сайте не показывается. Здесь же можно поправить название суры на сайте: создайте запись с номером суры и заполните «Название суры на сайте».
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "surah-info".
@@ -1646,6 +1735,73 @@ export interface LessonsSelect<T extends boolean = true> {
             };
       };
   body?: T;
+  arabic?:
+    | T
+    | {
+        stage?: T;
+        isReview?: T;
+        words?:
+          | T
+          | {
+              word?: T;
+              translation?: T;
+              root?: T;
+              plural?: T;
+              past?: T;
+              present?: T;
+              masdar?: T;
+              tag?: T;
+              theme?: T;
+              forms?: T;
+              image?: T;
+              note?: T;
+              id?: T;
+            };
+        grammarTitle?: T;
+        grammar?: T;
+        grammarExamples?:
+          | T
+          | {
+              arabic?: T;
+              translation?: T;
+              id?: T;
+            };
+        sentences?:
+          | T
+          | {
+              arabic?: T;
+              translation?: T;
+              id?: T;
+            };
+        textTitle?: T;
+        text?: T;
+        textTranslation?: T;
+        textSource?: T;
+        tasks?:
+          | T
+          | {
+              kind?: T;
+              prompt?: T;
+              material?: T;
+              options?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              correct?: T;
+              pairs?:
+                | T
+                | {
+                    left?: T;
+                    right?: T;
+                    id?: T;
+                  };
+              answer?: T;
+              explanation?: T;
+              id?: T;
+            };
+      };
   definitionAr?: T;
   definitionRu?: T;
   summary?: T;

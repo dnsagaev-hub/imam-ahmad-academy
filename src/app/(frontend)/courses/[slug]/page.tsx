@@ -7,6 +7,7 @@ import { FileIcon } from '@/components/Icons'
 import { Crumbs } from '@/components/PageHead'
 import { CourseProgram, CourseProgressCard } from '@/components/progress/CourseProgram'
 import { serverSource, type ProgressSource } from '@/components/progress/useProgress'
+import { buildArabicCourse } from '@/lib/arabicCourse'
 import { REGISTRATION_ENABLED } from '@/lib/config'
 import { BookTile } from '@/components/library/BookTile'
 import { toBookItem } from '@/lib/books'
@@ -41,6 +42,8 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
   const stage = COURSE_LEVELS.find((l) => l.value === c.level)
   const books = (Array.isArray(c.books) ? c.books : []).filter((b: any) => b && typeof b === 'object')
   const status = c.status && c.status !== 'approved' ? labelOf(COURSE_STATUSES, c.status) : null
+  // Курс арабского языка: словарь курса и карточки
+  const arabic = buildArabicCourse(course)
 
   return (
     <>
@@ -109,6 +112,16 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
           <h2 className="h2" style={{ margin: '0 0 4px', fontSize: 36 }}>
             Программа курса
           </h2>
+          {arabic.lessons.length ? (
+            <div className="ar-course-links">
+              <a className="btn" href={`/courses/${course.slug}/slovar`}>
+                Словарь курса{arabic.words.length ? ` · ${arabic.words.length}` : ''}
+              </a>
+              <a className="btn btn-outline" href={`/courses/${course.slug}/kartochki`}>
+                Карточки для повторения
+              </a>
+            </div>
+          ) : null}
           {total ? (
             <CourseProgram course={lean} source={source} />
           ) : (

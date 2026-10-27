@@ -7,6 +7,7 @@ import { publishedField } from '../fields/published'
 import { slugField } from '../fields/slug'
 import { LESSON_BLOCKS } from '../blocks/lessonBlocks'
 import { LESSON_CATEGORIES } from '../lib/constants'
+import { ArabicLessonTab } from './arabicLesson'
 
 export const Lessons: CollectionConfig = {
   slug: 'lessons',
@@ -139,6 +140,7 @@ export const Lessons: CollectionConfig = {
             },
           ],
         },
+        ArabicLessonTab,
         {
           label: 'Конспект',
           fields: [

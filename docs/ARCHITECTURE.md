@@ -13,8 +13,8 @@ src/
   lib/                     constants (ступени, рубрики), learning (логика курса/уровня), queries (запросы),
                            books, media, video, prayerTimes, localProgress, listenStore
   components/              Header/NavMenu/Footer, Cards, program/Program (ступени), library/*, text/*,
-                           audio/*, video/*, progress/*, contact/QuestionBuilder, Quiz, PrayerWidgets
-  app/(frontend)/          страницы сайта; actions.ts — серверные действия (checkAnswer, submitQuiz); styles.css — все стили
+                           audio/*, video/*, progress/*, arabic/* (урок арабского, словарь, задания, карточки), contact/QuestionBuilder, Quiz, PrayerWidgets
+  app/(frontend)/          страницы сайта; actions.ts — серверные действия (checkAnswer, submitQuiz, checkArabicTask, submitArabicTasks); styles.css — все стили
   app/(payload)/           админка (сгенерировано Payload, не трогать без нужды)
   migrations/              миграции базы
   seed/                    стартовое наполнение: program.ts (44 курса + книги программы), sampleBooks,
@@ -53,6 +53,18 @@ docker-compose.yml         локальная версия: сайт + PostgreSQ
   текст «Зад аль-Мустакни‘» (`src/data/fiqh/zad.json`, из OpenITI `…ZadMustaqnic.Shamela0011230-ara1`) вставляет миграция
   `20261025_085830_fiqh`. Запросы — `src/lib/fiqhData.ts`, страницы — `src/app/(frontend)/fiqh`, текст и окно —
   `src/components/fiqh/FiqhText.tsx` (классы «Корана» `.ayah`, `.sv-show`, `.cm` и свои `.fq-*`), кнопки шапки — `SurahInfoButtons`.
+- Курс арабского языка (задача 50): у урока группа полей `arabic` (вкладка «Урок арабского», `src/collections/arabicLesson.ts`):
+  `stage` (`auto` — по номеру урока в курсе: 1–50 полная огласовка, 51–85 только окончания, с 86 без; `stageFor()`),
+  `isReview`, массив `words` {word, translation, root, plural, past, present, masdar, tag, theme, forms, image, note},
+  заметка `grammar*`, `sentences`, текст `text*`, массив `tasks` {kind из `ARABIC_TASK_KINDS`, prompt, material, options,
+  `correct`, pairs {left, `right`}, `answer`, `explanation`} — поля в обратных кавычках читает только админ. Урок с заполненными
+  словами, предложениями, текстом или заданиями показывается как урок арабского (`isArabicLesson`). Арабский текст хранится
+  с полной огласовкой, снимает её `showStage()` (`src/lib/arabic.ts`). Подсказки к словам и проверка «закрытого словаря»:
+  слово текста ищется среди слов этого и прошлых уроков курса без огласовки, с отбрасыванием приставок (و ف ب ل ك س ال)
+  и окончаний (ـه ـها ـنا ـون ـات…), при одинаковом написании — по огласовке (`lookup()`). Словарь курса, повторы и проверка —
+  `src/lib/arabicCourse.ts`, страницы `/courses/<курс>/slovar` (проверка — только админу) и `/courses/<курс>/kartochki`
+  (повторение по коробкам Лейтнера, в localStorage `imam-ahmad-academy:cards:v1`). Задания проверяют серверные действия
+  `checkArabicTask`/`submitArabicTasks`; если у урока нет вопросов во вкладке «Тест», задания — тест урока (результат как у теста).
 - Коран (`/quran`): арабский текст и шрифт — Комплекс короля Фахда (KFGQPC Uthmanic Hafs v18), постоянные данные в
   `src/data/quran/<номер>.json` и `public/fonts/quran/`; список сур (русское название, смысл, мекканская/мединская по Tanzil,
   число аятов) — `src/lib/quran.ts`. Сведения о суре (кнопки в шапке суры, окно `SurahInfoButtons`) — коллекция
@@ -94,7 +106,7 @@ docker-compose.yml         локальная версия: сайт + PostgreSQ
 
 ## Ключевые расчёты и правила
 - Открытие уроков и уровень ученика — `src/lib/learning.ts`.
-- Проверка ответов — только на сервере (`app/(frontend)/actions.ts`).
+- Проверка ответов — только на сервере (`app/(frontend)/actions.ts`), и тестов, и заданий урока арабского.
 
 ## Окружения
 - **Сборка:** `output: 'standalone'`, многоэтапный `Dockerfile`; на этапе сборки подставляются временные
