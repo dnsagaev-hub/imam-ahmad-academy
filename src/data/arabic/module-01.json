@@ -16,21 +16,24 @@
       "translation": "книга",
       "root": "ك ت ب",
       "plural": "كُتُبٌ",
-      "tag": "book"
+      "tag": "book",
+      "picture": "kitab.webp"
      },
      {
       "word": "قَلَمٌ",
       "translation": "ручка, калам",
       "root": "ق ل م",
       "plural": "أَقْلَامٌ",
-      "tag": "daily"
+      "tag": "daily",
+      "picture": "qalam.webp"
      },
      {
       "word": "بَيْتٌ",
       "translation": "дом",
       "root": "ب ي ت",
       "plural": "بُيُوتٌ",
-      "tag": "daily"
+      "tag": "daily",
+      "picture": "bayt.webp"
      },
      {
       "word": "بَابٌ",
@@ -38,7 +41,8 @@
       "root": "ب و ب",
       "plural": "أَبْوَابٌ",
       "tag": "daily",
-      "note": "В книгах по фикху — «глава»: بَابُ الطَّهَارَةِ — «глава о чистоте». Это значение встретится позже."
+      "note": "В книгах по фикху — «глава»: بَابُ الطَّهَارَةِ — «глава о чистоте». Это значение встретится позже.",
+      "picture": "bab.webp"
      },
      {
       "word": "مَدْرَسَةٌ",
@@ -46,42 +50,48 @@
       "root": "د ر س",
       "plural": "مَدَارِسُ",
       "tag": "book",
-      "note": "Ж. р."
+      "note": "Ж. р.",
+      "picture": "madrasa.webp"
      },
      {
       "word": "طَالِبٌ",
       "translation": "студент, ищущий знание",
       "root": "ط ل ب",
       "plural": "طُلَّابٌ",
-      "tag": "book"
+      "tag": "book",
+      "picture": "talib.webp"
      },
      {
       "word": "شَيْخٌ",
       "translation": "шейх, учитель; старец",
       "root": "ش ي خ",
       "plural": "شُيُوخٌ، مَشَايِخُ",
-      "tag": "term"
+      "tag": "term",
+      "picture": "shaykh.webp"
      },
      {
       "word": "إِمَامٌ",
       "translation": "имам, предводитель",
       "root": "أ م م",
       "plural": "أَئِمَّةٌ",
-      "tag": "term"
+      "tag": "term",
+      "picture": "imam.webp"
      },
      {
       "word": "مَسْجِدٌ",
       "translation": "мечеть",
       "root": "س ج د",
       "plural": "مَسَاجِدُ",
-      "tag": "term"
+      "tag": "term",
+      "picture": "masjid.webp"
      },
      {
       "word": "مُصْحَفٌ",
       "translation": "мусхаф (экземпляр Корана)",
       "root": "ص ح ف",
       "plural": "مَصَاحِفُ",
-      "tag": "term"
+      "tag": "term",
+      "picture": "mushaf.webp"
      },
      {
       "word": "سَجَّادَةٌ",
@@ -89,7 +99,8 @@
       "root": "س ج د",
       "plural": "سَجَّادَاتٌ",
       "tag": "daily",
-      "note": "Ж. р."
+      "note": "Ж. р.",
+      "picture": "sajjada.webp"
      },
      {
       "word": "هٰذَا",

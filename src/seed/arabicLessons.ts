@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 import type { Payload, PayloadRequest } from 'payload'
 
 import module01 from '../data/arabic/module-01.json'
@@ -28,6 +30,54 @@ export const NEW_COURSE = {
   bookAuthor: 'Авторский учебник академии',
 }
 
+// Картинки к словам — файлы владельца в public/arabic (папка public есть и в Docker-образе); в данных слова — поле picture
+const PICTURES_DIR = path.resolve(process.cwd(), 'public/arabic')
+
+type Opts = { req?: Partial<PayloadRequest>; overrideAccess: true }
+
+async function pictureId(payload: Payload, file: string, alt: string, opts: Opts) {
+  const filename = `arabic-${file}`
+  const found = await payload.find({ collection: 'media', where: { filename: { equals: filename } }, limit: 1, depth: 0, ...opts })
+  if (found.docs[0]) return found.docs[0].id
+  const filePath = path.join(PICTURES_DIR, file)
+  if (!fs.existsSync(filePath)) return undefined
+  const data = fs.readFileSync(filePath)
+  const doc = await payload.create({
+    collection: 'media',
+    data: { alt },
+    file: { data, name: filename, mimetype: 'image/webp', size: data.length },
+    ...opts,
+  })
+  return doc.id
+}
+
+/** Ставит картинки словам урока, у которых картинки ещё нет; картинки владельца не трогает. */
+async function fillPictures(payload: Payload, lesson: Record<string, any>, words: Record<string, unknown>[], opts: Opts) {
+  const byWord = new Map(words.filter((w) => w.picture).map((w) => [String(w.word), String(w.picture)]))
+  if (!byWord.size) return
+  const arabic = lesson.arabic ?? {}
+  let changed = false
+  const next = []
+  for (const w of arabic.words ?? []) {
+    const file = byWord.get(String(w.word))
+    if (!w.image && file) {
+      const id = await pictureId(payload, file, String(w.translation ?? w.word), opts)
+      if (id !== undefined) {
+        next.push({ ...w, image: id })
+        changed = true
+        continue
+      }
+    }
+    next.push(w)
+  }
+  if (changed) await payload.update({ collection: 'lessons', id: lesson.id, data: { arabic: { ...arabic, words: next } } as never, ...opts })
+}
+
+const withoutPictures = (l: Record<string, any>) => ({
+  ...l,
+  arabic: { ...l.arabic, words: (l.arabic?.words ?? []).map(({ picture: _picture, ...w }: Record<string, unknown>) => w) },
+})
+
 const idOf = (x: unknown) => (x && typeof x === 'object' ? (x as { id: number | string }).id : (x as number | string))
 
 export async function installArabicLessons(payload: Payload, req?: Partial<PayloadRequest>) {
@@ -37,11 +87,12 @@ export async function installArabicLessons(payload: Payload, req?: Partial<Paylo
     const ids: (number | string)[] = []
     for (const l of m.lessons) {
       const found = await payload.find({ collection: 'lessons', where: { slug: { equals: l.slug } }, limit: 1, depth: 0, ...opts })
-      const doc = found.docs[0] ?? (await payload.create({ collection: 'lessons', data: l as never, ...opts }))
+      const doc = found.docs[0] ?? (await payload.create({ collection: 'lessons', data: withoutPictures(l) as never, ...opts }))
       // Номер урока сайт пишет сам: «Урок 1. Урок 1. …» → «Урок 1. …» (только если название не меняли)
       if (found.docs[0] && doc.title !== l.title && doc.title.replace(/^Урок \d+\.\s*/, '') === l.title) {
         await payload.update({ collection: 'lessons', id: doc.id, data: { title: l.title }, ...opts })
       }
+      await fillPictures(payload, doc as Record<string, any>, ((l.arabic as any)?.words ?? []) as Record<string, unknown>[], opts)
       ids.push(doc.id)
     }
     created.push({ module: m.module, ids })
