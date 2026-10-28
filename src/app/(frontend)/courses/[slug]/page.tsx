@@ -7,6 +7,7 @@ import { FileIcon } from '@/components/Icons'
 import { Crumbs } from '@/components/PageHead'
 import { CourseProgram, CourseProgressCard } from '@/components/progress/CourseProgram'
 import { serverSource, type ProgressSource } from '@/components/progress/useProgress'
+import { CourseGuide } from '@/components/arabic/CourseGuide'
 import { buildArabicCourse } from '@/lib/arabicCourse'
 import { REGISTRATION_ENABLED } from '@/lib/config'
 import { BookTile } from '@/components/library/BookTile'
@@ -109,6 +110,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
 
       <div className="container two-col">
         <main className="col-main">
+          {arabic.lessons.length ? <CourseGuide /> : null}
           <h2 className="h2" style={{ margin: '0 0 4px', fontSize: 36 }}>
             Программа курса
           </h2>
