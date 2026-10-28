@@ -2,6 +2,7 @@ import { type LexEntry, type Stage, verbForms } from '@/lib/arabic'
 import type { ArabicData } from '@/lib/arabicCourse'
 import { mediaUrl } from '@/lib/queries'
 
+import { Bidi } from './Bidi'
 import { ArText, LexiconProvider, VowelToggle } from './Lexicon'
 
 /*
@@ -23,17 +24,15 @@ const paragraphs = (text?: string | null) =>
     .map((p) => p.trim())
     .filter(Boolean)
 
-// Арабские слова внутри русского текста — отдельно, в порядке написания: «هُنَا كِتَابٌ, هُنَاكَ مَسْجِدٌ» не переставляются
-const AR_RUN = /([\u0600-\u06FF](?:[\u0600-\u06FF ]*[\u0600-\u06FF])?)/
-function Bidi({ text }: { text: string }) {
-  return text.split(AR_RUN).map((t, i) =>
-    i % 2 ? (
-      <bdi key={i} className="ar ar-inline" lang="ar">
-        {t}
-      </bdi>
-    ) : (
-      t
-    ),
+// Ячейка таблицы: арабское слово в начале — арабским шрифтом с подсказкой, пояснение после него — обычным: «طَالِبٌ (студент)»
+function Cell({ text }: { text: string }) {
+  const m = text.match(/^([\u0600-\u06FF][\u0600-\u06FF\s]*?)(\s+[^\u0600-\u06FF].*)?$/)
+  if (!m) return <Bidi text={text} />
+  return (
+    <>
+      <ArText className="ar" text={m[1]} />
+      {m[2] ? <Bidi text={m[2]} /> : null}
+    </>
   )
 }
 
@@ -119,7 +118,9 @@ function GrammarText({ text }: { text?: string | null }) {
                 {b.rows.slice(1).map((r, k) => (
                   <tr key={k}>
                     {r.map((c, j) => (
-                      <td key={j}>{/^[\u0600-\u06FF]/.test(c) ? <ArText className="ar" text={c} /> : <Bidi text={c} />}</td>
+                      <td key={j}>
+                        <Cell text={c} />
+                      </td>
                     ))}
                   </tr>
                 ))}
