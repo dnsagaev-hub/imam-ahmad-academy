@@ -1418,6 +1418,8 @@ a.sh-info-btn { text-decoration: none; }
 .ar-examples li { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; padding: 10px 16px; background: var(--paper); border-right: 3px solid var(--gold); border-radius: 10px; }
 .ar-line { font-size: 26px; line-height: 1.8; color: var(--navy); }
 .ar-ex-tr { color: var(--muted); font-size: 15px; }
+.ar-grammar .ar-sub { margin: 24px 0 10px; }
+.ar-grammar-ex { margin: 4px 0 14px; }
 .ar-sentences { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .ar-sentences li { display: flex; gap: 14px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--line-soft); }
 .ar-sn { flex: none; width: 28px; font-family: var(--display); font-size: 20px; color: var(--gold-dark); padding-top: 8px; }

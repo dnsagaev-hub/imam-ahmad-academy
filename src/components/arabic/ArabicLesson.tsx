@@ -55,6 +55,48 @@ function Rich({ text }: { text: string }) {
   )
 }
 
+// Строка-пример: «هٰذَا كِتَابٌ. — Это книга.» — арабский в начале, перевод после тире
+const EXAMPLE = /^([\u0600-\u06FF][^—]*?)\s+—\s+(.+)$/
+
+type GBlock = { kind: 'h'; text: string } | { kind: 'p'; text: string } | { kind: 'ex'; items: { ar: string; tr: string }[] }
+
+/** Текст грамматики: строка «## …» — подзаголовок, «арабский — перевод» — пример, остальное — абзац */
+function GrammarText({ text }: { text?: string | null }) {
+  const blocks: GBlock[] = []
+  for (const raw of String(text ?? '').split('\n')) {
+    const line = raw.trim()
+    if (!line) continue
+    const ex = line.match(EXAMPLE)
+    const last = blocks[blocks.length - 1]
+    if (line.startsWith('## ')) blocks.push({ kind: 'h', text: line.slice(3).trim() })
+    else if (ex && last?.kind === 'ex') last.items.push({ ar: ex[1], tr: ex[2] })
+    else if (ex) blocks.push({ kind: 'ex', items: [{ ar: ex[1], tr: ex[2] }] })
+    else blocks.push({ kind: 'p', text: line })
+  }
+  return (
+    <div className="prose ar-grammar">
+      {blocks.map((b, i) =>
+        b.kind === 'h' ? (
+          <h3 key={i} className="ar-sub">
+            <Bidi text={b.text} />
+          </h3>
+        ) : b.kind === 'ex' ? (
+          <ul key={i} className="ar-examples ar-grammar-ex">
+            {b.items.map((e, j) => (
+              <li key={j}>
+                <ArText className="ar ar-line" text={e.ar} />
+                <span className="ar-ex-tr">{e.tr}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Rich key={i} text={b.text} />
+        ),
+      )}
+    </div>
+  )
+}
+
 export function ArabicLessonBody({
   a,
   stage,
@@ -174,11 +216,7 @@ export function ArabicLessonBody({
               {a.grammarTitle ? <Bidi text={a.grammarTitle} /> : null}
             </span>
           </h2>
-          <div className="prose ar-grammar">
-            {paragraphs(a.grammar).map((p, i) => (
-              <Rich key={i} text={p} />
-            ))}
-          </div>
+          <GrammarText text={a.grammar} />
           {examples.length ? (
             <ul className="ar-examples">
               {examples.map((e, i) => (
