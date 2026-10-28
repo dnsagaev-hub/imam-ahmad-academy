@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 
 import { checkAnswer, submitQuiz } from '@/app/(frontend)/actions'
+import { Bidi } from '@/components/arabic/Bidi'
 import { addAttempt, useLocalProgress } from '@/lib/localProgress'
 
 type Q = { question: string; options: string[] }
@@ -132,7 +133,9 @@ export function Quiz({
           <div className="tag">
             Вопрос {q + 1} из {questions.length}
           </div>
-          <div className="q-text">{cur.question}</div>
+          <div className="q-text">
+            <Bidi text={cur.question} />
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }} role="radiogroup" aria-label="Варианты ответа">
             {cur.options.map((text, i) => {
               let cls = 'opt'
@@ -152,7 +155,9 @@ export function Quiz({
                   onClick={() => setSel(i)}
                 >
                   <span className="l">{LETTERS[i]}</span>
-                  <span style={{ flex: 1 }}>{text}</span>
+                  <span style={{ flex: 1 }}>
+                    <Bidi text={text} />
+                  </span>
                 </button>
               )
             })}
@@ -163,7 +168,9 @@ export function Quiz({
               <div style={{ fontWeight: 700, fontSize: 16, marginBottom: checked.explanation ? 6 : 0 }}>
                 {checked.isCorrect ? 'Верно!' : 'Неверно'}
               </div>
-              {checked.explanation ? <div style={{ fontSize: 15, lineHeight: 1.6 }}>{checked.explanation}</div> : null}
+              {checked.explanation ? <div style={{ fontSize: 15, lineHeight: 1.6 }}>
+                  <Bidi text={checked.explanation} />
+                </div> : null}
             </div>
           ) : null}
 
@@ -230,7 +237,10 @@ export function Quiz({
                   {r.isCorrect ? '✓' : '✕'}
                 </span>
                 <span>
-                  <strong>{r.question}</strong> — {r.correctText}
+                  <strong>
+                    <Bidi text={r.question} />
+                  </strong>{' '}
+                  — <Bidi text={r.correctText} />
                 </span>
               </div>
             ))}

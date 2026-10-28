@@ -22,6 +22,7 @@ import * as migration_20261028_110000_arabic_lesson_1_grammar from './20261028_1
 import * as migration_20261028_113000_arabic_lesson_2_grammar from './20261028_113000_arabic_lesson_2_grammar';
 import * as migration_20261028_123000_arabic_lesson_3 from './20261028_123000_arabic_lesson_3';
 import * as migration_20261028_163000_arabic_lesson_4 from './20261028_163000_arabic_lesson_4';
+import * as migration_20261028_200000_arabic_lesson_5 from './20261028_200000_arabic_lesson_5';
 
 export const migrations = [
   {
@@ -143,5 +144,10 @@ export const migrations = [
     up: migration_20261028_163000_arabic_lesson_4.up,
     down: migration_20261028_163000_arabic_lesson_4.down,
     name: '20261028_163000_arabic_lesson_4'
+  },
+  {
+    up: migration_20261028_200000_arabic_lesson_5.up,
+    down: migration_20261028_200000_arabic_lesson_5.down,
+    name: '20261028_200000_arabic_lesson_5'
   },
 ];
