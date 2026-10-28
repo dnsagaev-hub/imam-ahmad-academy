@@ -61,7 +61,7 @@ export function ModuleSide({ course, lessonId, source }: { course: CourseDoc; le
   const list = state.lessons.filter((l) => l.moduleIndex === here.moduleIndex)
   return (
     <div className="card side-lessons" style={{ overflow: 'hidden' }}>
-      <div style={{ padding: '18px 20px', borderBottom: '1px solid var(--line-soft)' }}>
+      <div className="side-head" style={{ padding: '18px 20px', borderBottom: '1px solid var(--line-soft)' }}>
         <div className="side-label">Модуль {ROMAN[here.moduleIndex] ?? here.moduleIndex + 1}</div>
         <div style={{ fontWeight: 700, fontSize: 16, color: 'var(--navy)', marginTop: 4 }}>{here.moduleTitle}</div>
       </div>

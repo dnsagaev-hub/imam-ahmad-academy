@@ -413,6 +413,9 @@ textarea.input { padding: 12px 16px; resize: vertical; min-height: 120px; }
 
 /* Урок */
 .side-lessons a, .side-lessons div { display: flex; gap: 12px; align-items: center; padding: 14px 20px; font-size: 15px; text-decoration: none; border-left: 3px solid transparent; color: var(--navy); }
+/* заголовок модуля — не строка списка: название в столбик под «Модуль I» */
+.side-lessons .side-head, .side-lessons .side-head div { display: block; border-left: 0; }
+.side-lessons .side-head div { padding: 0; }
 .side-lessons a:hover { background: #F0F8F4; }
 .side-lessons .on { background: var(--ice); border-left-color: var(--gold); font-weight: 700; }
 .side-lessons .off { color: var(--muted-2); }
@@ -1370,32 +1373,7 @@ a.sh-info-btn { text-decoration: none; }
   .sr-link { padding: 12px 14px; }
 }
 
-/* ==== Курс арабского языка: урок, плавающий словарь, подсказки, задания, карточки, словарь курса ==== */
-.ar-side { position: sticky; top: 16px; align-self: flex-start; max-height: calc(100vh - 32px); overflow-y: auto; flex: 0 1 290px; }
-.vocab-dock { overflow: hidden; }
-.dock-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 16px 18px; border-bottom: 1px solid var(--line-soft); font-weight: 800; color: var(--navy); font-size: 15px; letter-spacing: 0.04em; text-transform: uppercase; }
-.dock-count { display: inline-flex; min-width: 26px; height: 22px; padding: 0 7px; border-radius: 99px; background: var(--ice); color: var(--royal); font-size: 13px; font-weight: 800; align-items: center; justify-content: center; letter-spacing: 0; }
-.dock-list { list-style: none; margin: 0; padding: 4px 0; }
-.dock-list li + li { border-top: 1px solid var(--line-soft); }
-.dock-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; width: 100%; padding: 8px 18px; border: 0; background: transparent; cursor: pointer; text-align: left; font: inherit; color: var(--ink); }
-.dock-row:hover, .dock-row[aria-expanded='true'] { background: var(--paper); }
-.dock-tr { font-size: 14px; color: var(--muted); min-width: 0; overflow-wrap: anywhere; }
-.dock-ar { font-size: 22px; line-height: 1.5; color: var(--navy); flex: none; order: 2; }
-.dock-more { padding: 4px 18px 12px; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
-.dock-more .ar { font-size: 17px; color: var(--navy); }
-.dock-more img { width: 100%; max-height: 140px; object-fit: contain; border-radius: 10px; background: var(--paper); }
-.dock-cards { display: block; padding: 12px 18px; border-top: 1px solid var(--line-soft); font-weight: 700; font-size: 14px; color: var(--royal); text-decoration: none; }
-.dock-fab { display: none; position: fixed; right: 16px; bottom: 16px; z-index: 40; min-height: 48px; padding: 0 18px; border-radius: 99px; border: 0; background: var(--navy); color: #fff; font: inherit; font-weight: 700; font-size: 15px; box-shadow: 0 8px 24px rgba(0, 61, 44, 0.3); cursor: pointer; align-items: center; gap: 8px; }
-.dock-sheet-back { position: fixed; inset: 0; z-index: 50; background: rgba(0, 30, 20, 0.35); display: flex; align-items: flex-end; }
-.dock-sheet { width: 100%; max-height: 75vh; overflow-y: auto; background: #fff; border-radius: 18px 18px 0 0; padding-bottom: 12px; }
-.dock-sheet-top { position: sticky; top: 0; background: #fff; display: flex; align-items: center; z-index: 1; }
-.dock-sheet-top .dock-head { flex: 1; }
-.dock-close { width: 44px; height: 44px; margin-right: 8px; border: 0; background: transparent; font-size: 28px; color: var(--muted); cursor: pointer; }
-@media (max-width: 999px) {
-  .ar-side { display: none; }
-  .dock-fab { display: inline-flex; }
-}
-
+/* ==== Курс арабского языка: урок, подсказки, задания, карточки, словарь курса ==== */
 .word-tag { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 99px; font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; background: var(--ice); color: var(--royal); vertical-align: middle; }
 .word-tag-term { background: #e7f0fb; color: #1f4f86; }
 .word-tag-daily { background: #fbf2e3; color: #7a5212; }

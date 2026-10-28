@@ -5,7 +5,6 @@ import { notFound } from 'next/navigation'
 
 import { ArabicLessonBody } from '@/components/arabic/ArabicLesson'
 import { ArabicTasks } from '@/components/arabic/ArabicTasks'
-import { VocabDock } from '@/components/arabic/VocabDock'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { FileIcon, LockIcon } from '@/components/Icons'
@@ -16,7 +15,7 @@ import { Crumbs } from '@/components/PageHead'
 import { LessonGate, LessonNav, ModuleSide } from '@/components/progress/LessonParts'
 import { serverSource, type ProgressSource } from '@/components/progress/useProgress'
 import { Quiz } from '@/components/Quiz'
-import { stageFor, toLexEntry, verbForms } from '@/lib/arabic'
+import { stageFor, toLexEntry } from '@/lib/arabic'
 import { arabicOf, buildArabicCourse, clientTasks, isArabicLesson, lexiconUpTo } from '@/lib/arabicCourse'
 import { REGISTRATION_ENABLED } from '@/lib/config'
 import { LESSON_CATEGORIES, labelOf } from '@/lib/constants'
@@ -130,7 +129,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
   }))
   const mode = REGISTRATION_ENABLED ? 'server' : 'local'
 
-  // Урок арабского языка: словарь сбоку, подсказки к словам, этапы огласовки, задания
+  // Урок арабского языка: подсказки к словам, этапы огласовки, задания
   const isArabic = isArabicLesson(l)
   const ar = arabicOf(l)
   const arNumber = here?.number ?? 1
@@ -138,16 +137,6 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
   const arWords = (ar.words ?? []).filter((w) => w.word && w.translation)
   const lexicon = isArabic ? (course ? lexiconUpTo(buildArabicCourse(course), arNumber) : arWords.map((w) => toLexEntry(w, arNumber))) : []
   const tasks = isArabic ? clientTasks(lesson.id, ar) : []
-  const dockWords = arWords.map((w, i) => ({
-    key: String(w.id ?? i),
-    word: w.word,
-    translation: w.translation,
-    root: w.root ?? undefined,
-    plural: w.plural ?? undefined,
-    verb: verbForms(w),
-    tag: w.tag ?? undefined,
-    image: mediaUrl(w.image),
-  }))
   const cardsHref = course && isArabic ? `/courses/${course.slug}/kartochki?from=${arNumber}&to=${arNumber}` : undefined
 
   const testBlock = questions.length ? (
@@ -187,17 +176,14 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
 
       <LessonGate course={lean} lessonId={lesson.id} source={source}>
         <div className="container two-col" style={{ paddingTop: 36 }}>
-          {isArabic && dockWords.length ? (
-            <VocabDock words={dockWords} cardsHref={cardsHref}>
-              {course ? (
-                <Link href={`/courses/${course.slug}`} className="btn btn-outline">
-                  ← Вся программа курса
-                </Link>
-              ) : null}
-            </VocabDock>
-          ) : here && lean ? (
+          {here && lean ? (
             <aside className="col-side-left">
               <ModuleSide course={lean} lessonId={lesson.id} source={source} />
+              {cardsHref ? (
+                <Link href={cardsHref} className="btn btn-outline">
+                  Карточки слов урока
+                </Link>
+              ) : null}
               <Link href={`/courses/${course!.slug}`} className="btn btn-outline">
                 ← Вся программа курса
               </Link>
