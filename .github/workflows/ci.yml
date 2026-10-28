@@ -184,6 +184,7 @@ jobs:
           check "Арабский: словарь урока — имена и отдельно служебные слова" 'has "/lessons/arabskiy-urok-1" ">Имена<" && has "/lessons/arabskiy-urok-1" "ar-particles"'
           check "Арабский: картинки владельца к словам урока 1" 'has "/lessons/arabskiy-urok-1" "class=\"word-img\"" && has "/lessons/arabskiy-urok-1" "arabic-kitab"'
           check "Арабский: новая грамматика урока 1 с подзаголовками и примерами" 'has "/lessons/arabskiy-urok-1" "Из чего состоит именное предложение?" && has "/lessons/arabskiy-urok-1" "ar-grammar-ex"'
+          check "Арабский: новая грамматика урока 2" 'has "/lessons/arabskiy-urok-2" "Женский род не всегда обозначается буквой" && has "/lessons/arabskiy-urok-2" "ar-grammar-ex"'
           check "Арабский: картинки владельца к словам урока 2" 'has "/lessons/arabskiy-urok-2" "arabic-rajul" && has "/lessons/arabskiy-urok-2" "arabic-nafidha"'
           check "Арабский: урок 2 авторского учебника в курсе Тамхиди" 'has "/courses/stupen-1-01-arabic" "Тот, та. Здесь и там" && has "/lessons/arabskiy-urok-2" "مِئْذَنَةٌ" && has "/lessons/arabskiy-urok-2" "Тот, та. Здесь и там" && has "/courses/stupen-1-01-arabic/slovar" "مِحْرَابٌ"'
           check "Арабский: у курса без уроков арабского словаря нет" '[ "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/courses/demo-fikh-ochischeniya/slovar)" = "404" ]'
