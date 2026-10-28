@@ -175,7 +175,7 @@ jobs:
           # Задача 44: мусхаф — одна страница или разворот, чтецы прямо на странице мусхафа
           check "Коран: вид мусхафа и чтецы" 'has "/quran/51/mushaf" "Две страницы" && has "/quran/51/mushaf" "Одна страница" && has "/quran/51/mushaf" "aria-label=\"Чтец\"" && has "/quran/51" "href=\"/quran/51/mushaf\""'
           # Курс арабского языка (задача 50): словарь урока, подсказки, огласовка, задания без ответов, словарь курса, карточки
-          check "Арабский: плавающий словарь и подсказки" 'has "/lessons/demo-arabic-1" "vocab-dock" && has "/lessons/demo-arabic-1" "dock-fab" && has "/lessons/demo-arabic-1" "class=\"ar-w\""'
+          check "Арабский: подсказки к словам, плавающего словаря нет (решение владельца 28.10.2026)" 'hasnt "/lessons/demo-arabic-1" "vocab-dock" && hasnt "/lessons/demo-arabic-1" "dock-fab" && has "/lessons/demo-arabic-1" "class=\"ar-w\""'
           check "Арабский: задания и ключи" 'has "/lessons/demo-arabic-1" "id=\"tasks\"" && has "/lessons/demo-arabic-1" "Ключи: переводы"'
           check "Арабский: ответы заданий не уходят в браузер" 'hasnt "/lessons/demo-arabic-1" "هَذَا كِتَابٌ وَهَذَا قَلَمٌ" && hasnt "/lessons/demo-arabic-1" "Это дом? Да, это дом." && hasnt "/api/lessons?where%5Bslug%5D%5Bequals%5D=demo-arabic-1" "Это дом? Да" && hasnt "/api/lessons?where%5Bslug%5D%5Bequals%5D=demo-arabic-1" "\"right\":\"мечеть\""'
           check "Арабский: огласовка снята на уроке без огласовки" 'has "/lessons/demo-arabic-2" ">الكتاب<" && has "/lessons/demo-arabic-2" "Показать огласовку" && hasnt "/lessons/demo-arabic-1" "Показать огласовку"'
