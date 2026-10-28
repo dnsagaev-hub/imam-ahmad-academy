@@ -1,6 +1,7 @@
 'use client'
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 import { buildIndex, lookup, showStage, tokenize, type LexEntry, type LexIndex, type Stage } from '@/lib/arabic'
 
@@ -10,7 +11,8 @@ import { buildIndex, lookup, showStage, tokenize, type LexEntry, type LexIndex, 
  * Здесь же переключатель «Показать огласовку» для уроков, где огласовка снята.
  */
 
-type Pop = { entry: LexEntry; x: number; y: number; pinned: boolean }
+// Место слова — в координатах страницы (не окна): при увеличении страницы карточка остаётся над словом
+type Pop = { entry: LexEntry; x: number; top: number; bottom: number; pinned: boolean }
 
 type Ctx = {
   index: LexIndex
@@ -30,7 +32,8 @@ export function LexiconProvider({ entries, stage, children }: { entries: LexEntr
 
   const show = useCallback((entry: LexEntry, el: HTMLElement, pinned: boolean) => {
     const r = el.getBoundingClientRect()
-    setPop((p) => (p?.pinned && !pinned ? p : { entry, x: r.left + r.width / 2, y: r.bottom, pinned }))
+    const x = r.left + r.width / 2 + window.scrollX
+    setPop((p) => (p?.pinned && !pinned ? p : { entry, x, top: r.top + window.scrollY, bottom: r.bottom + window.scrollY, pinned }))
   }, [])
   const hide = useCallback((force = false) => setPop((p) => (p && (force || !p.pinned) ? null : p)), [])
 
@@ -62,9 +65,27 @@ export function LexiconProvider({ entries, stage, children }: { entries: LexEntr
 function WordPopover({ pop }: { pop: Pop }) {
   const e = pop.entry
   const width = 260
-  const left = typeof window === 'undefined' ? pop.x : Math.max(8, Math.min(pop.x - width / 2, window.innerWidth - width - 8))
-  return (
-    <div className="ar-pop" role="tooltip" style={{ left, top: pop.y + 8, width }}>
+  const ref = useRef<HTMLDivElement>(null)
+  const [at, setAt] = useState<{ left: number; top: number; w: number } | null>(null)
+  // Видимая часть страницы (при увеличении жестом она меньше окна): карточка над словом и не выходит за её края
+  useLayoutEffect(() => {
+    const h = ref.current?.offsetHeight ?? 0
+    const vv = window.visualViewport
+    const viewLeft = vv ? vv.pageLeft : window.scrollX
+    const viewTop = vv ? vv.pageTop : window.scrollY
+    const viewWidth = vv ? vv.width : document.documentElement.clientWidth
+    const w = Math.min(width, viewWidth - 16)
+    const left = Math.max(viewLeft + 8, Math.min(pop.x - w / 2, viewLeft + viewWidth - w - 8))
+    const above = pop.top - 8 - h
+    setAt({ left, top: above >= viewTop + 8 ? above : pop.bottom + 8, w })
+  }, [pop])
+  return createPortal(
+    <div
+      ref={ref}
+      className="ar-pop"
+      role="tooltip"
+      style={{ left: at?.left ?? 0, top: at?.top ?? pop.bottom + 8, width: at?.w ?? width, visibility: at ? 'visible' : 'hidden' }}
+    >
       <div className="ar-pop-w ar" lang="ar" dir="rtl">
         {e.w}
       </div>
@@ -85,7 +106,8 @@ function WordPopover({ pop }: { pop: Pop }) {
         </div>
       ) : null}
       <div className="ar-pop-n">Слово урока {e.n}</div>
-    </div>
+    </div>,
+    document.body,
   )
 }
 
