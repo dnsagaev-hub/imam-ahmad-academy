@@ -1383,7 +1383,7 @@ a.sh-info-btn { text-decoration: none; }
 .ar-inline { font-size: 1.15em; }
 .ar-w { cursor: help; border-bottom: 1px dotted var(--gold); border-radius: 2px; }
 .ar-w:hover, .ar-w:focus { background: var(--ice); outline: none; }
-.ar-pop { position: fixed; z-index: 60; background: #fff; border: 1px solid var(--line-2); border-radius: 14px; box-shadow: 0 12px 32px rgba(0, 40, 28, 0.18); padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--ink); direction: ltr; text-align: left; }
+.ar-pop { position: absolute; z-index: 60; background: #fff; border: 1px solid var(--line-2); border-radius: 14px; box-shadow: 0 12px 32px rgba(0, 40, 28, 0.18); padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--ink); direction: ltr; text-align: left; }
 .ar-pop-w { font-size: 26px; line-height: 1.5; color: var(--navy); }
 .ar-pop-t { font-weight: 700; font-size: 16px; }
 .ar-pop-row { color: var(--muted); }
