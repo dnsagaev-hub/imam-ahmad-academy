@@ -1396,6 +1396,12 @@ a.sh-info-btn { text-decoration: none; }
 .ar-h { margin: 0; display: flex; align-items: center; gap: 12px; font-family: var(--display); font-size: 32px; line-height: 1.1; font-weight: 700; color: var(--navy); }
 .ar-h-n { width: 36px; height: 36px; border-radius: 10px; background: var(--navy); color: var(--gold-light); display: inline-flex; align-items: center; justify-content: center; font-size: 20px; flex: none; }
 .ar-hint { margin: -6px 0 0; font-size: 14px; }
+.ar-sub { margin: 18px 0 10px; font-family: var(--display); font-size: 22px; color: var(--navy); }
+.ar-sub:first-of-type { margin-top: 0; }
+.ar-particles { width: 100%; max-width: 560px; border-collapse: collapse; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.ar-particles td { padding: 8px 16px; border-top: 1px solid var(--line-soft); vertical-align: middle; font-size: 15px; color: var(--ink); }
+.ar-particles tr:first-child td { border-top: 0; }
+.ar-particles td.ar { width: 40%; font-size: 26px; line-height: 1.5; color: var(--navy); text-align: right; white-space: nowrap; }
 .word-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
 .word-card { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; background: var(--paper); min-width: 0; }
 .word-img { width: 100%; height: 110px; object-fit: contain; border-radius: 10px; background: #fff; }
