@@ -183,6 +183,7 @@ jobs:
           check "Арабский: урок 1 авторского учебника в курсе Тамхиди" 'has "/courses/stupen-1-01-arabic" "/lessons/arabskiy-urok-1" && has "/courses/stupen-1-01-arabic" "Арабский язык для чтения религиозных текстов" && has "/lessons/arabskiy-urok-1" "سَجَّادَةٌ" && has "/courses/stupen-1-01-arabic/slovar" "مُصْحَفٌ"'
           check "Арабский: словарь урока — имена и отдельно служебные слова" 'has "/lessons/arabskiy-urok-1" ">Имена<" && has "/lessons/arabskiy-urok-1" "ar-particles"'
           check "Арабский: картинки владельца к словам урока 1" 'has "/lessons/arabskiy-urok-1" "class=\"word-img\"" && has "/lessons/arabskiy-urok-1" "arabic-kitab"'
+          check "Арабский: картинки владельца к словам урока 2" 'has "/lessons/arabskiy-urok-2" "arabic-rajul" && has "/lessons/arabskiy-urok-2" "arabic-nafidha"'
           check "Арабский: урок 2 авторского учебника в курсе Тамхиди" 'has "/courses/stupen-1-01-arabic" "Тот, та. Здесь и там" && has "/lessons/arabskiy-urok-2" "مِئْذَنَةٌ" && has "/lessons/arabskiy-urok-2" "Тот, та. Здесь и там" && has "/courses/stupen-1-01-arabic/slovar" "مِحْرَابٌ"'
           check "Арабский: у курса без уроков арабского словаря нет" '[ "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/courses/demo-fikh-ochischeniya/slovar)" = "404" ]'
           # Поиск по сайту (задача 49): кнопка в шапке, разделы, переход к месту, без огласовок, отказ и граница
