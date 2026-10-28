@@ -132,3 +132,16 @@ export async function installArabicLessons(payload: Payload, req?: Partial<Paylo
   await payload.update({ collection: 'courses', id: course.id, data: data as never, ...opts })
   payload.logger.info('Уроки арабского добавлены в курс Тамхиди.')
 }
+
+/** Переносит в базу новую грамматику урока из учебника владельца (по его просьбе): тема, текст и примеры заметки. */
+export async function updateArabicGrammar(payload: Payload, slug: string, req?: Partial<PayloadRequest>) {
+  const opts = { req, overrideAccess: true } as const
+  const l = ARABIC_MODULES.flatMap((m) => m.lessons).find((x) => x.slug === slug)
+  const found = await payload.find({ collection: 'lessons', where: { slug: { equals: slug } }, limit: 1, depth: 0, ...opts })
+  const doc = found.docs[0] as Record<string, any> | undefined
+  if (!l || !doc) return
+  const src = (l.arabic ?? {}) as Record<string, unknown>
+  const arabic = { ...(doc.arabic ?? {}), grammarTitle: src.grammarTitle, grammar: src.grammar, grammarExamples: src.grammarExamples ?? [] }
+  await payload.update({ collection: 'lessons', id: doc.id, data: { arabic } as never, ...opts })
+  payload.logger.info(`Грамматика урока ${slug} обновлена.`)
+}
