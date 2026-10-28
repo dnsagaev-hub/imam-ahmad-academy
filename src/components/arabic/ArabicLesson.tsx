@@ -70,7 +70,10 @@ export function ArabicLessonBody({
   /** задания и тест — внутри, чтобы переключатель огласовки и подсказки работали и там */
   children?: React.ReactNode
 }) {
-  const words = (a.words ?? []).filter((w) => w.word && w.translation)
+  const allWords = (a.words ?? []).filter((w) => w.word && w.translation)
+  // Служебные слова (هٰذَا، مَا، هُنَا…) — без корня: отдельной таблицей под именами, как в учебнике владельца
+  const words = allWords.filter((w) => w.root?.trim())
+  const particles = allWords.filter((w) => !w.root?.trim())
   const sentences = (a.sentences ?? []).filter((s) => s.arabic?.trim())
   const examples = (a.grammarExamples ?? []).filter((s) => s.arabic?.trim())
   const textParas = paragraphs(a.text)
@@ -85,57 +88,80 @@ export function ArabicLessonBody({
         <VowelToggle />
       </div>
 
-      {words.length ? (
+      {allWords.length ? (
         <section className="card ar-sec" id="slovar" aria-labelledby="slovar-h">
           <h2 className="ar-h" id="slovar-h">
             <span className="ar-h-n">1</span> Словарь урока
           </h2>
-          <div className="word-grid">
-            {words.map((w, i) => {
-              const img = mediaUrl(w.image)
-              const verb = verbForms(w)
-              return (
-                <article key={w.id ?? i} className="word-card">
-                  {img ? <img className="word-img" src={img} alt={w.translation} loading="lazy" /> : null}
-                  <div className="word-ar ar" lang="ar" dir="rtl">
-                    {w.word}
-                  </div>
-                  <div className="word-tr">{w.translation}</div>
-                  <dl className="word-dl">
-                    {w.root ? (
-                      <>
-                        <dt>Корень</dt>
-                        <dd className="ar" lang="ar" dir="rtl">
-                          {w.root}
-                        </dd>
-                      </>
-                    ) : null}
-                    {w.plural ? (
-                      <>
-                        <dt>Мн. ч.</dt>
-                        <dd className="ar" lang="ar" dir="rtl">
-                          {w.plural}
-                        </dd>
-                      </>
-                    ) : null}
-                    {verb ? (
-                      <>
-                        <dt>Формы</dt>
-                        <dd className="ar" lang="ar" dir="rtl">
-                          {verb}
-                        </dd>
-                      </>
-                    ) : null}
-                  </dl>
-                  {w.note ? <div className="word-note">{w.note}</div> : null}
-                  <div className="word-tags">
-                    {w.tag && TAG[w.tag] ? <span className={`word-tag word-tag-${w.tag}`}>{TAG[w.tag]}</span> : null}
-                    {w.theme ? <span className="word-theme">{w.theme}</span> : null}
-                  </div>
-                </article>
-              )
-            })}
-          </div>
+          {words.length > 0 && particles.length > 0 ? <h3 className="ar-sub">Имена</h3> : null}
+          {words.length ? (
+            <div className="word-grid">
+              {words.map((w, i) => {
+                const img = mediaUrl(w.image)
+                const verb = verbForms(w)
+                return (
+                  <article key={w.id ?? i} className="word-card">
+                    {img ? <img className="word-img" src={img} alt={w.translation} loading="lazy" /> : null}
+                    <div className="word-ar ar" lang="ar" dir="rtl">
+                      {w.word}
+                    </div>
+                    <div className="word-tr">{w.translation}</div>
+                    <dl className="word-dl">
+                      {w.root ? (
+                        <>
+                          <dt>Корень</dt>
+                          <dd className="ar" lang="ar" dir="rtl">
+                            {w.root}
+                          </dd>
+                        </>
+                      ) : null}
+                      {w.plural ? (
+                        <>
+                          <dt>Мн. ч.</dt>
+                          <dd className="ar" lang="ar" dir="rtl">
+                            {w.plural}
+                          </dd>
+                        </>
+                      ) : null}
+                      {verb ? (
+                        <>
+                          <dt>Формы</dt>
+                          <dd className="ar" lang="ar" dir="rtl">
+                            {verb}
+                          </dd>
+                        </>
+                      ) : null}
+                    </dl>
+                    {w.note ? <div className="word-note">{w.note}</div> : null}
+                    <div className="word-tags">
+                      {w.tag && TAG[w.tag] ? <span className={`word-tag word-tag-${w.tag}`}>{TAG[w.tag]}</span> : null}
+                      {w.theme ? <span className="word-theme">{w.theme}</span> : null}
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+          ) : null}
+          {particles.length ? (
+            <>
+              <h3 className="ar-sub">Служебные слова</h3>
+              <table className="ar-particles">
+                <tbody>
+                  {particles.map((w, i) => (
+                    <tr key={w.id ?? i}>
+                      <td className="ar" lang="ar" dir="rtl">
+                        {w.word}
+                      </td>
+                      <td>
+                        {w.translation}
+                        {w.note && w.note.trim() !== 'Служебное слово' ? <div className="word-note">{w.note}</div> : null}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          ) : null}
         </section>
       ) : null}
 
