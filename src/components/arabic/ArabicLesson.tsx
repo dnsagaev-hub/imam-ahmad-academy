@@ -55,8 +55,16 @@ function Rich({ text }: { text: string }) {
   )
 }
 
-// Строка-пример: «هٰذَا كِتَابٌ. — Это книга.» — арабский в начале, перевод после тире
-const EXAMPLE = /^([\u0600-\u06FF][^—]*?)\s+—\s+(.+)$/
+// Строка-пример: «هٰذَا كِتَابٌ. — Это книга.» — арабский в начале, перевод после тире перед первой русской буквой или цифрой;
+// перевод в ||…|| скрыт под «Перевод»;
+// «بَيْتٌ — الْبَيْتُ — дом» — арабская часть с тире внутри; строка только из арабского — пример без перевода
+function exampleLine(line: string): { ar: string; tr: string } | null {
+  if (!/^[\u0600-\u06FF]/.test(line)) return null
+  const ru = line.search(/[А-Яа-яЁёA-Za-z0-9«|]/)
+  if (ru < 0) return { ar: line, tr: '' }
+  const m = line.slice(0, ru).match(/^(.*\S)\s+—\s+$/)
+  return m ? { ar: m[1], tr: line.slice(ru).trim() } : null
+}
 
 type GBlock = { kind: 'h'; text: string } | { kind: 'p'; text: string } | { kind: 'ex'; items: { ar: string; tr: string }[] }
 
@@ -66,11 +74,11 @@ function GrammarText({ text }: { text?: string | null }) {
   for (const raw of String(text ?? '').split('\n')) {
     const line = raw.trim()
     if (!line) continue
-    const ex = line.match(EXAMPLE)
+    const ex = exampleLine(line)
     const last = blocks[blocks.length - 1]
     if (line.startsWith('## ')) blocks.push({ kind: 'h', text: line.slice(3).trim() })
-    else if (ex && last?.kind === 'ex') last.items.push({ ar: ex[1], tr: ex[2] })
-    else if (ex) blocks.push({ kind: 'ex', items: [{ ar: ex[1], tr: ex[2] }] })
+    else if (ex && last?.kind === 'ex') last.items.push(ex)
+    else if (ex) blocks.push({ kind: 'ex', items: [ex] })
     else blocks.push({ kind: 'p', text: line })
   }
   return (
@@ -85,7 +93,14 @@ function GrammarText({ text }: { text?: string | null }) {
             {b.items.map((e, j) => (
               <li key={j}>
                 <ArText className="ar ar-line" text={e.ar} />
-                <span className="ar-ex-tr">{e.tr}</span>
+                {/^\|\|.+\|\|$/.test(e.tr) ? (
+                  <details className="ar-tr">
+                    <summary>Перевод</summary>
+                    <span>{e.tr.slice(2, -2)}</span>
+                  </details>
+                ) : e.tr ? (
+                  <span className="ar-ex-tr">{e.tr}</span>
+                ) : null}
               </li>
             ))}
           </ul>
