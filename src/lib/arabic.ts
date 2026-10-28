@@ -77,9 +77,15 @@ export function candidates(word: string): string[] {
     for (const p of PREFIX_2) if (s.startsWith(p) && s.length > 3) stems.add(s.slice(1))
     if (s.startsWith('لل') && s.length > 4) stems.add('ال' + s.slice(2))
   }
-  for (const s of [...stems]) if (s.startsWith('ال') && s.length > 3) stems.add(s.slice(2))
+  // после артикля имя бывает из двух букв: الرَّفُّ، الْأَبُ، الْأُمُّ
+  const afterAl = new Set<string>()
+  for (const s of [...stems])
+    if (s.startsWith('ال') && s.length > 3) {
+      stems.add(s.slice(2))
+      afterAl.add(s.slice(2))
+    }
   const list = [...stems]
-  list.forEach((s, i) => add(s, i === 0 ? 1 : 3))
+  list.forEach((s, i) => add(s, i === 0 || afterAl.has(s) ? 1 : 3))
   // союз перед коротким служебным словом: وَمَنْ، وَمَا، فَلَا
   if (w.length === 3 && PREFIX_1.includes(w[0])) add(w.slice(1), 2)
   for (const s of list) {
