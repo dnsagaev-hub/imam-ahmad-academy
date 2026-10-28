@@ -1419,6 +1419,11 @@ a.sh-info-btn { text-decoration: none; }
 .ar-line { font-size: 26px; line-height: 1.8; color: var(--navy); }
 .ar-ex-tr { color: var(--muted); font-size: 15px; }
 .ar-grammar .ar-sub { margin: 24px 0 10px; }
+.ar-grammar-table { overflow-x: auto; margin: 4px 0 14px; }
+.ar-grammar-table table { border-collapse: collapse; min-width: 100%; }
+.ar-grammar-table th, .ar-grammar-table td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; font-size: 15px; vertical-align: middle; }
+.ar-grammar-table th { background: var(--paper); color: var(--navy); }
+.ar-grammar-table td .ar { font-size: 24px; }
 .ar-grammar-ex { margin: 4px 0 14px; }
 .ar-sentences { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .ar-sentences li { display: flex; gap: 14px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--line-soft); }
@@ -1504,6 +1509,9 @@ a.sh-info-btn { text-decoration: none; }
 @media (max-width: 720px) {
   .ar-sec { padding: 20px 18px; }
   .guide-steps { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .ar-grammar-table table { table-layout: fixed; width: 100%; }
+  .ar-grammar-table th, .ar-grammar-table td { padding: 6px; font-size: 13px; overflow-wrap: anywhere; hyphens: auto; }
+  .ar-grammar-table td .ar { font-size: 20px; }
   .guide-step:not(:last-child)::after { content: '↓'; right: auto; left: 22px; top: auto; bottom: -19px; }
   .ar-h { font-size: 26px; }
   .ar-line { font-size: 23px; }

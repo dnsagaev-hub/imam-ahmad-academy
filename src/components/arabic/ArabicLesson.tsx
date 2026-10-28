@@ -66,7 +66,19 @@ function exampleLine(line: string): { ar: string; tr: string } | null {
   return m ? { ar: m[1], tr: line.slice(ru).trim() } : null
 }
 
-type GBlock = { kind: 'h'; text: string } | { kind: 'p'; text: string } | { kind: 'ex'; items: { ar: string; tr: string }[] }
+type GBlock =
+  | { kind: 'h'; text: string }
+  | { kind: 'p'; text: string }
+  | { kind: 'ex'; items: { ar: string; tr: string }[] }
+  | { kind: 'table'; rows: string[][] }
+
+// Строка таблицы: «| Падеж | Определённое | Неопределённое» или ячейки через табуляцию; первая строка — заголовок
+const tableRow = (line: string): string[] | null =>
+  line.startsWith('|')
+    ? line.replace(/^\|/, '').replace(/\|$/, '').split('|').map((c) => c.trim())
+    : line.includes('\t')
+      ? line.split('\t').map((c) => c.trim())
+      : null
 
 /** Текст грамматики: строка «## …» — подзаголовок, «арабский — перевод» — пример, остальное — абзац */
 function GrammarText({ text }: { text?: string | null }) {
@@ -75,8 +87,11 @@ function GrammarText({ text }: { text?: string | null }) {
     const line = raw.trim()
     if (!line) continue
     const ex = exampleLine(line)
+    const row = tableRow(line)
     const last = blocks[blocks.length - 1]
-    if (line.startsWith('## ')) blocks.push({ kind: 'h', text: line.slice(3).trim() })
+    if (row && last?.kind === 'table') last.rows.push(row)
+    else if (row) blocks.push({ kind: 'table', rows: [row] })
+    else if (line.startsWith('## ')) blocks.push({ kind: 'h', text: line.slice(3).trim() })
     else if (ex && last?.kind === 'ex') last.items.push(ex)
     else if (ex) blocks.push({ kind: 'ex', items: [ex] })
     else blocks.push({ kind: 'p', text: line })
@@ -88,6 +103,29 @@ function GrammarText({ text }: { text?: string | null }) {
           <h3 key={i} className="ar-sub">
             <Bidi text={b.text} />
           </h3>
+        ) : b.kind === 'table' ? (
+          <div key={i} className="ar-grammar-table">
+            <table>
+              <thead>
+                <tr>
+                  {b.rows[0].map((c, j) => (
+                    <th key={j}>
+                      <Bidi text={c} />
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {b.rows.slice(1).map((r, k) => (
+                  <tr key={k}>
+                    {r.map((c, j) => (
+                      <td key={j}>{/^[\u0600-\u06FF]/.test(c) ? <ArText className="ar" text={c} /> : <Bidi text={c} />}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : b.kind === 'ex' ? (
           <ul key={i} className="ar-examples ar-grammar-ex">
             {b.items.map((e, j) => (
