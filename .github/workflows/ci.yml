@@ -188,6 +188,8 @@ jobs:
           check "Арабский: картинки владельца к словам урока 2" 'has "/lessons/arabskiy-urok-2" "arabic-rajul" && has "/lessons/arabskiy-urok-2" "arabic-nafidha"'
           check "Арабский: урок 3 авторского учебника с картинками и грамматикой" 'has "/courses/stupen-1-01-arabic" "Артикль ال. Где? В и на" && has "/lessons/arabskiy-urok-3" "الْحَقِيبَةُ" && has "/lessons/arabskiy-urok-3" "arabic-maktab" && has "/lessons/arabskiy-urok-3" "Солнечные и лунные буквы" && has "/courses/stupen-1-01-arabic/slovar" "مَطْبَخٌ"'
           check "Арабский: урок 2 авторского учебника в курсе Тамхиди" 'has "/courses/stupen-1-01-arabic" "Тот, та. Здесь и там" && has "/lessons/arabskiy-urok-2" "مِئْذَنَةٌ" && has "/lessons/arabskiy-urok-2" "Тот, та. Здесь и там" && has "/courses/stupen-1-01-arabic/slovar" "مِحْرَابٌ"'
+          check "Арабский: вводный инструктаж и схема урока в начале курса" 'has "/courses/stupen-1-01-arabic" "Вводный инструктаж: как заниматься по курсу" && has "/courses/stupen-1-01-arabic" "guide-steps" && has "/courses/stupen-1-01-arabic" "Частые ошибки"'
+          check "Арабский: у другого курса инструктажа нет" 'hasnt "/courses/demo-fikh-ochischeniya" "guide-steps"'
           check "Арабский: у курса без уроков арабского словаря нет" '[ "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/courses/demo-fikh-ochischeniya/slovar)" = "404" ]'
           # Поиск по сайту (задача 49): кнопка в шапке, разделы, переход к месту, без огласовок, отказ и граница
           check "Поиск: кнопка в шапке" 'has "/" "href=\"/search\"" && has "/quran/114" "class=\"hs-btn\"" && has "/search" "name=\"q\""'
@@ -226,7 +228,7 @@ jobs:
           import { chromium } from 'playwright'
           const pages = ['/', '/courses/demo-fikh-ochischeniya', '/lessons/pyat-osnov-fetv-imama-ahmada', '/lessons/demo-tayammum', '/courses', '/courses?level=beginner', '/courses/stupen-3-01-fiqh', '/text', '/text?book=ahsar-al-muhtasarat', '/audio', '/video', '/articles',
             '/articles/tayammum-pri-holodnoy-vode', '/library', '/library/ahsar-al-muhtasarat', '/library/al-madkhal-ibn-badran', '/contact', '/progress', '/prayer-times', '/admin', '/quran', '/quran/114', '/quran/2', '/quran/112/mushaf', '/hadith', '/hadith/akyda', '/hadith/akyda/islam-i-iman', '/fiqh', '/fiqh/ibadat', '/fiqh/ibadat/tahara', '/fiqh/ibadat/tahara/1', '/fiqh/ibadat/tahara/2', '/search?q=%D1%82%D0%B0%D1%8F%D0%BC%D0%BC%D1%83%D0%BC',
-            '/courses/demo-arabskiy-yazyk', '/lessons/demo-arabic-1', '/lessons/arabskiy-urok-1', '/lessons/arabskiy-urok-2', '/lessons/arabskiy-urok-3', '/courses/demo-arabskiy-yazyk/slovar', '/courses/demo-arabskiy-yazyk/kartochki']
+            '/courses/demo-arabskiy-yazyk', '/lessons/demo-arabic-1', '/lessons/arabskiy-urok-1', '/lessons/arabskiy-urok-2', '/lessons/arabskiy-urok-3', '/courses/stupen-1-01-arabic', '/courses/demo-arabskiy-yazyk/slovar', '/courses/demo-arabskiy-yazyk/kartochki']
           const browser = await chromium.launch()
           for (const [name, vp] of [['desk', { width: 1440, height: 900 }], ['phone', { width: 390, height: 844 }]]) {
             const ctx = await browser.newContext({ viewport: vp, locale: 'ru-RU', timezoneId: 'Europe/Moscow' })
