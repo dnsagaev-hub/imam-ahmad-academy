@@ -189,8 +189,11 @@ export function ArabicLessonBody({
 }) {
   const allWords = (a.words ?? []).filter((w) => w.word && w.translation)
   // Служебные слова (هٰذَا، مَا، هُنَا…) — без корня: отдельной таблицей под именами, как в учебнике владельца
-  const words = allWords.filter((w) => w.root?.trim())
-  const particles = allWords.filter((w) => !w.root?.trim())
+  // «Особое слово» (اللّٰهُ) — по пометке в начале примечания: отдельным блоком над всеми словами, не среди служебных
+  const isSpecial = (w: (typeof allWords)[number]) => /^Особое слово\.?/.test(w.note?.trim() ?? '')
+  const special = allWords.filter(isSpecial)
+  const words = allWords.filter((w) => w.root?.trim() && !isSpecial(w))
+  const particles = allWords.filter((w) => !w.root?.trim() && !isSpecial(w))
   const sentences = (a.sentences ?? []).filter((s) => s.arabic?.trim())
   const examples = (a.grammarExamples ?? []).filter((s) => s.arabic?.trim())
   const textParas = paragraphs(a.text)
@@ -210,6 +213,20 @@ export function ArabicLessonBody({
           <h2 className="ar-h" id="slovar-h">
             <span className="ar-h-n">1</span> Словарь урока
           </h2>
+          {special.map((w, i) => (
+            <div key={w.id ?? i} className="ar-special">
+              <div className="ar-special-tag">Особое слово</div>
+              <div className="ar-special-word ar" lang="ar" dir="rtl">
+                {w.word}
+              </div>
+              <div className="ar-special-tr">{w.translation}</div>
+              {w.note?.trim().replace(/^Особое слово\.?\s*/, '') ? (
+                <p className="ar-special-note">
+                  <Bidi text={w.note.trim().replace(/^Особое слово\.?\s*/, '')} />
+                </p>
+              ) : null}
+            </div>
+          ))}
           {words.length > 0 && particles.length > 0 ? <h3 className="ar-sub">Имена</h3> : null}
           {words.length ? (
             <div className="word-grid">
