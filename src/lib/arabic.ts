@@ -89,6 +89,8 @@ export function candidates(word: string): string[] {
   list.forEach((s, i) => add(s, i === 0 || afterAl.has(s) ? 1 : 3))
   // союз перед коротким служебным словом: وَمَنْ، وَمَا، فَلَا
   if (w.length === 3 && PREFIX_1.includes(w[0])) add(w.slice(1), 2)
+  // أَبٌ и أَخٌ первым словом идафы: أَبُو بَكْرٍ، أَخُو الصَّدِيقِ
+  if (/^(اب|اخ)[وايى]$/.test(w)) add(w.slice(0, 2), 2)
   for (const s of list) {
     for (const suf of SUFFIXES) {
       if (!s.endsWith(suf)) continue
