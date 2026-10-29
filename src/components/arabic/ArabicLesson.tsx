@@ -2,8 +2,11 @@ import { type LexEntry, type Stage, verbForms } from '@/lib/arabic'
 import type { ArabicData } from '@/lib/arabicCourse'
 import { mediaUrl } from '@/lib/queries'
 
+import type { LessonSchemes } from '@/data/arabic/schemes/types'
+
 import { Bidi } from './Bidi'
 import { ArText, LexiconProvider, VowelToggle } from './Lexicon'
+import { SchemeCard } from './Scheme'
 
 /*
  * Урок арабского языка: словарь, грамматическая заметка, предложения, текст и ключи.
@@ -70,6 +73,7 @@ type GBlock =
   | { kind: 'p'; text: string }
   | { kind: 'ex'; items: { ar: string; tr: string }[] }
   | { kind: 'table'; rows: string[][] }
+  | { kind: 'scheme'; title: string }
 
 // Строка таблицы: «| Падеж | Определённое | Неопределённое» или ячейки через табуляцию; первая строка — заголовок
 const tableRow = (line: string): string[] | null =>
@@ -79,12 +83,20 @@ const tableRow = (line: string): string[] | null =>
       ? line.split('\t').map((c) => c.trim())
       : null
 
-/** Текст грамматики: строка «## …» — подзаголовок, «арабский — перевод» — пример, остальное — абзац */
-function GrammarText({ text }: { text?: string | null }) {
+/** Текст грамматики: строка «## …» — подзаголовок, «арабский — перевод» — пример, остальное — абзац; в конце раздела — его схема */
+function GrammarText({ text, schemes }: { text?: string | null; schemes?: LessonSchemes }) {
   const blocks: GBlock[] = []
+  let section = ''
+  const closeSection = () => {
+    if (section && schemes?.[section]) blocks.push({ kind: 'scheme', title: section })
+  }
   for (const raw of String(text ?? '').split('\n')) {
     const line = raw.trim()
     if (!line) continue
+    if (line.startsWith('## ')) {
+      closeSection()
+      section = line.slice(3).trim()
+    }
     const ex = exampleLine(line)
     const row = tableRow(line)
     const last = blocks[blocks.length - 1]
@@ -95,10 +107,13 @@ function GrammarText({ text }: { text?: string | null }) {
     else if (ex) blocks.push({ kind: 'ex', items: [ex] })
     else blocks.push({ kind: 'p', text: line })
   }
+  closeSection()
   return (
     <div className="prose ar-grammar">
       {blocks.map((b, i) =>
-        b.kind === 'h' ? (
+        b.kind === 'scheme' ? (
+          <SchemeCard key={i} s={schemes![b.title]} />
+        ) : b.kind === 'h' ? (
           <h3 key={i} className="ar-sub">
             <Bidi text={b.text} />
           </h3>
@@ -156,9 +171,12 @@ export function ArabicLessonBody({
   stage,
   lexicon,
   lead,
+  schemes,
   children,
 }: {
   a: ArabicData
+  /** схемы к разделам грамматики этого урока */
+  schemes?: LessonSchemes
   /** цель урока — поле «Краткое описание» */
   lead?: string | null
   stage: Stage
@@ -270,7 +288,7 @@ export function ArabicLessonBody({
               {a.grammarTitle ? <Bidi text={a.grammarTitle} /> : null}
             </span>
           </h2>
-          <GrammarText text={a.grammar} />
+          <GrammarText text={a.grammar} schemes={schemes} />
           {examples.length ? (
             <ul className="ar-examples">
               {examples.map((e, i) => (

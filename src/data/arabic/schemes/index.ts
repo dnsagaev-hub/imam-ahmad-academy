@@ -1,0 +1,19 @@
+import { lesson01 } from './lesson-01'
+import { lesson02 } from './lesson-02'
+import { lesson03 } from './lesson-03'
+import { lesson04 } from './lesson-04'
+import { lesson05 } from './lesson-05'
+import { lesson06 } from './lesson-06'
+import { lesson07 } from './lesson-07'
+import type { LessonSchemes } from './types'
+
+/** Схемы к грамматике по адресу урока. Раздел, подзаголовок которого владелец переименовал, остаётся без схемы. */
+export const SCHEMES: Record<string, LessonSchemes> = {
+  'arabskiy-urok-1': lesson01,
+  'arabskiy-urok-2': lesson02,
+  'arabskiy-urok-3': lesson03,
+  'arabskiy-urok-4': lesson04,
+  'arabskiy-urok-5': lesson05,
+  'arabskiy-urok-6': lesson06,
+  'arabskiy-urok-7': lesson07,
+}
