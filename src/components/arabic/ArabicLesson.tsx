@@ -219,7 +219,11 @@ export function ArabicLessonBody({
 
   return (
     <LexiconProvider entries={lexicon} stage={stage}>
-      {lead?.trim() ? <p className="lead ar-lead">{lead}</p> : null}
+      {lead?.trim() ? (
+        <p className="lead ar-lead">
+          <Bidi text={lead} />
+        </p>
+      ) : null}
       <div className="ar-meta">
         {a.isReview ? <span className="word-tag word-tag-review">Обобщающий урок</span> : null}
         <span className="muted">{STAGE_LABEL[stage]}</span>
@@ -397,7 +401,11 @@ export function ArabicLessonBody({
               </div>
             </Fragment>
           ))}
-          {a.textSource ? <div className="tl-src">{a.textSource}</div> : null}
+          {a.textSource ? (
+            <div className="tl-src">
+              <Bidi text={a.textSource} />
+            </div>
+          ) : null}
         </section>
       ) : null}
 
