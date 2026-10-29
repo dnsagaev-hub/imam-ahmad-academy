@@ -1567,3 +1567,9 @@ a.sh-info-btn { text-decoration: none; }
   .sch-op { font-size: 20px; }
 }
 .nowrap { white-space: nowrap; }
+.ar-special { margin: 4px 0 22px; padding: 18px 20px; border: 1px solid var(--line); border-top: 4px solid var(--royal); border-radius: 16px; background: var(--paper); text-align: center; }
+.ar-special-tag { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--royal); }
+.ar-special-word { font-size: 52px; line-height: 1.5; color: var(--navy); }
+.ar-special-tr { font-size: 18px; font-weight: 600; color: var(--ink); }
+.ar-special-note { margin: 8px auto 0; max-width: 640px; font-size: 15px; line-height: 1.6; color: var(--muted); }
+.ar-special-note .ar-inline { font-size: 20px; }
