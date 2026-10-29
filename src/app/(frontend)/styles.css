@@ -1520,6 +1520,10 @@ a.sh-info-btn { text-decoration: none; }
   .ar-grammar-table table { table-layout: fixed; width: 100%; }
   .ar-grammar-table th, .ar-grammar-table td { padding: 6px; font-size: 13px; overflow-wrap: anywhere; hyphens: auto; }
   .ar-grammar-table td .ar { font-size: 20px; }
+  /* широкая таблица (6 столбцов и больше) не рвёт арабские слова, а прокручивается внутри рамки; ширину страницы не раздвигает */
+  .ar-grammar-table:has(th:nth-child(6)) { contain: inline-size; }
+  .ar-grammar-table table:has(th:nth-child(6)) { table-layout: auto; }
+  .ar-grammar-table table:has(th:nth-child(6)) .ar { overflow-wrap: normal; }
   .guide-step:not(:last-child)::after { content: '↓'; right: auto; left: 22px; top: auto; bottom: -19px; }
   .ar-h { font-size: 26px; }
   .ar-line { font-size: 23px; }
