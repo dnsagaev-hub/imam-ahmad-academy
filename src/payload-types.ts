@@ -508,6 +508,10 @@ export interface Lesson {
            */
           forms?: string | null;
           image?: (number | null) | Media;
+          /**
+           * Необязательно. У слов уроков есть готовая озвучка; если загрузить сюда свой аудиофайл (mp3, m4a), кнопка «Послушать» проиграет его.
+           */
+          audio?: (number | null) | Media;
           note?: string | null;
           id?: string | null;
         }[]
@@ -1754,6 +1758,7 @@ export interface LessonsSelect<T extends boolean = true> {
               theme?: T;
               forms?: T;
               image?: T;
+              audio?: T;
               note?: T;
               id?: T;
             };

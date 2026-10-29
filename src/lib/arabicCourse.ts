@@ -11,7 +11,7 @@ import { mediaUrl } from './queries'
 export type ArabicData = {
   stage?: string | null
   isReview?: boolean | null
-  words?: (ArabicWord & { id?: string | null; tag?: string | null; theme?: string | null; image?: unknown; note?: string | null })[] | null
+  words?: (ArabicWord & { id?: string | null; tag?: string | null; theme?: string | null; image?: unknown; audio?: unknown; note?: string | null })[] | null
   grammarTitle?: string | null
   grammar?: string | null
   grammarExamples?: { arabic: string; translation?: string | null }[] | null

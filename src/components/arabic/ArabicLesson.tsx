@@ -1,11 +1,13 @@
 import { type LexEntry, type Stage, verbForms } from '@/lib/arabic'
 import type { ArabicData } from '@/lib/arabicCourse'
 import { mediaUrl } from '@/lib/queries'
+import { wordAudioUrl } from '@/lib/wordAudio'
 
 import type { LessonSchemes } from '@/data/arabic/schemes/types'
 
 import { Bidi } from './Bidi'
 import { ArText, LexiconProvider, VowelToggle } from './Lexicon'
+import { SayButton } from './SayButton'
 import { SchemeCard } from './Scheme'
 
 /*
@@ -169,6 +171,12 @@ function GrammarText({ text, schemes }: { text?: string | null; schemes?: Lesson
   )
 }
 
+// Кнопка «Послушать»: своя запись владельца или готовая озвучка; если нет ни того, ни другого — кнопки нет
+function Say({ w }: { w: { word: string; audio?: unknown } }) {
+  const src = wordAudioUrl(w)
+  return src ? <SayButton src={src} word={w.word} /> : null
+}
+
 export function ArabicLessonBody({
   a,
   stage,
@@ -219,6 +227,7 @@ export function ArabicLessonBody({
               <div className="ar-special-word ar" lang="ar" dir="rtl">
                 {w.word}
               </div>
+              <Say w={w} />
               <div className="ar-special-tr">{w.translation}</div>
               {w.note?.trim().replace(/^Особое слово\.?\s*/, '') ? (
                 <p className="ar-special-note">
@@ -236,8 +245,11 @@ export function ArabicLessonBody({
                 return (
                   <article key={w.id ?? i} className="word-card">
                     {img ? <img className="word-img" src={img} alt={w.translation} loading="lazy" /> : null}
-                    <div className="word-ar ar" lang="ar" dir="rtl">
-                      {w.word}
+                    <div className="word-head">
+                      <Say w={w} />
+                      <div className="word-ar ar" lang="ar" dir="rtl">
+                        {w.word}
+                      </div>
                     </div>
                     <div className="word-tr">{w.translation}</div>
                     <dl className="word-dl">
@@ -285,6 +297,9 @@ export function ArabicLessonBody({
                     <tr key={w.id ?? i}>
                       <td className="ar" lang="ar" dir="rtl">
                         {w.word}
+                      </td>
+                      <td className="ar-particles-say">
+                        <Say w={w} />
                       </td>
                       <td>
                         {w.translation}

@@ -14,6 +14,7 @@ import * as migration_20261024_064631_reciters_more from './20261024_064631_reci
 import * as migration_20261025_085830_fiqh from './20261025_085830_fiqh';
 import * as migration_20261026_154347_surah_names from './20261026_154347_surah_names';
 import * as migration_20261027_200155_arabic_lessons from './20261027_200155_arabic_lessons';
+import * as migration_20261027_200156_arabic_word_audio from './20261027_200156_arabic_word_audio';
 import * as migration_20261027_213000_arabic_lesson_1 from './20261027_213000_arabic_lesson_1';
 import * as migration_20261027_230000_arabic_lesson_2 from './20261027_230000_arabic_lesson_2';
 import * as migration_20261028_050000_arabic_pictures from './20261028_050000_arabic_pictures';
@@ -107,6 +108,11 @@ export const migrations = [
     up: migration_20261027_200155_arabic_lessons.up,
     down: migration_20261027_200155_arabic_lessons.down,
     name: '20261027_200155_arabic_lessons'
+  },
+  {
+    up: migration_20261027_200156_arabic_word_audio.up,
+    down: migration_20261027_200156_arabic_word_audio.down,
+    name: '20261027_200156_arabic_word_audio'
   },
   {
     up: migration_20261027_213000_arabic_lesson_1.up,

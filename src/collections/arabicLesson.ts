@@ -99,6 +99,17 @@ export const ArabicLessonTab: Tab = {
               relationTo: 'media',
               filterOptions: { mimeType: { contains: 'image' } },
             },
+            {
+              name: 'audio',
+              label: 'Своя запись произношения',
+              type: 'upload',
+              relationTo: 'media',
+              filterOptions: { mimeType: { contains: 'audio' } },
+              admin: {
+                description:
+                  'Необязательно. У слов уроков есть готовая озвучка; если загрузить сюда свой аудиофайл (mp3, m4a), кнопка «Послушать» проиграет его.',
+              },
+            },
             { name: 'note', label: 'Примечание (необязательно)', type: 'text' },
           ],
         },
