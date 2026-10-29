@@ -25,15 +25,30 @@ export function withCaseNames(text: string): string {
 }
 
 export function Bidi({ text }: { text: string }) {
-  return withCaseNames(text)
-    .split(AR_RUN)
-    .map((t, i) =>
-      i % 2 ? (
-        <bdi key={i} className="ar ar-inline" lang="ar">
-          {t}
+  const parts = withCaseNames(text).split(AR_RUN)
+  // «(الْجَرُّ)» держим одной строкой: иначе скобка остаётся на конце строки, а слово уходит на следующую
+  for (let i = 1; i < parts.length; i += 2) {
+    if (parts[i - 1].endsWith('(') && parts[i + 1]?.startsWith(')')) {
+      parts[i - 1] = parts[i - 1].slice(0, -1)
+      parts[i + 1] = parts[i + 1].slice(1)
+      parts[i] = '(' + parts[i] + ')'
+    }
+  }
+  return parts.map((t, i) =>
+    i % 2 === 0 ? (
+      t
+    ) : t.startsWith('(') ? (
+      <span key={i} className="nowrap">
+        (
+        <bdi className="ar ar-inline" lang="ar">
+          {t.slice(1, -1)}
         </bdi>
-      ) : (
-        t
-      ),
-    )
+        )
+      </span>
+    ) : (
+      <bdi key={i} className="ar ar-inline" lang="ar">
+        {t}
+      </bdi>
+    ),
+  )
 }

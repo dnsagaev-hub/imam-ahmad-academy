@@ -149,8 +149,11 @@ function GrammarText({ text, schemes }: { text?: string | null; schemes?: Lesson
                 <ArText className="ar ar-line" text={e.ar} />
                 {/^\|\|.+\|\|$/.test(e.tr) ? (
                   <details className="ar-tr">
-                    <summary>Перевод</summary>
-                    <span>{e.tr.slice(2, -2)}</span>
+                    {/* длинная подсказка — разбор, а не перевод */}
+                    <summary>{e.tr.length > 80 ? 'Ответ' : 'Перевод'}</summary>
+                    <span>
+                      <Bidi text={e.tr.slice(2, -2)} />
+                    </span>
                   </details>
                 ) : e.tr ? (
                   <span className="ar-ex-tr">{e.tr}</span>
