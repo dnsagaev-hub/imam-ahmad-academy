@@ -6,6 +6,7 @@ import { useState, useTransition } from 'react'
 
 import { checkArabicTask, submitArabicTasks, type TaskAnswer } from '@/app/(frontend)/actions'
 import { addAttempt, useLocalProgress } from '@/lib/localProgress'
+import { Bidi } from './Bidi'
 
 /*
  * Задания урока арабского — по одному, как тест. «Выбрать ответ», «Вписать», «Соединить пары» и «Собрать предложение»
@@ -37,7 +38,7 @@ function Material({ text }: { text?: string }) {
   const ar = dirOf(text) === 'rtl'
   return (
     <div className={ar ? 'task-material ar' : 'task-material'} lang={ar ? 'ar' : undefined} dir={ar ? 'rtl' : 'auto'}>
-      {text}
+      {ar ? text : <Bidi text={text} />}
     </div>
   )
 }
@@ -272,10 +273,10 @@ export function ArabicTasks({
               {checked.key && (!t.auto || !checked.isCorrect || t.kind === 'match') ? (
                 <div className="task-key" dir="auto">
                   <span className="muted">Ключ: </span>
-                  {checked.key}
+                  <Bidi text={checked.key} />
                 </div>
               ) : null}
-              {checked.explanation ? <div style={{ fontSize: 15, lineHeight: 1.6, marginTop: 6 }}>{checked.explanation}</div> : null}
+              {checked.explanation ? <div style={{ fontSize: 15, lineHeight: 1.6, marginTop: 6 }}><Bidi text={checked.explanation} /></div> : null}
               {!t.auto ? (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
                   <button type="button" className={`chip${self === true ? ' active' : ''}`} onClick={() => setSelf(true)}>
