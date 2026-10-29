@@ -1581,3 +1581,4 @@ a.sh-info-btn { text-decoration: none; }
 .ar-special-tr { font-size: 18px; font-weight: 600; color: var(--ink); }
 .ar-special-note { margin: 8px auto 0; max-width: 640px; font-size: 15px; line-height: 1.6; color: var(--muted); }
 .ar-special-note .ar-inline { font-size: 20px; }
+.ar-text-next { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); }

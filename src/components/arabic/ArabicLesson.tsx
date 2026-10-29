@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { type LexEntry, type Stage, verbForms } from '@/lib/arabic'
 import type { ArabicData } from '@/lib/arabicCourse'
 import { mediaUrl } from '@/lib/queries'
@@ -205,6 +206,15 @@ export function ArabicLessonBody({
   const sentences = (a.sentences ?? []).filter((s) => s.arabic?.trim())
   const examples = (a.grammarExamples ?? []).filter((s) => s.arabic?.trim())
   const textParas = paragraphs(a.text)
+  // Несколько текстов в одном уроке (обобщающий урок): абзац «## …» — название следующего текста
+  const textGroups = textParas.reduce<{ title?: string; paras: string[] }[]>((acc, p) => {
+    if (p.startsWith('## ')) acc.push({ title: p.slice(3).trim(), paras: [] })
+    else if (acc.length) acc[acc.length - 1].paras.push(p)
+    else acc.push({ title: a.textTitle ?? undefined, paras: [p] })
+    return acc
+  }, [])
+  // Без предложений (обобщающий урок) нумерация разделов не пропускает номер
+  const textN = sentences.length ? 4 : 3
   const hasKeys = sentences.some((s) => s.translation) || Boolean(a.textTranslation?.trim())
 
   return (
@@ -278,7 +288,11 @@ export function ArabicLessonBody({
                         </>
                       ) : null}
                     </dl>
-                    {w.note ? <div className="word-note">{w.note}</div> : null}
+                    {w.note ? (
+                      <div className="word-note">
+                        <Bidi text={w.note} />
+                      </div>
+                    ) : null}
                     <div className="word-tags">
                       {w.tag && TAG[w.tag] ? <span className={`word-tag word-tag-${w.tag}`}>{TAG[w.tag]}</span> : null}
                       {w.theme ? <span className="word-theme">{w.theme}</span> : null}
@@ -303,7 +317,11 @@ export function ArabicLessonBody({
                       </td>
                       <td>
                         {w.translation}
-                        {w.note && w.note.trim() !== 'Служебное слово' ? <div className="word-note">{w.note}</div> : null}
+                        {w.note && w.note.trim() !== 'Служебное слово' ? (
+                          <div className="word-note">
+                            <Bidi text={w.note} />
+                          </div>
+                        ) : null}
                       </td>
                     </tr>
                   ))}
@@ -365,16 +383,20 @@ export function ArabicLessonBody({
       {textParas.length ? (
         <section className="card ar-sec" aria-labelledby="text-h">
           <h2 className="ar-h" id="text-h">
-            <span className="ar-h-n">4</span> Текст
+            <span className="ar-h-n">{textN}</span> {textGroups.length > 1 ? 'Тексты' : 'Текст'}
           </h2>
-          {a.textTitle ? <ArText className="ar ar-text-title" text={a.textTitle} /> : null}
-          <div className="ar-text ar" lang="ar" dir="rtl">
-            {textParas.map((p, i) => (
-              <p key={i}>
-                <ArText text={p} />
-              </p>
-            ))}
-          </div>
+          {textGroups.map((g, k) => (
+            <Fragment key={k}>
+              {g.title ? <ArText className={`ar ar-text-title${k ? ' ar-text-next' : ''}`} text={g.title} /> : null}
+              <div className="ar-text ar" lang="ar" dir="rtl">
+                {g.paras.map((p, i) => (
+                  <p key={i}>
+                    <ArText text={p} />
+                  </p>
+                ))}
+              </div>
+            </Fragment>
+          ))}
           {a.textSource ? <div className="tl-src">{a.textSource}</div> : null}
         </section>
       ) : null}
@@ -384,7 +406,7 @@ export function ArabicLessonBody({
       {hasKeys ? (
         <details className="card ar-sec ar-keys" id="keys">
           <summary className="ar-h">
-            <span className="ar-h-n">6</span> Ключи: переводы
+            <span className="ar-h-n">{textN + 2}</span> Ключи: переводы
           </summary>
           {sentences.some((s) => s.translation) ? (
             <ol className="ar-keys-list">
@@ -399,10 +421,16 @@ export function ArabicLessonBody({
           ) : null}
           {a.textTranslation?.trim() ? (
             <div className="prose">
-              <h3 style={{ margin: '8px 0' }}>Перевод текста</h3>
-              {paragraphs(a.textTranslation).map((p, i) => (
-                <p key={i}>{p}</p>
-              ))}
+              <h3 style={{ margin: '8px 0' }}>{textGroups.length > 1 ? 'Перевод текстов' : 'Перевод текста'}</h3>
+              {paragraphs(a.textTranslation).map((p, i) =>
+                p.startsWith('## ') ? (
+                  <h4 key={i} style={{ margin: '12px 0 4px' }}>
+                    {p.slice(3).trim()}
+                  </h4>
+                ) : (
+                  <p key={i}>{p}</p>
+                ),
+              )}
             </div>
           ) : null}
           <p className="muted" style={{ margin: 0, fontSize: 14 }}>
