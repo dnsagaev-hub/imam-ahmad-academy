@@ -26,6 +26,7 @@ import * as migration_20261028_200000_arabic_lesson_5 from './20261028_200000_ar
 import * as migration_20261028_210000_arabic_lesson_6 from './20261028_210000_arabic_lesson_6';
 import * as migration_20261028_230000_arabic_lesson_7 from './20261028_230000_arabic_lesson_7';
 import * as migration_20261029_120000_arabic_lesson_8 from './20261029_120000_arabic_lesson_8';
+import * as migration_20261029_130000_arabic_word_audio from './20261029_130000_arabic_word_audio';
 
 export const migrations = [
   {
@@ -167,5 +168,10 @@ export const migrations = [
     up: migration_20261029_120000_arabic_lesson_8.up,
     down: migration_20261029_120000_arabic_lesson_8.down,
     name: '20261029_120000_arabic_lesson_8'
+  },
+  {
+    up: migration_20261029_130000_arabic_word_audio.up,
+    down: migration_20261029_130000_arabic_word_audio.down,
+    name: '20261029_130000_arabic_word_audio'
   },
 ];

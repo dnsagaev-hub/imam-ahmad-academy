@@ -50,3 +50,6 @@ node_modules/
 /playwright/.cache/
 
 /backups
+
+# ответы сервиса озвучки (scripts/arabic-audio.mjs)
+/.cache/
