@@ -3,6 +3,7 @@ import path from 'path'
 import type { Payload, PayloadRequest } from 'payload'
 
 import module01 from '../data/arabic/module-01.json'
+import module02 from '../data/arabic/module-02.json'
 
 /*
  * Уроки авторского учебника арабского языка (курс «Арабский язык» ступени Тамхиди, задача 50).
@@ -13,7 +14,13 @@ import module01 from '../data/arabic/module-01.json'
 
 type Module = { module: string; lessons: ({ slug: string; title: string } & Record<string, unknown>)[] }
 
-export const ARABIC_MODULES: Module[] = [module01 as Module]
+export const ARABIC_MODULES: Module[] = [module01 as Module, module02 as Module]
+
+// Прежние названия модулей: модуль 1 был «уроки 1–15», с урока 11 начался модуль 2 (решение владельца 29.10.2026).
+// Название меняется, только если владелец его не правил.
+const OLD_MODULE_TITLES: Record<string, string> = {
+  'Модуль 1. Именное предложение (уроки 1–15)': module01.module,
+}
 
 export const ARABIC_COURSE_SLUG = 'stupen-1-01-arabic'
 
@@ -107,6 +114,7 @@ export async function installArabicLessons(payload: Payload, req?: Partial<Paylo
     title: m.title,
     lessons: (m.lessons ?? []).map(idOf),
   }))
+  for (const m of modules) if (OLD_MODULE_TITLES[m.title]) m.title = OLD_MODULE_TITLES[m.title]
   const inCourse = new Set(modules.flatMap((m) => m.lessons.map(String)))
   for (const c of created) {
     const missing = c.ids.filter((id) => !inCourse.has(String(id)))

@@ -57,7 +57,8 @@ export function normalize(word: string): string {
 
 const PREFIX_1 = ['و', 'ف']
 const PREFIX_2 = ['ب', 'ل', 'ك', 'س']
-const SUFFIXES = ['هما', 'كما', 'هم', 'هن', 'كم', 'كن', 'ها', 'نا', 'ني', 'ه', 'ك', 'ي']
+// ـي раньше ـني: ابْنِي — «мой сын» (ابن)، а не أَبٌ
+const SUFFIXES = ['هما', 'كما', 'هم', 'هن', 'كم', 'كن', 'ها', 'نا', 'ه', 'ك', 'ي', 'ني']
 const ENDINGS = ['تان', 'تين', 'ان', 'ين', 'ون', 'ات', 'وا', 'تم', 'تن', 'ت', 'ا', 'ن']
 
 /** Варианты слова без приставок и окончаний: сначала самые близкие к написанному. */
@@ -93,6 +94,8 @@ export function candidates(word: string): string[] {
       if (!s.endsWith(suf)) continue
       const base = s.slice(0, -suf.length)
       add(base, 2)
+      // أَبٌ и أَخٌ перед местоимением с долгой гласной: أَبُوهُ، أَبِيهِ، أَخُوكَ → أب، أخ
+      if (base.length === 3 && /[وايى]$/.test(base)) add(base.slice(0, 2), 2)
       for (const e of ENDINGS) if (base.endsWith(e)) add(base.slice(0, -e.length), 2, e.startsWith('ت') || e === 'ات')
     }
     for (const e of ENDINGS) if (s.endsWith(e)) add(s.slice(0, -e.length), 2, e.startsWith('ت') || e === 'ات')
