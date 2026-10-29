@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 
 import { ArabicLessonBody } from '@/components/arabic/ArabicLesson'
 import { ArabicTasks } from '@/components/arabic/ArabicTasks'
+import { SCHEMES } from '@/data/arabic/schemes'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { FileIcon, LockIcon } from '@/components/Icons'
@@ -273,7 +274,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
             ) : null}
 
             {isArabic ? (
-              <ArabicLessonBody a={ar} stage={arStage} lexicon={lexicon} lead={l.excerpt}>
+              <ArabicLessonBody a={ar} stage={arStage} lexicon={lexicon} lead={l.excerpt} schemes={l.slug ? SCHEMES[l.slug] : undefined}>
                 {tasks.length ? (
                   <ArabicTasks
                     lessonId={lesson.id}

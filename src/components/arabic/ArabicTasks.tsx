@@ -166,7 +166,9 @@ export function ArabicTasks({
           <div className="tag">
             Задание {i + 1} из {tasks.length}
           </div>
-          <div className="q-text">{t.prompt}</div>
+          <div className="q-text">
+            <Bidi text={t.prompt} />
+          </div>
           <Material text={t.material} />
 
           {t.kind === 'choice' ? (

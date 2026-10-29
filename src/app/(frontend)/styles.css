@@ -1522,3 +1522,47 @@ a.sh-info-btn { text-decoration: none; }
 .ar-lead { margin: 0; font-size: 17px; max-width: 760px; }
 /* Много заданий в уроке — полоски тоньше, чтобы ряд помещался */
 .dots-many span { width: 14px; }
+/* Схема в конце раздела грамматики (задача 50): формула справа налево, колонки сравнения, короткие правила */
+.sch { margin: 6px 0 22px; padding: 18px 20px 20px; border: 1px solid var(--line-2); border-radius: 16px; background: linear-gradient(180deg, #f1f9f5 0%, #fff 100%); display: flex; flex-direction: column; gap: 14px; }
+.sch-title { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-family: var(--display); font-size: 21px; font-weight: 700; color: var(--navy); line-height: 1.25; }
+.sch-title .ar-inline { font-size: 1.15em; }
+.sch-tag { font-family: var(--body); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #fff; background: var(--royal); border-radius: 99px; padding: 4px 10px; }
+.sch-block { display: flex; flex-direction: column; gap: 10px; }
+.sch-formula { display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: 10px; }
+.sch-op { align-self: center; font-size: 26px; font-weight: 700; color: var(--gold-dark); line-height: 1; padding: 0 2px; }
+.sch-op-v { display: none; }
+.sch-item { min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 16px; border-radius: 12px; background: #fff; border: 1px solid var(--line); text-align: center; }
+.sch-formula .sch-item { min-width: 120px; }
+.sch-a { border-color: var(--gold); box-shadow: inset 0 -3px 0 var(--gold); }
+.sch-b { border-color: var(--royal); box-shadow: inset 0 -3px 0 var(--royal); }
+.sch-c { border-color: var(--navy-2); box-shadow: inset 0 -3px 0 var(--navy-2); }
+.sch-label { direction: ltr; font-size: 12px; font-weight: 700; letter-spacing: .02em; color: var(--gold-dark); }
+.sch-label .ar-inline { font-size: 15px; }
+.sch-ar { display: block; font-size: 24px; line-height: 1.6; color: var(--navy); direction: rtl; }
+.sch-ar-big { font-size: 30px; }
+.sch-ru { direction: ltr; font-size: 14px; color: var(--muted); line-height: 1.4; }
+.sch-ru .ar-inline { font-size: 18px; }
+.sch-cols { display: grid; grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr)); gap: 12px; }
+.sch-col { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 14px; background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--line-2); }
+.sch-col.sch-a { border-top-color: var(--gold); box-shadow: none; }
+.sch-col.sch-b { border-top-color: var(--royal); box-shadow: none; }
+.sch-col.sch-c { border-top-color: var(--navy-2); box-shadow: none; }
+.sch-col-h { font-weight: 700; color: var(--navy); font-size: 15px; text-align: center; }
+.sch-col-h .ar-inline { font-size: 21px; }
+.sch-col .sch-item { background: var(--paper); border-color: var(--line-soft); padding: 8px 10px; }
+.sch-rules { margin: 0; padding: 0 0 0 22px; display: flex; flex-direction: column; gap: 6px; font-size: 15.5px; line-height: 1.6; }
+.sch-rules li::marker { color: var(--gold-dark); font-weight: 700; }
+.sch-rules .ar-inline { font-size: 20px; }
+.sch-note { margin: 0; padding: 10px 14px; border-radius: 10px; background: var(--line-soft); font-size: 14.5px; line-height: 1.6; color: var(--ink); }
+.sch-note .ar-inline { font-size: 19px; }
+@media (max-width: 720px) {
+  .sch { padding: 14px 12px 16px; }
+  .sch-title { font-size: 19px; }
+  .sch-cols { grid-template-columns: minmax(0, 1fr); }
+  .sch-formula { flex-direction: column; align-items: stretch; gap: 4px; }
+  .sch-formula .sch-item { min-width: 0; padding: 8px 10px; }
+  .sch-op-h { display: none; }
+  .sch-op-v { display: inline; }
+  .sch-ar-big { font-size: 25px; }
+  .sch-op { font-size: 20px; }
+}
