@@ -17,6 +17,7 @@ import { lesson16 } from './lesson-16'
 import { lesson17 } from './lesson-17'
 import { lesson18 } from './lesson-18'
 import { lesson19 } from './lesson-19'
+import { lesson20 } from './lesson-20'
 import type { LessonSchemes } from './types'
 
 /** Схемы к грамматике по адресу урока. Раздел, подзаголовок которого владелец переименовал, остаётся без схемы. */
@@ -40,4 +41,5 @@ export const SCHEMES: Record<string, LessonSchemes> = {
   'arabskiy-urok-17': lesson17,
   'arabskiy-urok-18': lesson18,
   'arabskiy-urok-19': lesson19,
+  'arabskiy-urok-20': lesson20,
 }
