@@ -3,8 +3,8 @@
 // Берёт слова из src/data/arabic/module-*.json, озвучивает те, у которых ещё нет файла, нейросетью Google
 // (Gemini TTS, ключ Google AI Studio в переменной GEMINI_API_KEY — в репозиторий ключ не попадает) и кладёт
 // mp3 в public/arabic/audio, а соответствие «слово → файл» — в src/data/arabic/audio.json.
-// Бесплатный тариф даёт мало запросов в день, поэтому слова урока озвучиваются одним запросом (слово — строка),
-// а запись режется по паузам; если пауз не столько, сколько слов, урок пропускается — запустить ещё раз.
+// Бесплатный тариф даёт мало запросов в день, поэтому слова озвучиваются пачками по ~32 (слово — строка, около двух уроков),
+// а запись режется по паузам; если пауз не столько, сколько слов, пачка пропускается — запустить ещё раз.
 // Нужен ffmpeg. Сайту ни ключ, ни сервис не нужны: он проигрывает готовые файлы.
 // Готовый файл не пересоздаётся; чтобы переозвучить слово, удалите его строку из audio.json.
 
@@ -81,39 +81,47 @@ const tmp = path.join(ROOT, '.cache/arabic-audio')
 fs.mkdirSync(tmp, { recursive: true })
 const modules = fs.readdirSync(DATA).filter((f) => /^module-.*\.json$/.test(f)).sort()
 
+// Все ещё не озвученные слова по порядку уроков, без повторов (слово из прошлого урока второй раз не озвучивается)
+const todoAll = []
 for (const m of modules) {
   const { lessons } = JSON.parse(fs.readFileSync(path.join(DATA, m), 'utf8'))
-  for (const lesson of lessons) {
-    const words = [...new Set((lesson.arabic?.words ?? lesson.words ?? []).map((w) => key(w.word)))]
-    const todo = words.filter((w) => speakable(w) && !manifest[w])
-    if (!todo.length) continue
-    process.stdout.write(`${lesson.slug}: ${todo.length} сл. … `)
-    try {
-      const name = createHash('sha1').update(`${MODEL} ${VOICE} ${todo.join(' ')}`).digest('hex').slice(0, 12)
-      let raw = [`${name}.wav`, `${name}.pcm`].map((f) => path.join(tmp, f)).find((f) => fs.existsSync(f))
-      if (!raw) {
-        const { data, wav } = await tts(todo)
-        raw = path.join(tmp, `${name}.${wav ? 'wav' : 'pcm'}`)
-        fs.writeFileSync(raw, data)
-      }
-      const wav = raw.endsWith('.wav')
-      const src = path.join(tmp, `${lesson.slug}-full.wav`)
-      execFileSync('ffmpeg', ['-v', 'error', '-y', ...(wav ? [] : ['-f', 's16le', '-ar', '24000', '-ac', '1']), '-i', raw, src])
-      const segs = speech(src)
-      if (segs.length !== todo.length) {
-        console.log(`пауз не столько, сколько слов (${segs.length} из ${todo.length}) — пропущено, запустите ещё раз`)
-        continue
-      }
-      todo.forEach((w, i) => {
-        exportSeg(src, segs[i], path.join(OUT, fileFor(w)))
-        manifest[w] = fileFor(w)
-      })
-      fs.writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n')
-      console.log('готово')
-    } catch (e) {
-      console.log(`ошибка: ${e.message}`)
-      // 429 — дневной лимит бесплатного тарифа (продолжить завтра), 400/403 — неверный ключ
-      if (/^(400|403|429) /.test(e.message)) break
+  for (const lesson of lessons)
+    for (const w of lesson.arabic?.words ?? lesson.words ?? []) {
+      const k = key(w.word)
+      if (speakable(k) && !manifest[k] && !todoAll.includes(k)) todoAll.push(k)
     }
+}
+
+// Слова идут пачками по BATCH (около двух уроков) — так дневного лимита хватает на 15–20 уроков
+const BATCH = Number(process.env.TTS_BATCH) || 32
+for (let start = 0; start < todoAll.length; start += BATCH) {
+  const todo = todoAll.slice(start, start + BATCH)
+  process.stdout.write(`${todo[0]} … ${todo[todo.length - 1]}: ${todo.length} сл. … `)
+  try {
+    const name = createHash('sha1').update(`${MODEL} ${VOICE} ${todo.join(' ')}`).digest('hex').slice(0, 12)
+    let raw = [`${name}.wav`, `${name}.pcm`].map((f) => path.join(tmp, f)).find((f) => fs.existsSync(f))
+    if (!raw) {
+      const { data, wav } = await tts(todo)
+      raw = path.join(tmp, `${name}.${wav ? 'wav' : 'pcm'}`)
+      fs.writeFileSync(raw, data)
+    }
+    const wav = raw.endsWith('.wav')
+    const src = path.join(tmp, `${name}-full.wav`)
+    execFileSync('ffmpeg', ['-v', 'error', '-y', ...(wav ? [] : ['-f', 's16le', '-ar', '24000', '-ac', '1']), '-i', raw, src])
+    const segs = speech(src)
+    if (segs.length !== todo.length) {
+      console.log(`пауз не столько, сколько слов (${segs.length} из ${todo.length}) — пропущено, запустите ещё раз (или с меньшим TTS_BATCH)`)
+      continue
+    }
+    todo.forEach((w, i) => {
+      exportSeg(src, segs[i], path.join(OUT, fileFor(w)))
+      manifest[w] = fileFor(w)
+    })
+    fs.writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n')
+    console.log('готово')
+  } catch (e) {
+    console.log(`ошибка: ${e.message}`)
+    // 429 — дневной лимит бесплатного тарифа (продолжить завтра), 400/403 — неверный ключ
+    if (/^(400|403|429) /.test(e.message)) break
   }
 }
