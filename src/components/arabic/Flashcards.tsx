@@ -15,6 +15,9 @@ export type CardWord = {
   root?: string
   plural?: string
   verb?: string
+  /** формы глагола: мудари и масдар — отдельными строками на обороте */
+  present?: string
+  masdar?: string
   image?: string | null
   lesson: number
 }
@@ -177,7 +180,9 @@ export function Flashcards({ words, lessons, from: from0, to: to0 }: { words: Ca
               <span className="flashcard-more">
                 {w.root ? <span>Корень: <span className="ar">{w.root}</span></span> : null}
                 {w.plural ? <span>Мн. ч.: <span className="ar">{w.plural}</span></span> : null}
-                {w.verb ? <span>Формы: <span className="ar">{w.verb}</span></span> : null}
+                {w.present ? <span>Мудари: <span className="ar">{w.present}</span></span> : null}
+                {w.masdar ? <span>Масдар: <span className="ar">{w.masdar}</span></span> : null}
+                {w.verb && !w.present && !w.masdar ? <span>Формы: <span className="ar">{w.verb}</span></span> : null}
                 <span>Урок {w.lesson}</span>
               </span>
             ) : (

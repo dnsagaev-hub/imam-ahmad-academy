@@ -45,6 +45,8 @@ export default async function FlashcardsPage({
     root: w.root,
     plural: w.plural,
     verb: verbForms(w),
+    present: w.present,
+    masdar: w.masdar,
     image: w.image,
     lesson: w.lesson,
   }))

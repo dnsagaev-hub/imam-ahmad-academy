@@ -258,7 +258,14 @@ export function ArabicLessonBody({
             <div className="word-grid">
               {words.map((w, i) => {
                 const img = mediaUrl(w.image)
-                const verb = verbForms(w)
+                // Глагол: главное слово — прошедшее время; ниже переводом — «Мудари: …» и «Масдар: …», каждая форма своей строкой
+                const verbRows = (
+                  [
+                    ['Прошедшее', w.past?.trim() && w.past.trim() !== w.word.trim() ? w.past.trim() : ''],
+                    ['Мудари', w.present?.trim() ?? ''],
+                    ['Масдар', w.masdar?.trim() ?? ''],
+                  ] as const
+                ).filter(([, f]) => f)
                 return (
                   <article key={w.id ?? i} className="word-card">
                     {img ? <img className="word-img" src={img} alt={w.translation} loading="lazy" /> : null}
@@ -269,6 +276,21 @@ export function ArabicLessonBody({
                       </div>
                     </div>
                     <div className="word-tr">{w.translation}</div>
+                    {verbRows.length ? (
+                      <div className="word-verb">
+                        {verbRows.map(([label, f]) => (
+                          <div key={label} className="word-verb-row">
+                            <span className="word-verb-l">{label}:</span>
+                            <span className="word-verb-f">
+                              <span className="ar" lang="ar" dir="rtl">
+                                {f}
+                              </span>
+                              <Say w={{ word: f }} small />
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
                     <dl className="word-dl">
                       {w.root ? (
                         <>
@@ -283,20 +305,6 @@ export function ArabicLessonBody({
                           <dt>Мн. ч.</dt>
                           <dd className="ar" lang="ar" dir="rtl">
                             {w.plural}
-                          </dd>
-                        </>
-                      ) : null}
-                      {verb ? (
-                        <>
-                          <dt>Формы</dt>
-                          {/* прошедшее, настоящее, масдар — каждая форма своей строкой: в узкой карточке тире не повисают */}
-                          <dd className="ar word-forms" lang="ar" dir="rtl">
-                            {verb.split(' — ').map((f, j) => (
-                              <span key={j}>
-                                {f}
-                                <Say w={{ word: f }} small />
-                              </span>
-                            ))}
                           </dd>
                         </>
                       ) : null}

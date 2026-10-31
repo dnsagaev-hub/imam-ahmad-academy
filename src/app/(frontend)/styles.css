@@ -1419,6 +1419,13 @@ a.sh-info-btn { text-decoration: none; }
 .word-dl dt { font-weight: 600; }
 .word-dl dd { margin: 0; font-size: 18px; color: var(--navy); text-align: right; }
 .word-forms span { display: flex; align-items: center; gap: 6px; }
+/* Формы глагола под переводом: «Мудари: …», «Масдар: …» — каждая своей строкой, с запасом высоты под огласовки.
+   Если подпись и слово не помещаются в узкую карточку, слово с кнопкой озвучки переносится целиком, а не налезает */
+.word-verb { display: flex; flex-direction: column; gap: 4px; }
+.word-verb-row { display: flex; flex-wrap: wrap; align-items: center; column-gap: 8px; row-gap: 0; font-size: 13px; color: var(--muted); }
+.word-verb-l { font-weight: 600; }
+.word-verb-f { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
+.word-verb-f .ar { font-size: 20px; line-height: 1.9; color: var(--navy); white-space: nowrap; }
 .say-btn.say-btn-sm { width: 26px; height: 26px; }
 .word-note { font-size: 13px; color: var(--muted); }
 .word-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: auto; }
@@ -1530,6 +1537,8 @@ a.sh-info-btn { text-decoration: none; }
   .ar-h { font-size: 26px; }
   .ar-line { font-size: 23px; }
   .word-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .word-verb-row { column-gap: 6px; }
+  .word-verb-f .ar { font-size: 18px; }
   .task-pair { grid-template-columns: 1fr; gap: 6px; }
   .flashcard-ar { font-size: 40px; }
 }
