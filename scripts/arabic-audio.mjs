@@ -15,6 +15,16 @@ import path from 'node:path'
 
 const MODEL = process.env.TTS_MODEL || 'gemini-3.1-flash-tts-preview'
 const VOICE = process.env.TTS_VOICE || 'Charon'
+const SEP = process.env.TTS_SEP ?? ''
+// Указания «диктору» в формате Gemini TTS (вслух читается только TRANSCRIPT). Без них модель часто читает слово
+// в паузальной форме — без танвина и последней огласовки, та марбута как -х (так вышло с числами урока 16 и днями недели урока 17)
+const PROFILE = `# AUDIO PROFILE: Arabic teacher
+## THE SCENE: A Classical Arabic vocabulary lesson for beginners.
+### DIRECTOR'S NOTES
+Read each word of the transcript separately, with a clear pause after each. Pronounce every word exactly as vocalized, in connected (wasl) form: always pronounce the final short vowel and the tanwin (-un, -an, -in), never stop on a sukun, never pronounce ta marbuta as -h. Do not read these notes aloud.
+
+### TRANSCRIPT
+`
 const KEY = process.env.GEMINI_API_KEY
 const ROOT = path.resolve(import.meta.dirname, '..')
 const DATA = path.join(ROOT, 'src/data/arabic')
@@ -39,8 +49,7 @@ async function tts(words) {
     method: 'POST',
     headers: { 'x-goog-api-key': KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      // Только сами слова: указания голосу модель читает вслух
-      contents: [{ parts: [{ text: words.map((w) => `${w}.`).join('\n') }] }],
+      contents: [{ parts: [{ text: PROFILE + words.map((w) => `${w}${SEP}`).join('\n') }] }],
       generationConfig: {
         responseModalities: ['AUDIO'],
         speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE } } },
@@ -48,8 +57,9 @@ async function tts(words) {
     }),
   })
   if (!res.ok) throw new Error(`${res.status} ${(await res.text()).slice(0, 300)}`)
-  const part = (await res.json()).candidates?.[0]?.content?.parts?.[0]?.inlineData
-  if (!part) throw new Error('сервис не вернул звук')
+  const json = await res.json()
+  const part = json.candidates?.[0]?.content?.parts?.[0]?.inlineData
+  if (!part) throw new Error(`сервис не вернул звук (${json.candidates?.[0]?.finishReason ?? JSON.stringify(json).slice(0, 200)})`)
   return { data: Buffer.from(part.data, 'base64'), wav: /wav/.test(part.mimeType) }
 }
 
@@ -87,18 +97,22 @@ for (const m of modules) {
   const { lessons } = JSON.parse(fs.readFileSync(path.join(DATA, m), 'utf8'))
   for (const lesson of lessons)
     for (const w of lesson.arabic?.words ?? lesson.words ?? []) {
-      const k = key(w.word)
-      if (speakable(k) && !manifest[k] && !todoAll.includes(k)) todoAll.push(k)
+      // У глагола озвучиваются и формы: маади, мудари‘, масдар — кнопка у строки «Формы»
+      for (const form of [w.word, w.past, w.present, w.masdar]) {
+        const k = form ? key(form) : ''
+        if (k && speakable(k) && !manifest[k] && !todoAll.includes(k)) todoAll.push(k)
+      }
     }
 }
 
 // Слова идут пачками по BATCH (около двух уроков) — так дневного лимита хватает на 15–20 уроков
 const BATCH = Number(process.env.TTS_BATCH) || 32
-for (let start = 0; start < todoAll.length; start += BATCH) {
+const MAX = Number(process.env.TTS_MAX_BATCHES) || Infinity
+for (let start = 0; start < todoAll.length && start / BATCH < MAX; start += BATCH) {
   const todo = todoAll.slice(start, start + BATCH)
   process.stdout.write(`${todo[0]} … ${todo[todo.length - 1]}: ${todo.length} сл. … `)
   try {
-    const name = createHash('sha1').update(`${MODEL} ${VOICE} ${todo.join(' ')}`).digest('hex').slice(0, 12)
+    const name = createHash('sha1').update(`${MODEL} ${VOICE} ${PROFILE} ${todo.join(' ')}`).digest('hex').slice(0, 12)
     let raw = [`${name}.wav`, `${name}.pcm`].map((f) => path.join(tmp, f)).find((f) => fs.existsSync(f))
     if (!raw) {
       const { data, wav } = await tts(todo)

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 
 let current: HTMLAudioElement | null = null
 
-export function SayButton({ src, word }: { src: string; word: string }) {
+export function SayButton({ src, word, small }: { src: string; word: string; small?: boolean }) {
   const ref = useRef<HTMLAudioElement | null>(null)
   const [playing, setPlaying] = useState(false)
 
@@ -32,12 +32,12 @@ export function SayButton({ src, word }: { src: string; word: string }) {
   return (
     <button
       type="button"
-      className={`say-btn${playing ? ' is-playing' : ''}`}
+      className={`say-btn${small ? ' say-btn-sm' : ''}${playing ? ' is-playing' : ''}`}
       onClick={play}
       aria-label={`Послушать: ${word}`}
       title="Послушать"
     >
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <svg width={small ? 14 : 18} height={small ? 14 : 18} viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" fill="currentColor" />
         <path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       </svg>

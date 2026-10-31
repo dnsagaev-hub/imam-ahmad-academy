@@ -1418,7 +1418,8 @@ a.sh-info-btn { text-decoration: none; }
 .word-dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: 13px; color: var(--muted); align-items: baseline; }
 .word-dl dt { font-weight: 600; }
 .word-dl dd { margin: 0; font-size: 18px; color: var(--navy); text-align: right; }
-.word-forms span { display: block; }
+.word-forms span { display: flex; align-items: center; gap: 6px; }
+.say-btn.say-btn-sm { width: 26px; height: 26px; }
 .word-note { font-size: 13px; color: var(--muted); }
 .word-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: auto; }
 .word-tags .word-tag { margin-left: 0; }
