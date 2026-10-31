@@ -172,10 +172,11 @@ function GrammarText({ text, schemes }: { text?: string | null; schemes?: Lesson
   )
 }
 
-// Кнопка «Послушать»: своя запись владельца или готовая озвучка; если нет ни того, ни другого — кнопки нет
-function Say({ w }: { w: { word: string; audio?: unknown } }) {
+// Кнопка «Послушать»: своя запись владельца или готовая озвучка; если нет ни того, ни другого — кнопки нет.
+// small — у форм глагола (маади, мудари‘, масдар)
+function Say({ w, small }: { w: { word: string; audio?: unknown }; small?: boolean }) {
   const src = wordAudioUrl(w)
-  return src ? <SayButton src={src} word={w.word} /> : null
+  return src ? <SayButton src={src} word={w.word} small={small} /> : null
 }
 
 export function ArabicLessonBody({
@@ -291,7 +292,10 @@ export function ArabicLessonBody({
                           {/* прошедшее, настоящее, масдар — каждая форма своей строкой: в узкой карточке тире не повисают */}
                           <dd className="ar word-forms" lang="ar" dir="rtl">
                             {verb.split(' — ').map((f, j) => (
-                              <span key={j}>{f}</span>
+                              <span key={j}>
+                                {f}
+                                <Say w={{ word: f }} small />
+                              </span>
                             ))}
                           </dd>
                         </>
