@@ -1,0 +1,716 @@
+@fontsource-variable/cormorant-garamond@5.3.0 '5.3.0'  @fontsource-variable/cormorant-garamond@^5.2.0
+@fontsource-variable/manrope@5.3.0 '5.3.0'  @fontsource-variable/manrope@^5.2.0
+@fontsource/amiri@5.3.0 '5.3.0'  @fontsource/amiri@^5.2.0
+3.82.1  @payloadcms/db-postgres@3.82.1
+3.82.1  @payloadcms/email-nodemailer@3.82.1
+3.82.1  @payloadcms/next@3.82.1
+3.82.1  @payloadcms/richtext-lexical@3.82.1
+3.82.1  @payloadcms/storage-s3@3.82.1
+3.82.1  @payloadcms/translations@3.82.1
+3.82.1  @payloadcms/ui@3.82.1
+10.1.0  cross-env@10.1.0
+graphql@16.14.2 '16.14.2'  graphql@^16.8.1
+16.4.2  next@16.4.2
+3.82.1  payload@3.82.1
+19.3.1  react@19.3.1
+19.3.1  react-dom@19.3.1
+sharp@0.34.5 '0.34.5'  sharp@^0.34.2
+24.12.3  @types/node@24.12.3
+19.3.0  @types/react@19.3.0
+19.3.0  @types/react-dom@19.3.0
+eslint@9.39.5 '9.39.5'  eslint@^9.16.0
+16.4.2  eslint-config-next@16.4.2
+6.0.3  typescript@6.0.3
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.hirok.io
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.hirok.io
+npm warn deprecated uuid@10.0.0: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated uuid@9.0.0: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 728 packages in 21s
+npm warn install-scripts 5 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   esbuild@0.18.20 (postinstall: node install.js)
+npm warn install-scripts   esbuild@0.25.12 (postinstall: node install.js)
+npm warn install-scripts   sharp@0.34.5 (install: node install/check.js || npm run build)
+npm warn install-scripts   esbuild@0.27.7 (postinstall: node install.js)
+npm warn install-scripts   unrs-resolver@1.12.2 (postinstall: node postinstall.js)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+> imam-ahmad-academy@0.1.0 migrate
+> cross-env NODE_OPTIONS=--no-deprecation payload migrate
+
+[11:03:45] [33mWARN[39m: [36mNo email adapter provided. Email will be written to console. More info at https://payloadcms.com/docs/email/overview.[39m
+[11:03:45] [32mINFO[39m: [36mReading migration files from /home/runner/work/imam-ahmad-academy/imam-ahmad-academy/src/migrations[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261016_084906_initial[39m
+[11:03:45] [32mINFO[39m: [36mMigrated:  20261016_084906_initial (187ms)[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261017_221855_update[39m
+[11:03:45] [32mINFO[39m: [36mMigrated:  20261017_221855_update (7ms)[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261018_081532_update[39m
+[11:03:45] [32mINFO[39m: [36mMigrated:  20261018_081532_update (5ms)[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261019_153827_lesson_book[39m
+[11:03:45] [32mINFO[39m: [36mMigrated:  20261019_153827_lesson_book (3ms)[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261019_230346_lesson_figure[39m
+[11:03:45] [32mINFO[39m: [36mMigrated:  20261019_230346_lesson_figure (10ms)[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261020_090912_lesson_hadith[39m
+[11:03:45] [32mINFO[39m: [36mMigrated:  20261020_090912_lesson_hadith (7ms)[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261021_125346_quran[39m
+[11:03:45] [32mINFO[39m: [36mMigrated:  20261021_125346_quran (21ms)[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261022_081747_surah_info[39m
+[11:03:45] [32mINFO[39m: [36mMigrated:  20261022_081747_surah_info (5ms)[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261022_085619_surah_info_virtues[39m
+[11:03:45] [32mINFO[39m: [36mMigrated:  20261022_085619_surah_info_virtues (1ms)[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261022_100302_ayah_notes[39m
+[11:03:45] [32mINFO[39m: [36mMigrated:  20261022_100302_ayah_notes (1ms)[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261023_154658_hadiths[39m
+[11:03:45] [32mINFO[39m: [36mMigrated:  20261023_154658_hadiths (96ms)[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261023_211211_quran_topics[39m
+[11:03:45] [32mINFO[39m: [36mMigrated:  20261023_211211_quran_topics (5ms)[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261024_064631_reciters_more[39m
+[11:03:45] [32mINFO[39m: [36mMigrated:  20261024_064631_reciters_more (4ms)[39m
+[11:03:45] [32mINFO[39m: [36mMigrating: 20261025_085830_fiqh[39m
+[11:03:46] [32mINFO[39m: [36mMigrated:  20261025_085830_fiqh (231ms)[39m
+[11:03:46] [32mINFO[39m: [36mMigrating: 20261026_154347_surah_names[39m
+[11:03:46] [32mINFO[39m: [36mMigrated:  20261026_154347_surah_names (1ms)[39m
+[11:03:46] [32mINFO[39m: [36mMigrating: 20261027_200155_arabic_lessons[39m
+[11:03:46] [32mINFO[39m: [36mMigrated:  20261027_200155_arabic_lessons (16ms)[39m
+[11:03:46] [32mINFO[39m: [36mMigrating: 20261027_200156_arabic_word_audio[39m
+[11:03:46] [32mINFO[39m: [36mMigrated:  20261027_200156_arabic_word_audio (3ms)[39m
+[11:03:46] [32mINFO[39m: [36mMigrating: 20261027_213000_arabic_lesson_1[39m
+[11:04:03] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:03] [32mINFO[39m: [36mMigrated:  20261027_213000_arabic_lesson_1 (17293ms)[39m
+[11:04:03] [32mINFO[39m: [36mMigrating: 20261027_230000_arabic_lesson_2[39m
+[11:04:03] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:03] [32mINFO[39m: [36mMigrated:  20261027_230000_arabic_lesson_2 (206ms)[39m
+[11:04:03] [32mINFO[39m: [36mMigrating: 20261028_050000_arabic_pictures[39m
+[11:04:03] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:03] [32mINFO[39m: [36mMigrated:  20261028_050000_arabic_pictures (189ms)[39m
+[11:04:03] [32mINFO[39m: [36mMigrating: 20261028_080000_arabic_pictures_2[39m
+[11:04:03] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:03] [32mINFO[39m: [36mMigrated:  20261028_080000_arabic_pictures_2 (190ms)[39m
+[11:04:03] [32mINFO[39m: [36mMigrating: 20261028_110000_arabic_lesson_1_grammar[39m
+[11:04:04] [32mINFO[39m: [36mГрамматика урока arabskiy-urok-1 обновлена.[39m
+[11:04:04] [32mINFO[39m: [36mMigrated:  20261028_110000_arabic_lesson_1_grammar (55ms)[39m
+[11:04:04] [32mINFO[39m: [36mMigrating: 20261028_113000_arabic_lesson_2_grammar[39m
+[11:04:04] [32mINFO[39m: [36mГрамматика урока arabskiy-urok-2 обновлена.[39m
+[11:04:04] [32mINFO[39m: [36mMigrated:  20261028_113000_arabic_lesson_2_grammar (55ms)[39m
+[11:04:04] [32mINFO[39m: [36mMigrating: 20261028_123000_arabic_lesson_3[39m
+[11:04:04] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:04] [32mINFO[39m: [36mMigrated:  20261028_123000_arabic_lesson_3 (193ms)[39m
+[11:04:04] [32mINFO[39m: [36mMigrating: 20261028_163000_arabic_lesson_4[39m
+[11:04:04] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:04] [32mINFO[39m: [36mMigrated:  20261028_163000_arabic_lesson_4 (186ms)[39m
+[11:04:04] [32mINFO[39m: [36mMigrating: 20261028_200000_arabic_lesson_5[39m
+[11:04:04] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:04] [32mINFO[39m: [36mMigrated:  20261028_200000_arabic_lesson_5 (186ms)[39m
+[11:04:04] [32mINFO[39m: [36mMigrating: 20261028_210000_arabic_lesson_6[39m
+[11:04:04] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:04] [32mINFO[39m: [36mMigrated:  20261028_210000_arabic_lesson_6 (185ms)[39m
+[11:04:04] [32mINFO[39m: [36mMigrating: 20261028_230000_arabic_lesson_7[39m
+[11:04:05] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:05] [32mINFO[39m: [36mMigrated:  20261028_230000_arabic_lesson_7 (205ms)[39m
+[11:04:05] [32mINFO[39m: [36mMigrating: 20261029_120000_arabic_lesson_8[39m
+[11:04:05] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:05] [32mINFO[39m: [36mMigrated:  20261029_120000_arabic_lesson_8 (197ms)[39m
+[11:04:05] [32mINFO[39m: [36mMigrating: 20261029_160000_arabic_lesson_9[39m
+[11:04:05] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:05] [32mINFO[39m: [36mMigrated:  20261029_160000_arabic_lesson_9 (187ms)[39m
+[11:04:05] [32mINFO[39m: [36mMigrating: 20261029_200000_arabic_lesson_10[39m
+[11:04:05] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:05] [32mINFO[39m: [36mMigrated:  20261029_200000_arabic_lesson_10 (194ms)[39m
+[11:04:05] [32mINFO[39m: [36mMigrating: 20261029_230000_arabic_lesson_11[39m
+[11:04:05] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:05] [32mINFO[39m: [36mMigrated:  20261029_230000_arabic_lesson_11 (185ms)[39m
+[11:04:05] [32mINFO[39m: [36mMigrating: 20261030_000000_arabic_lesson_12[39m
+[11:04:06] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:06] [32mINFO[39m: [36mMigrated:  20261030_000000_arabic_lesson_12 (186ms)[39m
+[11:04:06] [32mINFO[39m: [36mMigrating: 20261030_010000_arabic_lesson_13[39m
+[11:04:06] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:06] [32mINFO[39m: [36mMigrated:  20261030_010000_arabic_lesson_13 (185ms)[39m
+[11:04:06] [32mINFO[39m: [36mMigrating: 20261030_020000_arabic_lesson_14[39m
+[11:04:06] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:06] [32mINFO[39m: [36mMigrated:  20261030_020000_arabic_lesson_14 (185ms)[39m
+[11:04:06] [32mINFO[39m: [36mMigrating: 20261030_030000_arabic_lesson_15[39m
+[11:04:06] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:06] [32mINFO[39m: [36mMigrated:  20261030_030000_arabic_lesson_15 (185ms)[39m
+[11:04:06] [32mINFO[39m: [36mMigrating: 20261030_040000_arabic_lesson_16[39m
+[11:04:06] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:06] [32mINFO[39m: [36mMigrated:  20261030_040000_arabic_lesson_16 (188ms)[39m
+[11:04:06] [32mINFO[39m: [36mMigrating: 20261030_050000_arabic_lesson_17[39m
+[11:04:06] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:06] [32mINFO[39m: [36mMigrated:  20261030_050000_arabic_lesson_17 (180ms)[39m
+[11:04:06] [32mINFO[39m: [36mMigrating: 20261030_060000_arabic_lesson_18[39m
+[11:04:07] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:07] [32mINFO[39m: [36mMigrated:  20261030_060000_arabic_lesson_18 (185ms)[39m
+[11:04:07] [32mINFO[39m: [36mMigrating: 20261030_070000_arabic_lesson_19[39m
+[11:04:07] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:07] [32mINFO[39m: [36mMigrated:  20261030_070000_arabic_lesson_19 (179ms)[39m
+[11:04:07] [32mINFO[39m: [36mMigrating: 20261030_080000_arabic_lesson_20[39m
+[11:04:07] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:07] [32mINFO[39m: [36mMigrated:  20261030_080000_arabic_lesson_20 (180ms)[39m
+[11:04:07] [32mINFO[39m: [36mMigrating: 20261031_010000_arabic_lesson_21[39m
+[11:04:07] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:07] [32mINFO[39m: [36mMigrated:  20261031_010000_arabic_lesson_21 (191ms)[39m
+[11:04:07] [32mINFO[39m: [36mMigrating: 20261031_020000_arabic_lesson_22[39m
+[11:04:07] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:07] [32mINFO[39m: [36mMigrated:  20261031_020000_arabic_lesson_22 (192ms)[39m
+[11:04:07] [32mINFO[39m: [36mMigrating: 20261031_030000_arabic_lesson_23[39m
+[11:04:08] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:08] [32mINFO[39m: [36mMigrated:  20261031_030000_arabic_lesson_23 (183ms)[39m
+[11:04:08] [32mINFO[39m: [36mMigrating: 20261031_040000_arabic_lesson_24[39m
+[11:04:08] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:08] [32mINFO[39m: [36mMigrated:  20261031_040000_arabic_lesson_24 (212ms)[39m
+[11:04:08] [32mINFO[39m: [36mMigrating: 20261031_050000_arabic_lesson_25[39m
+[11:04:08] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:08] [32mINFO[39m: [36mMigrated:  20261031_050000_arabic_lesson_25 (183ms)[39m
+[11:04:08] [32mINFO[39m: [36mMigrating: 20261031_060000_arabic_lesson_26[39m
+[11:04:08] [32mINFO[39m: [36mКурс арабского Тамхиди не найден — уроки созданы без курса.[39m
+[11:04:08] [32mINFO[39m: [36mMigrated:  20261031_060000_arabic_lesson_26 (181ms)[39m
+[11:04:08] [32mINFO[39m: [36mDone.[39m
+
+> imam-ahmad-academy@0.1.0 migrate:create
+> cross-env NODE_OPTIONS=--no-deprecation payload migrate:create update --skip-empty
+
+[11:04:11] [33mWARN[39m: [36mNo email adapter provided. Email will be written to console. More info at https://payloadcms.com/docs/email/overview.[39m
+[11:04:11] [32mINFO[39m: [36mStarting migration: generating UP statements...[39m
+[11:04:12] [32mINFO[39m: [36mMigration UP complete. Generating DOWN statements...[39m
+[11:04:12] [32mINFO[39m: [36mMigration DOWN statements generation complete.[39m
+20261016_084906_initial.json
+20261016_084906_initial.ts
+20261017_221855_update.json
+20261017_221855_update.ts
+20261018_081532_update.json
+20261018_081532_update.ts
+20261019_153827_lesson_book.json
+20261019_153827_lesson_book.ts
+20261019_230346_lesson_figure.json
+20261019_230346_lesson_figure.ts
+20261020_090912_lesson_hadith.json
+20261020_090912_lesson_hadith.ts
+20261021_125346_quran.json
+20261021_125346_quran.ts
+20261022_081747_surah_info.json
+20261022_081747_surah_info.ts
+20261022_085619_surah_info_virtues.json
+20261022_085619_surah_info_virtues.ts
+20261022_100302_ayah_notes.json
+20261022_100302_ayah_notes.ts
+20261023_154658_hadiths.json
+20261023_154658_hadiths.ts
+20261023_211211_quran_topics.json
+20261023_211211_quran_topics.ts
+20261024_064631_reciters_more.json
+20261024_064631_reciters_more.ts
+20261025_085830_fiqh.json
+20261025_085830_fiqh.ts
+20261026_154347_surah_names.json
+20261026_154347_surah_names.ts
+20261027_200155_arabic_lessons.json
+20261027_200155_arabic_lessons.ts
+20261027_200156_arabic_word_audio.json
+20261027_200156_arabic_word_audio.ts
+20261027_213000_arabic_lesson_1.ts
+20261027_230000_arabic_lesson_2.ts
+20261028_050000_arabic_pictures.ts
+20261028_080000_arabic_pictures_2.ts
+20261028_110000_arabic_lesson_1_grammar.ts
+20261028_113000_arabic_lesson_2_grammar.ts
+20261028_123000_arabic_lesson_3.ts
+20261028_163000_arabic_lesson_4.ts
+20261028_200000_arabic_lesson_5.ts
+20261028_210000_arabic_lesson_6.ts
+20261028_230000_arabic_lesson_7.ts
+20261029_120000_arabic_lesson_8.ts
+20261029_160000_arabic_lesson_9.ts
+20261029_200000_arabic_lesson_10.ts
+20261029_230000_arabic_lesson_11.ts
+20261030_000000_arabic_lesson_12.ts
+20261030_010000_arabic_lesson_13.ts
+20261030_020000_arabic_lesson_14.ts
+20261030_030000_arabic_lesson_15.ts
+20261030_040000_arabic_lesson_16.ts
+20261030_050000_arabic_lesson_17.ts
+20261030_060000_arabic_lesson_18.ts
+20261030_070000_arabic_lesson_19.ts
+20261030_080000_arabic_lesson_20.ts
+20261031_010000_arabic_lesson_21.ts
+20261031_020000_arabic_lesson_22.ts
+20261031_030000_arabic_lesson_23.ts
+20261031_040000_arabic_lesson_24.ts
+20261031_050000_arabic_lesson_25.ts
+20261031_060000_arabic_lesson_26.ts
+index.ts
+
+> imam-ahmad-academy@0.1.0 migrate
+> cross-env NODE_OPTIONS=--no-deprecation payload migrate
+
+[11:04:15] [33mWARN[39m: [36mNo email adapter provided. Email will be written to console. More info at https://payloadcms.com/docs/email/overview.[39m
+[11:04:15] [32mINFO[39m: [36mReading migration files from /home/runner/work/imam-ahmad-academy/imam-ahmad-academy/src/migrations[39m
+[11:04:15] [32mINFO[39m: [36mDone.[39m
+
+> imam-ahmad-academy@0.1.0 seed
+> cross-env NODE_OPTIONS=--no-deprecation payload run src/seed/index.ts
+
+[11:04:19] [33mWARN[39m: [36mNo email adapter provided. Email will be written to console. More info at https://payloadcms.com/docs/email/overview.[39m
+[11:04:20] [32mINFO[39m: [36mБиблиотека: 68 книг.[39m
+[11:04:21] [32mINFO[39m: [36mПрограмма: создано курсов — 44 из 44.[39m
+[11:04:21] [32mINFO[39m: [36mУроки арабского добавлены в курс Тамхиди.[39m
+[11:04:21] [32mINFO[39m: [36mДемо-курс создан.[39m
+[11:04:21] [32mINFO[39m: [36mПример «Можно ли совершить таяммум, если вода есть, но от холода можно заболеть?» добавлен.[39m
+[11:04:21] [32mINFO[39m: [36mПример «Почему от имама Ахмада по одному вопросу передаются разные мнения» добавлен.[39m
+[11:04:21] [32mINFO[39m: [36mДемо-перевод суры 114 создан.[39m
+[11:04:21] [32mINFO[39m: [36mДемо-сведения о сурах 113 и 114 созданы.[39m
+[11:04:21] [32mINFO[39m: [36mДемо-хадисы созданы.[39m
+[11:04:21] [32mINFO[39m: [36mДемо-перевод раздела «Книга очищения · Начало книги» создан.[39m
+[11:04:21] [32mINFO[39m: [36mДемо-курс арабского создан.[39m
+[11:04:21] [32mINFO[39m: [36mГотово.[39m
+
+> imam-ahmad-academy@0.1.0 build
+> cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap && cross-env NODE_OPTIONS=--no-deprecation next build
+
+Generating import map
+No new imports found, skipping writing import map
+▲ Next.js 16.4.2 (Turbopack)
+✓ Running next.config.ts took 32ms
+⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+- Experiments (use with caution):
+  ⨯ turbopackServerFastRefresh
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 22.6s
+  Running TypeScript ...
+  Finished TypeScript in 10.1s ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/7) ...
+  Generating static pages using 3 workers (1/7) 
+  Generating static pages using 3 workers (3/7) 
+  Generating static pages using 3 workers (5/7) 
+✓ Generating static pages using 3 workers (7/7) in 160ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /about
+├ ƒ /admin/[[...segments]]
+├ ƒ /api/[...slug]
+├ ƒ /api/graphql
+├ ƒ /api/graphql-playground
+├ ○ /apple-icon-4usi79.png
+├ ƒ /articles
+├ ƒ /articles/[slug]
+├ ƒ /audio
+├ ƒ /cabinet
+├ ƒ /contact
+├ ƒ /courses
+├ ƒ /courses/[slug]
+├ ƒ /courses/[slug]/kartochki
+├ ƒ /courses/[slug]/slovar
+├ ƒ /fiqh
+├ ƒ /fiqh/[part]
+├ ƒ /fiqh/[part]/[book]
+├ ƒ /fiqh/[part]/[book]/[n]
+├ ƒ /forgot
+├ ƒ /hadith
+├ ƒ /hadith/[topic]
+├ ƒ /hadith/[topic]/[book]
+├ ○ /icon-4usi79.png
+├ ƒ /lessons/[slug]
+├ ƒ /library
+├ ƒ /library/[slug]
+├ ƒ /login
+├ ƒ /prayer-times
+├ ƒ /privacy
+├ ƒ /progress
+├ ƒ /quran
+├ ƒ /quran/[n]
+├ ƒ /quran/[n]/mushaf
+├ ƒ /quran/[n]/mushaf.pdf
+├ ƒ /quran/import
+├ ƒ /quran/mushaf/[page]
+├ ƒ /quran/timing
+├ ƒ /register
+├ ƒ /reset/[token]
+├ ƒ /search
+├ ƒ /text
+└ ƒ /video
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+200  /
+200  /courses
+200  /courses?level=prep
+200  /courses/stupen-1-03-fiqh-ibadat
+200  /courses/demo-fikh-ochischeniya
+200  /lessons/demo-tayammum
+200  /text
+200  /audio
+200  /video
+200  /text?category=fiqh
+200  /text?book=ahsar-al-muhtasarat
+200  /audio?category=aqida
+200  /audio?book=net-takoy-knigi
+200  /video?book=ahsar-al-muhtasarat
+200  /articles
+200  /articles/tayammum-pri-holodnoy-vode
+200  /articles/pochemu-u-imama-ahmada-neskolko-mneniy
+200  /library
+200  /library/ahsar-al-muhtasarat
+200  /library/kashshaf-al-qina
+200  /contact
+200  /progress
+200  /prayer-times
+200  /about
+200  /admin
+200  /quran
+200  /quran/114
+200  /quran/2
+200  /hadith
+200  /hadith/akyda
+200  /hadith/akyda/islam-i-iman
+200  /hadith/smuty/fitan
+200  /fiqh
+200  /fiqh/ibadat
+200  /fiqh/ibadat/tahara
+200  /fiqh/ibadat/tahara/1
+200  /fiqh/ibadat/tahara/2
+200  /fiqh/sudoproizvodstvo/priznanie/1
+200  /courses/demo-arabskiy-yazyk
+200  /lessons/demo-arabic-1
+200  /lessons/demo-arabic-2
+200  /lessons/arabskiy-urok-1
+200  /lessons/arabskiy-urok-2
+200  /lessons/arabskiy-urok-3
+200  /lessons/arabskiy-urok-4
+200  /lessons/arabskiy-urok-5
+200  /lessons/arabskiy-urok-6
+200  /lessons/arabskiy-urok-7
+200  /lessons/arabskiy-urok-8
+200  /lessons/arabskiy-urok-9
+200  /lessons/arabskiy-urok-10
+200  /lessons/arabskiy-urok-11
+200  /lessons/arabskiy-urok-12
+200  /lessons/arabskiy-urok-13
+200  /lessons/arabskiy-urok-14
+200  /lessons/arabskiy-urok-15
+200  /lessons/arabskiy-urok-16
+200  /lessons/arabskiy-urok-17
+200  /lessons/arabskiy-urok-18
+200  /lessons/arabskiy-urok-19
+200  /lessons/arabskiy-urok-20
+200  /lessons/arabskiy-urok-21
+200  /lessons/arabskiy-urok-22
+200  /lessons/arabskiy-urok-23
+200  /lessons/arabskiy-urok-24
+200  /lessons/arabskiy-urok-25
+200  /lessons/arabskiy-urok-26
+200  /courses/stupen-1-01-arabic/slovar
+200  /courses/demo-arabskiy-yazyk/slovar
+200  /courses/demo-arabskiy-yazyk/kartochki
+200  /search
+200  /search?q=%D1%82%D0%B0%D1%8F%D0%BC%D0%BC%D1%83%D0%BC
+200  /search?q=%D0%B0%D0%BD-%D0%9D%D0%B0%D1%81&in=quran
+200  /search?q=x
+200  /search?q=000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+книги ok: полка текстовых уроков: книга из поля урока
+книги ok: уроки книги, книга взята из курса
+книги ok: блок «Уроки по этой книге»
+книги ok: у книги без уроков блока нет
+книги ok: несуществующая книга
+книги ok: главная: зелёный блок с кнопками
+книги ok: главная: разделов ниже нет
+книги ok: главная: арочная дверь и эмблема
+книги ok: урок: блок «Рисунок»
+книги ok: рисунок: файл картинки
+книги ok: урок: блок «Хадис»
+книги ok: Коран: список сур
+книги ok: Коран: перевод суры из админки
+книги ok: Коран: пояснения к аяту
+книги ok: Коран: сура без перевода
+книги ok: Коран: чтецы из миграции
+книги ok: Коран: нет суры 115 и адреса 067
+книги ok: Коран: басмала перед сурой, кроме 9
+книги ok: Коран: загрузка сборника только для администратора
+книги ok: Коран: кнопки сведений о суре
+книги ok: Коран: скрытые сведения о суре
+книги ok: Хадисы: пункт меню и 10 тем
+книги ok: Хадисы: книги темы
+книги ok: Хадисы: хадисы по главам
+книги ok: Хадисы: кнопки под хадисом
+книги ok: Хадисы: скрытый хадис не показан
+книги ok: Хадисы: пустая книга и неверный адрес
+книги ok: Фикх: пункт меню и 6 частей
+книги ok: Фикх: книги части по порядку
+книги ok: Фикх: разделы книги
+книги ok: Фикх: текст раздела, темы и кнопки
+книги ok: Фикх: раздел без перевода
+книги ok: Фикх: скрытый раздел и неверный адрес
+книги ok: Коран: переключатель арабский и перевод
+книги ok: Коран: басмала аль-Фатихи отдельно
+книги ok: Коран: название суры из админки
+книги ok: Коран: галочки тем и пояснений
+книги ok: Коран: тема аятов
+книги ok: Коран: новые чтецы из миграции
+книги ok: Коран: чтецы задачи 42
+mp3quran ahmad-suwailem: 206
+mp3quran raad-kurdi: 206
+mp3quran omar-duraiwiz: 206
+книги ok: Коран: кнопки мусхафа у суры
+книги ok: Коран: страницы мусхафа суры
+книги ok: Коран: страница мусхафа — картинка
+книги ok: Коран: PDF суры
+книги ok: Коран: вид мусхафа и чтецы
+книги ok: Арабский: подсказки к словам, плавающего словаря нет (решение владельца 28.10.2026)
+книги ok: Арабский: задания и ключи
+книги ok: Арабский: ответы заданий не уходят в браузер
+книги ok: Арабский: огласовка снята на уроке без огласовки
+книги ok: Арабский: словарь курса и карточки
+книги ok: Арабский: урок 1 авторского учебника в курсе Тамхиди
+книги ok: Арабский: словарь урока — имена и отдельно служебные слова
+книги ok: Арабский: картинки владельца к словам урока 1
+книги ok: Арабский: новая грамматика урока 1 с подзаголовками и примерами
+книги ok: Арабский: новая грамматика урока 2
+книги ok: Арабский: картинки владельца к словам урока 2
+книги ok: Арабский: урок 4 авторского учебника с картинками, грамматикой и таблицей
+книги ok: Арабский: урок 5 авторского учебника с картинками, грамматикой и тестом
+книги ok: Арабский: верные ответы и пояснения теста урока 5 не уходят в браузер
+книги ok: Арабский: урок 6 авторского учебника с картинками, грамматикой и тестом
+книги ok: Арабский: верные ответы и пояснения теста урока 6 не уходят в браузер
+книги ok: Арабский: урок 7 авторского учебника с картинками, грамматикой и тестом
+книги ok: Арабский: верные ответы и пояснения теста урока 7 не уходят в браузер
+книги ok: Арабский: урок 8 авторского учебника с картинками, грамматикой, схемами и тестом
+книги ok: Арабский: верные ответы и пояснения теста урока 8 не уходят в браузер
+книги ok: Арабский: урок 9 авторского учебника с картинками, грамматикой, схемами и тестом
+книги ok: Арабский: верные ответы и пояснения теста урока 9 не уходят в браузер
+книги ok: Арабский: урок 10 — обобщающий, с двумя текстами, схемами повторения и контрольным тестом
+книги ok: Арабский: верные ответы и пояснения теста урока 10 не уходят в браузер
+книги ok: Арабский: урок 11 открывает модуль 2, модуль 1 — уроки 1–10
+книги ok: Арабский: верные ответы и пояснения теста урока 11 не уходят в браузер
+книги ok: Арабский: урок 12 «Предлог с местоимением» в модуле 2
+книги ok: Арабский: верные ответы и пояснения теста урока 12 не уходят в браузер
+книги ok: Арабский: урок 13 «Двойственное число» в модуле 2
+книги ok: Арабский: верные ответы и пояснения теста урока 13 не уходят в браузер
+книги ok: Арабский: урок 14 «Указательные слова с определённым существительным» в модуле 2
+книги ok: Арабский: верные ответы и пояснения теста урока 14 не уходят в браузер
+книги ok: Арабский: урок 15 «Ломаное множественное число предметов» в модуле 2
+книги ok: Арабский: верные ответы и пояснения теста урока 15 не уходят в браузер
+книги ok: Арабский: урок 16 «Числа от 1 до 10» в модуле 2
+книги ok: Арабский: верные ответы и пояснения теста урока 16 не уходят в браузер
+книги ok: Арабский: урок 17 «Сколько? Как? Когда? Дни недели» в модуле 2
+книги ok: Арабский: верные ответы и пояснения теста урока 17 не уходят в браузер
+книги ok: Арабский: урок 18 «Предлоги» в модуле 2
+книги ok: Арабский: верные ответы и пояснения теста урока 18 не уходят в браузер
+книги ok: Арабский: урок 19 «Отрицание лайса» в модуле 2
+книги ok: Арабский: верные ответы и пояснения теста урока 19 не уходят в браузер
+книги ok: Арабский: урок 20 — обобщающий модуля 2, с двумя текстами, схемами повторения и контрольным тестом
+книги ok: Арабский: верные ответы и пояснения теста урока 20 не уходят в браузер
+книги ok: Арабский: урок 21 «Глагол в прошедшем времени» — первый в модуле 3, глаголы с тремя формами
+книги ok: Арабский: верные ответы и пояснения теста урока 21 не уходят в браузер
+книги ok: Арабский: урок 22 «Прямое дополнение. Винительный падеж после глагола» — маф‘уль бихи, 12 переходных глаголов
+книги ok: Арабский: верные ответы и пояснения теста урока 22 не уходят в браузер
+книги ok: Арабский: урок 23 «Спряжение глагола прошедшего времени» — все лица, согласование глагола с фа‘илем
+книги ok: Арабский: верные ответы и пояснения теста урока 23 не уходят в браузер
+книги ok: Арабский: урок 24 «Глагол настоящего времени» — отрицание لَا, вопрос, спряжение
+книги ok: Арабский: верные ответы и пояснения теста урока 24 не уходят в браузер
+книги ok: Арабский: урок 25 «Будущее время. Отрицание прошедшего» — سَـ، سَوْفَ، مَا
+книги ok: Арабский: верные ответы и пояснения теста урока 25 не уходят в браузер
+книги ok: Арабский: урок 26 «Сослагательное наклонение: أَنْ، لَنْ، لِـ» — насб, пять форм, لَنْ
+книги ok: Арабский: верные ответы и пояснения теста урока 26 не уходят в браузер
+книги ok: Арабский: схемы после разделов грамматики и арабские названия падежей
+книги ok: Арабский: урок 3 авторского учебника с картинками и грамматикой
+книги ok: Арабский: урок 2 авторского учебника в курсе Тамхиди
+книги ok: Арабский: кнопка «Послушать» у слов словаря и файл озвучки (задача 51)
+книги ok: Арабский: вводный инструктаж и схема урока в начале курса
+книги ok: Арабский: у другого курса инструктажа нет
+книги ok: Арабский: у курса без уроков арабского словаря нет
+книги ok: Поиск: кнопка в шапке
+книги ok: Поиск: урок и статья
+книги ok: Поиск: хадис без огласовок
+книги ok: Поиск: абзац фикха
+книги ok: Поиск: перевод аята
+книги ok: Поиск: только один раздел
+книги ok: Поиск: ничего не найдено
+книги ok: Поиск: скрытое не находится
+книги ok: Поиск: одна буква
+книги ok: Коран: адрес разметки аятов
+разметка аятов, чтец 1, сура 67: {"ayahs":[[1,13920,24140],[2,24140,38040],[3,38040,57080],[4,57080,69960],[5,69960,89780],[6,89780,99840],[7,99840,110580],[8,110580,129280],[9,129280,149920],[
+разметка аятов, чтец 2, сура 67: {"ayahs":[]}
+разметка аятов, чтец 3, сура 67: {"ayahs":[[1,2240,9180],[2,9180,19740],[3,19740,34160],[4,34160,43580],[5,43580,58640],[6,58640,66360],[7,66360,73660],[8,73660,86500],[9,86500,103640],[10,1036
+разметка аятов, чтец 4, сура 67: {"ayahs":[[1,7240,14800],[2,14800,26060],[3,26060,41880],[4,41880,57420],[5,57420,75160],[6,75160,83160],[7,83160,94840],[8,94840,113100],[9,113100,133860],[10,
+разметка аятов, чтец 5, сура 67: {"ayahs":[]}
+разметка аятов, чтец 6, сура 67: {"ayahs":[[0,0,8221],[1,8221,23271],[2,23271,45553],[3,45553,77863],[4,77863,95988],[5,95988,126665],[6,126665,143957],[7,143957,157331],[8,157331,184857],[9,18
+разметка аятов, чтец 7, сура 67: {"ayahs":[[1,3360,10520],[2,10520,20960],[3,20960,37880],[4,37880,49320],[5,49320,67860],[6,67860,76900],[7,76900,84720],[8,84720,102000],[9,102000,120840],[10,
+▲ Next.js 16.4.2
+- Local:         http://127.0.0.1:3000
+- Network:       http://127.0.0.1:3000
+✓ Ready in 0ms
+✓ Running next.config took 4ms
+[11:05:12] [33mWARN[39m: [36mNo email adapter provided. Email will be written to console. More info at https://payloadcms.com/docs/email/overview.[39m
+static pages: 531
+-rw-r--r-- 1 runner runner 10086788 Oct 31 11:07 /tmp/site-preview.zip
+desk / ok 
+desk /courses/demo-fikh-ochischeniya ok 
+desk /lessons/pyat-osnov-fetv-imama-ahmada ok 
+desk /lessons/demo-tayammum ok 
+desk /courses ok 
+desk /courses?level=beginner ok 
+desk /courses/stupen-3-01-fiqh ok 
+desk /text ok 
+desk /text?book=ahsar-al-muhtasarat ok 
+desk /audio ok 
+desk /video ok 
+desk /articles ok 
+desk /articles/tayammum-pri-holodnoy-vode ok 
+desk /library ok 
+desk /library/ahsar-al-muhtasarat ok 
+desk /library/al-madkhal-ibn-badran ok 
+desk /contact ok 
+desk /progress ok 
+desk /prayer-times ok 
+desk /admin ok 
+desk /quran ok 
+desk /quran/114 ok 
+desk /quran/2 ok 
+desk /quran/112/mushaf ok 
+desk /hadith ok 
+desk /hadith/akyda ok 
+desk /hadith/akyda/islam-i-iman ok 
+desk /fiqh ok 
+desk /fiqh/ibadat ok 
+desk /fiqh/ibadat/tahara ok 
+desk /fiqh/ibadat/tahara/1 ok 
+desk /fiqh/ibadat/tahara/2 ok 
+desk /search?q=%D1%82%D0%B0%D1%8F%D0%BC%D0%BC%D1%83%D0%BC ok 
+desk /courses/demo-arabskiy-yazyk ok 
+desk /lessons/demo-arabic-1 ok 
+desk /lessons/arabskiy-urok-1 ok 
+desk /lessons/arabskiy-urok-2 ok 
+desk /lessons/arabskiy-urok-3 ok 
+desk /lessons/arabskiy-urok-4 ok 
+desk /lessons/arabskiy-urok-5 ok 
+desk /lessons/arabskiy-urok-6 ok 
+desk /lessons/arabskiy-urok-7 ok 
+desk /lessons/arabskiy-urok-8 ok 
+desk /lessons/arabskiy-urok-9 ok 
+desk /lessons/arabskiy-urok-10 ok 
+desk /lessons/arabskiy-urok-11 ok 
+desk /lessons/arabskiy-urok-12 ok 
+desk /lessons/arabskiy-urok-13 ok 
+desk /lessons/arabskiy-urok-14 ok 
+desk /lessons/arabskiy-urok-15 ok 
+desk /lessons/arabskiy-urok-16 ok 
+desk /lessons/arabskiy-urok-17 ok 
+desk /lessons/arabskiy-urok-18 ok 
+desk /lessons/arabskiy-urok-19 ok 
+desk /lessons/arabskiy-urok-20 ok 
+desk /lessons/arabskiy-urok-21 ok 
+desk /lessons/arabskiy-urok-22 ok 
+desk /lessons/arabskiy-urok-23 ok 
+desk /lessons/arabskiy-urok-24 ok 
+desk /lessons/arabskiy-urok-25 ok 
+desk /lessons/arabskiy-urok-26 ok 
+desk /courses/stupen-1-01-arabic ok 
+desk /courses/demo-arabskiy-yazyk/slovar ok 
+desk /courses/demo-arabskiy-yazyk/kartochki ok 
+desk расписание намазов: закрыто сначала ok
+desk расписание намазов: наведение открывает ok
+desk расписание намазов: курсор ушёл — закрыто ok
+desk панель «Мой прогресс» поверх меню: ok
+desk меню «Уроки»: «Уроки» вместо трёх пунктов ok
+desk меню «Уроки»: наведение открывает три раздела ok
+desk меню «Уроки»: наведение на раздел открывает рубрики ok
+phone / ok 
+phone /courses/demo-fikh-ochischeniya ok 
+phone /lessons/pyat-osnov-fetv-imama-ahmada ok 
+phone /lessons/demo-tayammum ok 
+phone /courses ok 
+phone /courses?level=beginner ok 
+phone /courses/stupen-3-01-fiqh ok 
+phone /text ok 
+phone /text?book=ahsar-al-muhtasarat ok 
+phone /audio ok 
+phone /video ok 
+phone /articles ok 
+phone /articles/tayammum-pri-holodnoy-vode ok 
+phone /library ok 
+phone /library/ahsar-al-muhtasarat ok 
+phone /library/al-madkhal-ibn-badran ok 
+phone /contact ok 
+phone /progress ok 
+phone /prayer-times ok 
+phone /admin ok 
+phone /quran ok 
+phone /quran/114 ok 
+phone /quran/2 ok 
+phone /quran/112/mushaf ok 
+phone /hadith ok 
+phone /hadith/akyda ok 
+phone /hadith/akyda/islam-i-iman ok 
+phone /fiqh ok 
+phone /fiqh/ibadat ok 
+phone /fiqh/ibadat/tahara ok 
+phone /fiqh/ibadat/tahara/1 ok 
+phone /fiqh/ibadat/tahara/2 ok 
+phone /search?q=%D1%82%D0%B0%D1%8F%D0%BC%D0%BC%D1%83%D0%BC ok 
+phone /courses/demo-arabskiy-yazyk ok 
+phone /lessons/demo-arabic-1 ok 
+phone /lessons/arabskiy-urok-1 ok 
+phone /lessons/arabskiy-urok-2 ok 
+phone /lessons/arabskiy-urok-3 ok 
+phone /lessons/arabskiy-urok-4 ok 
+phone /lessons/arabskiy-urok-5 ok 
+phone /lessons/arabskiy-urok-6 ok 
+phone /lessons/arabskiy-urok-7 ok 
+phone /lessons/arabskiy-urok-8 ok 
+phone /lessons/arabskiy-urok-9 ok 
+phone /lessons/arabskiy-urok-10 ok 
+phone /lessons/arabskiy-urok-11 ok 
+phone /lessons/arabskiy-urok-12 ok 
+phone /lessons/arabskiy-urok-13 ok 
+phone /lessons/arabskiy-urok-14 ok 
+phone /lessons/arabskiy-urok-15 ok 
+phone /lessons/arabskiy-urok-16 ok 
+phone /lessons/arabskiy-urok-17 ok 
+phone /lessons/arabskiy-urok-18 ok 
+phone /lessons/arabskiy-urok-19 ok 
+phone /lessons/arabskiy-urok-20 ok 
+phone /lessons/arabskiy-urok-21 ok 
+phone /lessons/arabskiy-urok-22 ok 
+phone /lessons/arabskiy-urok-23 ok 
+phone /lessons/arabskiy-urok-24 ok 
+phone /lessons/arabskiy-urok-25 ok 
+phone /lessons/arabskiy-urok-26 ok 
+phone /courses/stupen-1-01-arabic ok 
+phone /courses/demo-arabskiy-yazyk/slovar ok 
+phone /courses/demo-arabskiy-yazyk/kartochki ok 
+phone расписание намазов: закрыто сначала ok
+phone расписание намазов: нажатие открывает, страница та же ok
+phone расписание намазов: нажатие мимо закрывает ok
+phone панель «Мой прогресс» поверх меню: ok
+phone меню «Уроки»: «Уроки» вместо трёх пунктов ok
+phone меню «Уроки»: нажатие открывает три раздела ok
+phone меню «Уроки»: стрелка у раздела открывает рубрики ok
+#20 DONE 0.9s
+
+ [33m2 warnings found (use docker --debug to expand):
+[0m - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ARG "PAYLOAD_SECRET") (line 16)
+ - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ENV "PAYLOAD_SECRET") (line 18)
+compose 200 /
+compose 200 /courses
+compose 200 /library
+compose 200 /admin
+compose: программа на месте
+site-1  | [11:14:57] [32mINFO[39m: [36mПрограмма: создано курсов — 44 из 44.[39m
+site-1  | [11:14:57] [32mINFO[39m: [36mСтартовое наполнение готово.[39m
+
+Готово! Копия лежит в папке backups:
+  baza-2026-10-31_11-15.sql  — уроки, тесты, статьи, книги
+  faily-2026-10-31_11-15     — загруженные аудио, PDF и картинки
+total 2164
+drwxr-xr-x  3 runner runner    4096 Oct 31 11:15 .
+drwxr-xr-x 13 runner runner    4096 Oct 31 11:15 ..
+-rw-r--r--  1 runner runner 2188488 Oct 31 11:15 baza-2026-10-31_11-15.sql
+drwxr-xr-x  2 runner runner   16384 Oct 31 11:14 faily-2026-10-31_11-15
+64
