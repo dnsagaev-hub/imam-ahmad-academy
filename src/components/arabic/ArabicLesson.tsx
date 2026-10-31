@@ -250,7 +250,9 @@ export function ArabicLessonBody({
               ) : null}
             </div>
           ))}
-          {words.length > 0 && particles.length > 0 ? <h3 className="ar-sub">Имена</h3> : null}
+          {words.length > 0 && particles.length > 0 ? (
+            <h3 className="ar-sub">{words.some((w) => verbForms(w)) ? 'Глаголы и имена' : 'Имена'}</h3>
+          ) : null}
           {words.length ? (
             <div className="word-grid">
               {words.map((w, i) => {
@@ -286,8 +288,11 @@ export function ArabicLessonBody({
                       {verb ? (
                         <>
                           <dt>Формы</dt>
-                          <dd className="ar" lang="ar" dir="rtl">
-                            {verb}
+                          {/* прошедшее, настоящее, масдар — каждая форма своей строкой: в узкой карточке тире не повисают */}
+                          <dd className="ar word-forms" lang="ar" dir="rtl">
+                            {verb.split(' — ').map((f, j) => (
+                              <span key={j}>{f}</span>
+                            ))}
                           </dd>
                         </>
                       ) : null}
