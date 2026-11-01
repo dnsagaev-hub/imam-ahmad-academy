@@ -64,8 +64,8 @@ async function tts(words) {
 }
 
 // Промежутки речи между паузами длиннее 0,25 с
-function speech(file) {
-  const log = spawnSync('ffmpeg', ['-i', file, '-af', 'silencedetect=n=-40dB:d=0.25', '-f', 'null', '-'], { encoding: 'utf8' }).stderr
+function speech(file, n = -40, d = 0.25) {
+  const log = spawnSync('ffmpeg', ['-i', file, '-af', `silencedetect=n=${n}dB:d=${d}`, '-f', 'null', '-'], { encoding: 'utf8' }).stderr
   const dur = Number(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file]).toString())
   const starts = [...log.matchAll(/silence_start: ([\d.]+)/g)].map((m) => Number(m[1]))
   const ends = [...log.matchAll(/silence_end: ([\d.]+)/g)].map((m) => Number(m[1]))
@@ -122,7 +122,30 @@ for (let start = 0; start < todoAll.length && start / BATCH < MAX; start += BATC
     const wav = raw.endsWith('.wav')
     const src = path.join(tmp, `${name}-full.wav`)
     execFileSync('ffmpeg', ['-v', 'error', '-y', ...(wav ? [] : ['-f', 's16le', '-ar', '24000', '-ac', '1']), '-i', raw, src])
-    const segs = speech(src)
+    // Паузы бывают неровными: подбираем порог тишины, при котором кусков ровно столько, сколько слов
+    const tries = [[-40, 0.25], [-40, 0.35], [-35, 0.3], [-45, 0.3], [-40, 0.45], [-35, 0.45], [-50, 0.4], [-40, 0.2], [-30, 0.3], [-45, 0.5]]
+    // Два масдара через запятую («صَوْمٌ، صِيَامٌ») модель читает как два слова — у такой строки два куска
+    const parts = todo.map((w) => w.split(/[،؛,]/).filter((x) => x.trim()).length)
+    const need = parts.reduce((a, b) => a + b, 0)
+    let segs = []
+    for (const [n, d] of tries) if ((segs = speech(src, n, d)).length === need) break
+    // Лишние куски — слово из двух частей или пауза внутри слова: склеиваем соседей с самой короткой паузой
+    if (segs.length !== need) {
+      segs = speech(src)
+      while (segs.length > need) {
+        let k = 0
+        for (let i = 1; i < segs.length - 1; i++) if (segs[i + 1][0] - segs[i][1] < segs[k + 1][0] - segs[k][1]) k = i
+        segs.splice(k, 2, [segs[k][0], segs[k + 1][1]])
+      }
+    }
+    if (segs.length === need) {
+      let j = 0
+      segs = parts.map((k) => {
+        const g = [segs[j][0], segs[j + k - 1][1]]
+        j += k
+        return g
+      })
+    }
     if (segs.length !== todo.length) {
       console.log(`пауз не столько, сколько слов (${segs.length} из ${todo.length}) — пропущено, запустите ещё раз (или с меньшим TTS_BATCH)`)
       continue
