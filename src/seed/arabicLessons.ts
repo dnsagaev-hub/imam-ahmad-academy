@@ -156,6 +156,21 @@ export async function updateArabicGrammar(payload: Payload, slug: string, req?: 
 }
 
 /**
+ * Заменяет в грамматике урока один кусок текста на исправленный, если он ещё стоит в базе в прежнем виде.
+ * Остальной текст и правки владельца не трогает: если куска уже нет (владелец его менял), ничего не делает.
+ */
+export async function replaceArabicGrammarText(payload: Payload, slug: string, from: string, to: string, req?: Partial<PayloadRequest>) {
+  const opts = { req, overrideAccess: true } as const
+  const found = await payload.find({ collection: 'lessons', where: { slug: { equals: slug } }, limit: 1, depth: 0, ...opts })
+  const doc = found.docs[0] as Record<string, any> | undefined
+  const grammar = doc?.arabic?.grammar
+  if (!doc || typeof grammar !== 'string' || !grammar.includes(from)) return
+  const arabic = { ...doc.arabic, grammar: grammar.replace(from, to) }
+  await payload.update({ collection: 'lessons', id: doc.id, data: { arabic } as never, ...opts })
+  payload.logger.info(`Грамматика урока ${slug}: кусок текста исправлен.`)
+}
+
+/**
  * Добавляет корни словам урока, у которых корня в базе ещё нет (без корня слово попадает в «Служебные слова» и без картинки).
  * Корни, уже заполненные владельцем, не трогает; заодно ставит картинки словам без картинки.
  */
