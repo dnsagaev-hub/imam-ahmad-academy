@@ -7645,6 +7645,7 @@
      {
       "word": "هِلَالٌ",
       "translation": "молодой месяц",
+      "root": "ه ل ل",
       "plural": "أَهِلَّةٌ",
       "tag": "term",
       "picture": "hilal.webp"
@@ -7652,6 +7653,7 @@
      {
       "word": "نَارٌ",
       "translation": "огонь; Огонь (ад)",
+      "root": "ن و ر",
       "plural": "نِيرَانٌ",
       "tag": "book",
       "note": "Женского рода.",
@@ -7660,6 +7662,7 @@
      {
       "word": "عَذَابٌ",
       "translation": "наказание, мучение",
+      "root": "ع ذ ب",
       "tag": "book",
       "picture": "adhab.webp"
      }
