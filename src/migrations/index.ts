@@ -59,6 +59,8 @@ import * as migration_20261102_050000_arabic_lesson_36 from './20261102_050000_a
 import * as migration_20261102_060000_arabic_lesson_37 from './20261102_060000_arabic_lesson_37';
 import * as migration_20261102_070000_arabic_lesson_38 from './20261102_070000_arabic_lesson_38';
 import * as migration_20261102_080000_arabic_lesson_38_fix from './20261102_080000_arabic_lesson_38_fix';
+import * as migration_20261102_090000_arabic_lesson_39 from './20261102_090000_arabic_lesson_39';
+import * as migration_20261102_100000_arabic_lesson_40 from './20261102_100000_arabic_lesson_40';
 
 export const migrations = [
   {
@@ -365,5 +367,15 @@ export const migrations = [
     up: migration_20261102_080000_arabic_lesson_38_fix.up,
     down: migration_20261102_080000_arabic_lesson_38_fix.down,
     name: '20261102_080000_arabic_lesson_38_fix'
+  },
+  {
+    up: migration_20261102_090000_arabic_lesson_39.up,
+    down: migration_20261102_090000_arabic_lesson_39.down,
+    name: '20261102_090000_arabic_lesson_39'
+  },
+  {
+    up: migration_20261102_100000_arabic_lesson_40.up,
+    down: migration_20261102_100000_arabic_lesson_40.down,
+    name: '20261102_100000_arabic_lesson_40'
   },
 ];
