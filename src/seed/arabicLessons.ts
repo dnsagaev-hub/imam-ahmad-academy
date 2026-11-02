@@ -154,3 +154,28 @@ export async function updateArabicGrammar(payload: Payload, slug: string, req?: 
   await payload.update({ collection: 'lessons', id: doc.id, data: { arabic } as never, ...opts })
   payload.logger.info(`Грамматика урока ${slug} обновлена.`)
 }
+
+/**
+ * Добавляет корни словам урока, у которых корня в базе ещё нет (без корня слово попадает в «Служебные слова» и без картинки).
+ * Корни, уже заполненные владельцем, не трогает; заодно ставит картинки словам без картинки.
+ */
+export async function fillArabicRoots(payload: Payload, slug: string, roots: Record<string, string>, req?: Partial<PayloadRequest>) {
+  const opts = { req, overrideAccess: true } as const
+  const found = await payload.find({ collection: 'lessons', where: { slug: { equals: slug } }, limit: 1, depth: 0, ...opts })
+  const doc = found.docs[0] as Record<string, any> | undefined
+  if (!doc) return
+  let changed = false
+  const next = (doc.arabic?.words ?? []).map((w: Record<string, any>) => {
+    const root = roots[String(w.word)]
+    if (root && !String(w.root ?? '').trim()) {
+      changed = true
+      return { ...w, root }
+    }
+    return w
+  })
+  if (changed) await payload.update({ collection: 'lessons', id: doc.id, data: { arabic: { ...doc.arabic, words: next } } as never, ...opts })
+  const l = ARABIC_MODULES.flatMap((m) => m.lessons).find((x) => x.slug === slug)
+  const updated = changed ? ((await payload.find({ collection: 'lessons', where: { slug: { equals: slug } }, limit: 1, depth: 0, ...opts })).docs[0] as Record<string, any>) : doc
+  if (l) await fillPictures(payload, updated, ((l.arabic as any)?.words ?? []) as Record<string, unknown>[], opts)
+  payload.logger.info(`Корни слов урока ${slug} дополнены.`)
+}
