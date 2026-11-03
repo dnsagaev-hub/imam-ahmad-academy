@@ -392,6 +392,16 @@ export interface Lesson {
   videoUrl?: string | null;
   audio?: (number | null) | Media;
   /**
+   * Если к уроку несколько аудиозаписей (например, отдельно: работа со словарём, грамматика, практические тексты) — добавьте каждую сюда с подписью. На странице урока они будут показаны списком в этом порядке, после основного аудиофайла (если он есть).
+   */
+  audios?:
+    | {
+        title: string;
+        file?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * Если не загрузить, обложка нарисуется сама — зелёная, с названием рубрики.
    */
   thumbnail?: (number | null) | Media;
@@ -1660,6 +1670,13 @@ export interface LessonsSelect<T extends boolean = true> {
   duration?: T;
   videoUrl?: T;
   audio?: T;
+  audios?:
+    | T
+    | {
+        title?: T;
+        file?: T;
+        id?: T;
+      };
   thumbnail?: T;
   teacher?: T;
   excerpt?: T;

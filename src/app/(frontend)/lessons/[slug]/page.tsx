@@ -207,6 +207,10 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
             <LessonMedia
               videoUrl={l.videoUrl}
               audioUrl={mediaUrl(l.audio)}
+              audios={(Array.isArray(l.audios) ? l.audios : []).flatMap((a: { id?: string | null; title?: string | null; file?: unknown }, i: number) => {
+                const url = mediaUrl(a?.file)
+                return url ? [{ id: String(a.id ?? i), caption: a.title || `Аудио ${i + 1}`, url }] : []
+              })}
               title={l.title}
               lessonId={lesson.id}
               slug={String(l.slug ?? '')}

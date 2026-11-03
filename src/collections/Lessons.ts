@@ -102,6 +102,35 @@ export const Lessons: CollectionConfig = {
             },
             { name: 'audio', label: 'Аудиофайл (MP3)', type: 'upload', relationTo: 'media' },
             {
+              name: 'audios',
+              label: 'Ещё аудио к уроку',
+              labels: { singular: 'Аудио', plural: 'Аудио' },
+              type: 'array',
+              admin: {
+                description:
+                  'Если к уроку несколько аудиозаписей (например, отдельно: работа со словарём, грамматика, практические тексты) — добавьте каждую сюда с подписью. На странице урока они будут показаны списком в этом порядке, после основного аудиофайла (если он есть).',
+                initCollapsed: false,
+              },
+              fields: [
+                {
+                  name: 'title',
+                  label: 'Подпись',
+                  type: 'text',
+                  required: true,
+                  admin: { placeholder: 'Грамматика' },
+                },
+                {
+                  name: 'file',
+                  label: 'Аудиофайл (MP3)',
+                  type: 'upload',
+                  relationTo: 'media',
+                  // Не required: иначе в базе NOT NULL, и удаление файла из «Медиа» упадёт (связь ON DELETE SET NULL).
+                  // Строка без файла на сайте просто не показывается.
+                  validate: (value: unknown) => (value ? true : 'Загрузите аудиофайл'),
+                },
+              ],
+            },
+            {
               name: 'thumbnail',
               label: 'Обложка видео (картинка 16:9)',
               type: 'upload',
