@@ -195,3 +195,25 @@ export async function fillArabicRoots(payload: Payload, slug: string, roots: Rec
   if (l) await fillPictures(payload, updated, ((l.arabic as any)?.words ?? []) as Record<string, unknown>[], opts)
   payload.logger.info(`Корни слов урока ${slug} дополнены.`)
 }
+
+/**
+ * Меняет корень слова урока, если в базе он ещё прежний (from). Если владелец уже поменял корень сам, ничего не делает.
+ */
+export async function replaceArabicWordRoot(payload: Payload, slug: string, word: string, from: string, to: string, req?: Partial<PayloadRequest>) {
+  const opts = { req, overrideAccess: true } as const
+  const found = await payload.find({ collection: 'lessons', where: { slug: { equals: slug } }, limit: 1, depth: 0, ...opts })
+  const doc = found.docs[0] as Record<string, any> | undefined
+  if (!doc) return
+  let changed = false
+  const next = (doc.arabic?.words ?? []).map((w: Record<string, any>) => {
+    if (String(w.word) === word && String(w.root ?? '').trim() === from) {
+      changed = true
+      return { ...w, root: to }
+    }
+    return w
+  })
+  if (changed) {
+    await payload.update({ collection: 'lessons', id: doc.id, data: { arabic: { ...doc.arabic, words: next } } as never, ...opts })
+    payload.logger.info(`Корень слова ${word} в уроке ${slug} исправлен.`)
+  }
+}
