@@ -5,6 +5,7 @@ import type { Payload, PayloadRequest } from 'payload'
 import module01 from '../data/arabic/module-01.json'
 import module02 from '../data/arabic/module-02.json'
 import module03 from '../data/arabic/module-03.json'
+import module04 from '../data/arabic/module-04.json'
 
 /*
  * Уроки авторского учебника арабского языка (курс «Арабский язык» ступени Тамхиди, задача 50).
@@ -15,7 +16,7 @@ import module03 from '../data/arabic/module-03.json'
 
 type Module = { module: string; lessons: ({ slug: string; title: string } & Record<string, unknown>)[] }
 
-export const ARABIC_MODULES: Module[] = [module01 as Module, module02 as Module, module03 as Module]
+export const ARABIC_MODULES: Module[] = [module01 as Module, module02 as Module, module03 as Module, module04 as Module]
 
 // Прежние названия модулей: модуль 1 был «уроки 1–15», с урока 11 начался модуль 2 (решение владельца 29.10.2026).
 // Название меняется, только если владелец его не правил.
