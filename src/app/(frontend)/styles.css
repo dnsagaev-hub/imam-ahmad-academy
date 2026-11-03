@@ -1597,5 +1597,28 @@ a.sh-info-btn { text-decoration: none; }
 .ar-special-note { margin: 8px auto 0; max-width: 640px; font-size: 15px; line-height: 1.6; color: var(--muted); }
 .ar-special-note .ar-inline { font-size: 20px; }
 .ar-text-next { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); }
-/* Несколько аудио в уроке: каждая запись — отдельная строка с тонкой линией сверху */
-.audio-part { padding-top: 12px; border-top: 1px solid rgba(255,255,255,.15); }
+/* Аудио урока: компактный светлый список справа */
+.lesson-audio { background: var(--ice); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; color: var(--ink); }
+.lesson-audio__head { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--royal); }
+.lesson-audio__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.lesson-audio__row { display: flex; align-items: center; gap: 12px; padding: 8px 6px; border-radius: 10px; }
+.lesson-audio__row + .lesson-audio__row { border-top: 1px solid var(--line); border-radius: 0; }
+.lesson-audio__row.is-on .lesson-audio__cap { color: var(--royal); }
+.lesson-audio__play { flex: none; width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--royal); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
+.lesson-audio__play:hover { background: var(--gold-dark); }
+.lesson-audio__row.is-done .lesson-audio__play { background: var(--sky); color: var(--navy); }
+.lesson-audio__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.lesson-audio__cap { font-weight: 700; font-size: 15px; color: var(--navy); overflow-wrap: anywhere; }
+.lesson-audio__st { font-size: 12px; color: var(--muted); }
+.lesson-audio__bar { display: block; height: 3px; border-radius: 99px; background: var(--line-2); overflow: hidden; margin-top: 3px; }
+.lesson-audio__bar > span { display: block; height: 100%; background: var(--royal); }
+.lesson-audio__dl { flex: none; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: var(--royal); }
+.lesson-audio__dl:hover { background: #fff; }
+/* шапка урока: заголовок и аудио */
+.lesson-head { display: flex; flex-direction: column; gap: 20px; }
+.lesson-head--side { flex-direction: row; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 20px 32px; }
+.lesson-head--side > .lesson-head__title { flex: 1 1 340px; min-width: 0; }
+.lesson-head--side > .lesson-head__media { flex: 0 1 340px; min-width: 0; }
+@media (max-width: 700px) {
+  .lesson-head > .lesson-head__media { flex-basis: 100%; width: 100%; }
+}

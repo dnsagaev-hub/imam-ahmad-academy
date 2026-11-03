@@ -23,6 +23,8 @@ import { LESSON_CATEGORIES, labelOf } from '@/lib/constants'
 import { canOpenLesson, emptyProgress, findCourseForLesson, flattenCourse, getProgress, toLeanCourse } from '@/lib/learning'
 import { getCurrentUser, getPayloadClient } from '@/lib/payload'
 import { getLessonBySlug, mediaUrl } from '@/lib/queries'
+import { hasRichText } from '@/lib/richText'
+import { toEmbedUrl } from '@/lib/video'
 
 export const dynamic = 'force-dynamic'
 
@@ -166,6 +168,16 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
     />
   ) : null
 
+  const hasVideo = Boolean(toEmbedUrl(l.videoUrl))
+  const audioUrl = mediaUrl(l.audio)
+  // Дополнительные аудио (поле «Ещё аудио к уроку»); строка без файла не показывается.
+  const extraAudios = (Array.isArray(l.audios) ? l.audios : []).flatMap(
+    (a: { id?: string | null; title?: string | null; file?: unknown }, i: number) => {
+      const url = mediaUrl(a?.file)
+      return url ? [{ id: String(a.id ?? i), caption: a.title || `Аудио ${i + 1}`, url }] : []
+    },
+  )
+
   return (
     <>
       <Header />
@@ -192,7 +204,9 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
           ) : null}
 
           <main className="col-main" style={{ gap: 24 }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {/* Аудио без видео — компактной карточкой справа от названия; с видео — плеер во всю ширину под названием. */}
+            <div className={`lesson-head${hasVideo ? '' : ' lesson-head--side'}`}>
+            <div className="lesson-head__title" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <span className="tag" style={{ letterSpacing: '0.14em' }}>
                 {here ? `Урок ${here.number} из ${flat.length}` : labelOf(LESSON_CATEGORIES, l.category)}
               </span>
@@ -204,30 +218,32 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
               ) : null}
             </div>
 
-            <LessonMedia
-              videoUrl={l.videoUrl}
-              audioUrl={mediaUrl(l.audio)}
-              audios={(Array.isArray(l.audios) ? l.audios : []).flatMap((a: { id?: string | null; title?: string | null; file?: unknown }, i: number) => {
-                const url = mediaUrl(a?.file)
-                return url ? [{ id: String(a.id ?? i), caption: a.title || `Аудио ${i + 1}`, url }] : []
-              })}
-              title={l.title}
-              lessonId={lesson.id}
-              slug={String(l.slug ?? '')}
-              courseTitle={course?.title}
-              categoryLabel={labelOf(LESSON_CATEGORIES, l.category)}
-              teacher={l.teacher}
-            />
+            {hasVideo || audioUrl || extraAudios.length ? (
+              <div className="lesson-head__media">
+                <LessonMedia
+                  videoUrl={l.videoUrl}
+                  audioUrl={audioUrl}
+                  audios={extraAudios}
+                  title={l.title}
+                  lessonId={lesson.id}
+                  slug={String(l.slug ?? '')}
+                  courseTitle={course?.title}
+                  categoryLabel={labelOf(LESSON_CATEGORIES, l.category)}
+                  teacher={l.teacher}
+                />
+              </div>
+            ) : null}
+            </div>
 
             {Array.isArray(l.content) && l.content.length ? <LessonText blocks={l.content} sourceRef={l.sourceRef} readingMinutes={l.readingMinutes} /> : null}
 
-            {l.body ? (
+            {hasRichText(l.body) ? (
               <article className="card prose lesson-text" style={{ padding: 36 }}>
                 <RichText data={l.body} />
               </article>
             ) : null}
 
-            {l.definitionAr || l.summary || (l.files ?? []).length ? (
+            {l.definitionAr?.trim() || hasRichText(l.summary) || (l.files ?? []).length ? (
               <section
                 className="card"
                 style={{
@@ -259,7 +275,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
                     ) : null}
                   </div>
                 ) : null}
-                {l.summary ? (
+                {hasRichText(l.summary) ? (
                   <div className="prose">
                     <RichText data={l.summary} />
                   </div>
