@@ -4,6 +4,7 @@ import { SAMPLE_ARTICLES } from './sampleArticles'
 import { PROGRAM_BOOKS, PROGRAM_COURSES, programCourseSlug } from './program'
 import { SAMPLE_BOOKS } from './sampleBooks'
 import { SAMPLE_LESSONS } from './sampleLessons'
+import { installArabicExtraCourses } from './arabicExtraCourses'
 import { installArabicLessons } from './arabicLessons'
 
 /*
@@ -141,6 +142,7 @@ export async function seedStarter(payload: Payload) {
   await seedProgram(payload, bookIds)
   // уроки арабского создала миграция раньше курса — ставим их в курс
   await installArabicLessons(payload)
+  await installArabicExtraCourses(payload)
   await seedTextLessons(payload, bookIds)
   await seedArticles(payload)
   await payload.updateGlobal({ slug: 'settings', data: { starterSeeded: true } as any })

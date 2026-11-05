@@ -42,7 +42,10 @@ const items: (Item | Group)[] = [
     label: 'Курсы',
     href: '/courses',
     match: '/courses',
-    sub: COURSE_LEVELS.map((l) => ({ label: l.label, href: `/courses?level=${l.value}` })),
+    sub: [
+      ...COURSE_LEVELS.map((l) => ({ label: l.label, href: `/courses?level=${l.value}` })),
+      { label: 'Доп. курсы арабского', href: '/courses#dop' },
+    ],
   },
   { label: 'Уроки', key: 'lessons', group: lessonItems },
   {

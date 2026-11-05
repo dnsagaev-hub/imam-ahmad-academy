@@ -8,14 +8,15 @@ import { Crumbs } from '@/components/PageHead'
 import { CourseProgram, CourseProgressCard } from '@/components/progress/CourseProgram'
 import { serverSource, type ProgressSource } from '@/components/progress/useProgress'
 import { CourseGuide } from '@/components/arabic/CourseGuide'
+import { CourseTabs, ExtraCourseList, extraLevelText } from '@/components/program/ExtraCourses'
 import { buildArabicCourse } from '@/lib/arabicCourse'
 import { REGISTRATION_ENABLED } from '@/lib/config'
 import { BookTile } from '@/components/library/BookTile'
 import { toBookItem } from '@/lib/books'
 import { COURSE_LEVELS, COURSE_STATUSES, DISCIPLINES, labelOf } from '@/lib/constants'
-import { flattenCourse, getProgress, toLeanCourse } from '@/lib/learning'
+import { flattenCourse, getProgress, parentCourseId, toLeanCourse } from '@/lib/learning'
 import { getCurrentUser, getPayloadClient } from '@/lib/payload'
-import { getCourseBySlug, lessonsWord, mediaUrl } from '@/lib/queries'
+import { getCourseBySlug, getExtraCourses, lessonsWord, mediaUrl } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
 
@@ -45,6 +46,12 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
   const status = c.status && c.status !== 'approved' ? labelOf(COURSE_STATUSES, c.status) : null
   // Курс арабского языка: словарь курса и карточки
   const arabic = buildArabicCourse(course)
+  // Дополнительные курсы (задача 55): вкладки «Основной курс» и дополнительные курсы
+  const parentId = parentCourseId(course)
+  const parent = parentId !== null && c.parentCourse && typeof c.parentCourse === 'object' ? (c.parentCourse as Record<string, any>) : null
+  const isExtra = parentId !== null
+  const extras = (await getExtraCourses(parentId ?? course.id)) as (typeof c)[]
+  const tabsMain = isExtra ? parent : c
 
   return (
     <>
@@ -55,10 +62,16 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             items={[
               { label: 'Главная', href: '/' },
               { label: 'Курсы', href: '/courses' },
-              { label: stage ? `${stage.roman}. ${stage.stage[0].toUpperCase()}${stage.stage.slice(1)} ступень` : 'Ступень', href: `/courses?level=${c.level}` },
+              isExtra && parent
+                ? { label: parent.title, href: `/courses/${parent.slug}` }
+                : {
+                    label: stage ? `${stage.roman}. ${stage.stage[0].toUpperCase()}${stage.stage.slice(1)} ступень` : 'Ступень',
+                    href: `/courses?level=${c.level}`,
+                  },
               { label: c.title },
             ]}
           />
+          {tabsMain && extras.length ? <CourseTabs main={tabsMain as any} extras={extras} current={c.slug} /> : null}
           <div className="page-head course-hero" style={{ paddingTop: 12 }}>
             <div className="book-big">
               <div>
@@ -72,7 +85,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             <div style={{ flex: '1 1 460px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
               <span style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 <span className="badge" style={{ background: '#fff', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                  Ступень {stage?.roman} · {stage?.name}
+                  {isExtra ? `Дополнительный курс · ${extraLevelText(c)}` : `Ступень ${stage?.roman} · ${stage?.name}`}
                 </span>
                 {c.discipline ? <span className="badge">{labelOf(DISCIPLINES, c.discipline)}</span> : null}
                 {status ? <span className={`disc-status disc-status-${c.status}`}>◆ {status.toLowerCase()}</span> : null}
@@ -91,6 +104,11 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                 <span>
                   <strong>{total ? lessonsWord(total) : 'Уроки готовятся'}</strong>
                 </span>
+                {!total && c.plannedLessons ? (
+                  <span>
+                    планируется: <strong>{c.plannedLessons} уроков</strong>
+                  </span>
+                ) : null}
                 {moduleCount ? (
                   <span>
                     модулей: <strong>{moduleCount}</strong>
@@ -110,7 +128,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
 
       <div className="container two-col">
         <main className="col-main">
-          {arabic.lessons.length ? <CourseGuide /> : null}
+          {arabic.lessons.length && !isExtra ? <CourseGuide /> : null}
           <h2 className="h2" style={{ margin: '0 0 4px', fontSize: 36 }}>
             Программа курса
           </h2>
@@ -128,9 +146,21 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             <CourseProgram course={lean} source={source} />
           ) : (
             <div className="empty" style={{ textAlign: 'left' }}>
-              Уроки этого курса ещё готовятся. Пока можно познакомиться с учебником в библиотеке.
+              {books.length ? 'Уроки этого курса ещё готовятся. Пока можно познакомиться с учебником в библиотеке.' : 'Уроки этого курса ещё готовятся.'}
             </div>
           )}
+
+          {!isExtra && extras.length ? (
+            <section id="dop" style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 36 }}>
+              <h2 className="h2" style={{ margin: 0, fontSize: 30 }}>
+                Дополнительные курсы
+              </h2>
+              <p className="muted" style={{ margin: 0 }}>
+                Проходятся по желанию, вместе с основным курсом или после него. На переход на следующую ступень не влияют.
+              </p>
+              <ExtraCourseList courses={extras} />
+            </section>
+          ) : null}
 
           {books.length ? (
             <section style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 36 }}>

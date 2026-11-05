@@ -65,6 +65,11 @@ docker-compose.yml         локальная версия: сайт + PostgreSQ
   `src/lib/arabicCourse.ts`, страницы `/courses/<курс>/slovar` (проверка — только админу) и `/courses/<курс>/kartochki`
   (повторение по коробкам Лейтнера, в localStorage `imam-ahmad-academy:cards:v1`). Задания проверяют серверные действия
   `checkArabicTask`/`submitArabicTasks`; если у урока нет вопросов во вкладке «Тест», задания — тест урока (результат как у теста).
+- Дополнительные курсы (задача 55): у курса поле `parentCourse` (+ `levelNote`, `plannedLessons`). `isExtraCourse()`
+  (`src/lib/learning.ts`) исключает их из `groupByStage` и из правила уровня `studentLevel`; вкладки и карточки —
+  `src/components/program/ExtraCourses.tsx`. 12 курсов к арабскому — `src/seed/arabicExtraCourses.ts` (миграция только
+  данных и наполнение). Миграция столбцов названа `20261027_200158_course_extras`, чтобы на новой базе идти раньше
+  миграций уроков арабского, которые читают курсы.
 - Коран (`/quran`): арабский текст и шрифт — Комплекс короля Фахда (KFGQPC Uthmanic Hafs v18), постоянные данные в
   `src/data/quran/<номер>.json` и `public/fonts/quran/`; список сур (русское название, смысл, мекканская/мединская по Tanzil,
   число аятов) — `src/lib/quran.ts`. Сведения о суре (кнопки в шапке суры, окно `SurahInfoButtons`) — коллекция

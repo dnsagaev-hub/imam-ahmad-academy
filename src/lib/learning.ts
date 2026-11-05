@@ -24,6 +24,8 @@ export type CourseDoc = {
   slug?: string | null
   level?: string | null
   order?: number | null
+  /** Дополнительный курс (задача 55): основной курс, к которому он относится */
+  parentCourse?: CourseDoc | Id | null
   modules?: { id?: string | null; title: string; lessons?: (LessonDoc | Id)[] | null }[] | null
   [key: string]: unknown
 }
@@ -77,6 +79,7 @@ export function toLeanCourse(course: CourseDoc): CourseDoc {
     slug: course.slug,
     level: course.level,
     order: course.order,
+    parentCourse: parentCourseId(course),
     modules: (course.modules ?? []).map((m) => ({
       id: m.id,
       title: m.title,
@@ -198,6 +201,16 @@ export async function findCourseForLesson(payload: Payload, lessonId: Id): Promi
   return null
 }
 
+/** id основного курса, если курс дополнительный (задача 55). */
+export function parentCourseId(course: CourseDoc): Id | null {
+  const p = course.parentCourse
+  if (p === null || p === undefined || p === '') return null
+  return typeof p === 'object' ? p.id : p
+}
+
+/** Дополнительный курс: по желанию, в программе ступеней не считается и на уровень ученика не влияет. */
+export const isExtraCourse = (course: CourseDoc) => parentCourseId(course) !== null
+
 /** Порядок ступеней программы. */
 export const STAGE_ORDER = ['prep', 'beginner', 'intermediate', 'advanced'] as const
 
@@ -207,7 +220,9 @@ export const STAGE_ORDER = ['prep', 'beginner', 'intermediate', 'advanced'] as c
  * и средний балл тестов не ниже 80%. Ступень, где ещё нет курсов с уроками, дальше не пускает.
  */
 export function studentLevel(courses: CourseDoc[], progress: Progress) {
-  const states = courses.map((c) => ({ c, s: courseState(c, progress) })).filter((x) => x.s.total > 0)
+  // Дополнительные курсы — по желанию ученика (решение владельца 05.11.2026, задача 55)
+  const all = courses.map((c) => ({ c, s: courseState(c, progress) })).filter((x) => x.s.total > 0)
+  const states = all.filter((x) => !isExtraCourse(x.c))
   const byLevel = (lvl: string) => states.filter((x) => x.c.level === lvl)
   const allDone = (lvl: string) => {
     const list = byLevel(lvl)
@@ -229,6 +244,6 @@ export function studentLevel(courses: CourseDoc[], progress: Progress) {
     toNextPercent: toNext,
     averageScore: scores.length ? Math.round(avg) : null,
     beginnerDone: byLevel(STAGE_ORDER[index]).filter((x) => x.s.completed).length,
-    completedCourses: states.filter((x) => x.s.completed).length,
+    completedCourses: all.filter((x) => x.s.completed).length,
   }
 }

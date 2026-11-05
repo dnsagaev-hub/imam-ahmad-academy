@@ -1,18 +1,19 @@
 import Link from 'next/link'
 
 import { COURSE_LEVELS, COURSE_STATUSES, DISCIPLINES, labelOf } from '@/lib/constants'
-import type { CourseDoc } from '@/lib/learning'
+import { isExtraCourse, type CourseDoc } from '@/lib/learning'
 import { lessonCount, lessonsWord } from '@/lib/queries'
 
 type Course = CourseDoc & Record<string, any>
 
 export const stageOf = (value?: string | null) => COURSE_LEVELS.find((l) => l.value === value)
 
+/** Дисциплины ступеней; дополнительные курсы в ступени не входят (задача 55). */
 export function groupByStage(courses: CourseDoc[]) {
   return COURSE_LEVELS.map((stage) => ({
     stage,
     courses: (courses as Course[])
-      .filter((c) => c.level === stage.value)
+      .filter((c) => c.level === stage.value && !isExtraCourse(c))
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
   }))
 }
