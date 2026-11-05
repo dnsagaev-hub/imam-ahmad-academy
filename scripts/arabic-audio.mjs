@@ -124,8 +124,8 @@ for (let start = 0; start < todoAll.length && start / BATCH < MAX; start += BATC
     execFileSync('ffmpeg', ['-v', 'error', '-y', ...(wav ? [] : ['-f', 's16le', '-ar', '24000', '-ac', '1']), '-i', raw, src])
     // Паузы бывают неровными: подбираем порог тишины, при котором кусков ровно столько, сколько слов
     const tries = [[-40, 0.25], [-40, 0.35], [-35, 0.3], [-45, 0.3], [-40, 0.45], [-35, 0.45], [-50, 0.4], [-40, 0.2], [-30, 0.3], [-45, 0.5]]
-    // Два масдара через запятую («صَوْمٌ، صِيَامٌ») модель читает как два слова — у такой строки два куска
-    const parts = todo.map((w) => w.split(/[،؛,]/).filter((x) => x.trim()).length)
+    // Два слова через запятую или косую черту («صَوْمٌ، صِيَامٌ», «أَيُّهَا / أَيَّتُهَا») модель читает как два — у такой строки два куска
+    const parts = todo.map((w) => w.split(/[،؛,/]/).filter((x) => x.trim()).length)
     const need = parts.reduce((a, b) => a + b, 0)
     let segs = []
     for (const [n, d] of tries) if ((segs = speech(src, n, d)).length === need) break
