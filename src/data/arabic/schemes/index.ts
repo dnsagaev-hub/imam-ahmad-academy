@@ -49,6 +49,10 @@ import { lesson48 } from './lesson-48'
 import { lesson49 } from './lesson-49'
 import { lesson50 } from './lesson-50'
 import { lesson51 } from './lesson-51'
+import { lesson52 } from './lesson-52'
+import { lesson53 } from './lesson-53'
+import { lesson54 } from './lesson-54'
+import { lesson55 } from './lesson-55'
 import type { LessonSchemes } from './types'
 
 /** Схемы к грамматике по адресу урока. Раздел, подзаголовок которого владелец переименовал, остаётся без схемы. */
@@ -104,4 +108,8 @@ export const SCHEMES: Record<string, LessonSchemes> = {
   'arabskiy-urok-49': lesson49,
   'arabskiy-urok-50': lesson50,
   'arabskiy-urok-51': lesson51,
+  'arabskiy-urok-52': lesson52,
+  'arabskiy-urok-53': lesson53,
+  'arabskiy-urok-54': lesson54,
+  'arabskiy-urok-55': lesson55,
 }

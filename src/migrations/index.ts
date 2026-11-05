@@ -74,6 +74,10 @@ import * as migration_20261104_090000_arabic_lesson_48 from './20261104_090000_a
 import * as migration_20261104_100000_arabic_lesson_49 from './20261104_100000_arabic_lesson_49';
 import * as migration_20261104_110000_arabic_lesson_50 from './20261104_110000_arabic_lesson_50';
 import * as migration_20261105_080000_arabic_lesson_51 from './20261105_080000_arabic_lesson_51';
+import * as migration_20261105_090000_arabic_lesson_52 from './20261105_090000_arabic_lesson_52';
+import * as migration_20261105_100000_arabic_lesson_53 from './20261105_100000_arabic_lesson_53';
+import * as migration_20261105_110000_arabic_lesson_54 from './20261105_110000_arabic_lesson_54';
+import * as migration_20261105_120000_arabic_lesson_55 from './20261105_120000_arabic_lesson_55';
 
 export const migrations = [
   {
@@ -455,5 +459,25 @@ export const migrations = [
     up: migration_20261105_080000_arabic_lesson_51.up,
     down: migration_20261105_080000_arabic_lesson_51.down,
     name: '20261105_080000_arabic_lesson_51'
+  },
+  {
+    up: migration_20261105_090000_arabic_lesson_52.up,
+    down: migration_20261105_090000_arabic_lesson_52.down,
+    name: '20261105_090000_arabic_lesson_52'
+  },
+  {
+    up: migration_20261105_100000_arabic_lesson_53.up,
+    down: migration_20261105_100000_arabic_lesson_53.down,
+    name: '20261105_100000_arabic_lesson_53'
+  },
+  {
+    up: migration_20261105_110000_arabic_lesson_54.up,
+    down: migration_20261105_110000_arabic_lesson_54.down,
+    name: '20261105_110000_arabic_lesson_54'
+  },
+  {
+    up: migration_20261105_120000_arabic_lesson_55.up,
+    down: migration_20261105_120000_arabic_lesson_55.down,
+    name: '20261105_120000_arabic_lesson_55'
   },
 ];
