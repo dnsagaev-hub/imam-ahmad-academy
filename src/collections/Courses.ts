@@ -56,6 +56,34 @@ export const Courses: CollectionConfig = {
       defaultValue: 10,
       admin: { position: 'sidebar', description: 'Номер дисциплины в программе ступени (01, 02…)' },
     },
+    // Дополнительные курсы (задача 55): курс-дополнение к основному — своя вкладка рядом с основным курсом,
+    // в программе ступеней не считается и на переход ученика на ступень не влияет
+    {
+      name: 'parentCourse',
+      label: 'Дополнительный курс к',
+      type: 'relationship',
+      relationTo: 'courses',
+      admin: {
+        position: 'sidebar',
+        description:
+          'Заполните, если это дополнительный курс (например, к основному курсу арабского). Он появится вкладкой рядом с основным курсом и не войдёт в список дисциплин ступени.',
+      },
+    },
+    {
+      name: 'levelNote',
+      label: 'Уровень (подпись)',
+      type: 'text',
+      admin: {
+        position: 'sidebar',
+        description: 'Для дополнительного курса, например «Средний → продвинутый». Пусто — по ступени: «Начальный уровень».',
+      },
+    },
+    {
+      name: 'plannedLessons',
+      label: 'Планируется уроков',
+      type: 'text',
+      admin: { position: 'sidebar', description: 'Например «12–15». Показывается, пока уроки готовятся.' },
+    },
     {
       type: 'row',
       fields: [

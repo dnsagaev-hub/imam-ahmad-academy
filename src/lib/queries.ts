@@ -37,6 +37,19 @@ export const getCourses = cache(async (level?: string) => {
   return res.docs as unknown as CourseDoc[]
 })
 
+/** Дополнительные курсы к основному курсу (задача 55), по порядку. */
+export async function getExtraCourses(parentId: number | string) {
+  const payload = await getPayloadClient()
+  const res = await payload.find({
+    collection: 'courses',
+    where: { and: [published, { parentCourse: { equals: parentId } }] },
+    sort: 'order',
+    depth: 1,
+    limit: 100,
+  })
+  return res.docs as unknown as CourseDoc[]
+}
+
 export async function getCourseBySlug(slug: string) {
   const payload = await getPayloadClient()
   const res = await payload.find({

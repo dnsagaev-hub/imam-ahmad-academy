@@ -4,8 +4,10 @@ import Link from 'next/link'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { PageHead } from '@/components/PageHead'
+import { ExtraCourseList } from '@/components/program/ExtraCourses'
 import { groupByStage, StageCards, StageSection } from '@/components/program/Program'
 import { COURSE_LEVELS } from '@/lib/constants'
+import { isExtraCourse, parentCourseId } from '@/lib/learning'
 import { getCourses } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
@@ -19,7 +21,12 @@ export default async function CoursesPage({ searchParams }: { searchParams: Prom
   const stage = COURSE_LEVELS.find((l) => l.value === level)
   const courses = await getCourses()
   const groups = groupByStage(courses).filter((g) => !stage || g.stage.value === stage.value)
-  const total = courses.length
+  const total = courses.filter((c) => !isExtraCourse(c)).length
+  // Дополнительные курсы (задача 55) — отдельным блоком под основным курсом, к которому они относятся
+  const extraGroups = courses
+    .filter((c) => !isExtraCourse(c))
+    .map((main) => ({ main, extras: courses.filter((c) => String(parentCourseId(c)) === String(main.id)) }))
+    .filter((g) => g.extras.length)
 
   return (
     <>
@@ -53,6 +60,26 @@ export default async function CoursesPage({ searchParams }: { searchParams: Prom
         {groups.map((g) => (
           <StageSection key={g.stage.value} stage={g.stage} courses={g.courses} />
         ))}
+
+        {!stage
+          ? extraGroups.map(({ main, extras }) => (
+              <section key={main.id} id="dop" className="stage" aria-labelledby={`h-dop-${main.id}`}>
+                <header>
+                  <p className="eyebrow" style={{ margin: 0 }}>
+                    По желанию · {extras.length} курсов
+                  </p>
+                  <h2 className="h2" id={`h-dop-${main.id}`} style={{ margin: '4px 0 6px' }}>
+                    Дополнительные курсы: {main.title}
+                  </h2>
+                  <p className="muted" style={{ margin: 0, maxWidth: 760 }}>
+                    Дополняют основной курс <Link href={`/courses/${main.slug}`}>«{main.title}»</Link>. Проходятся по желанию и на
+                    переход на следующую ступень не влияют.
+                  </p>
+                </header>
+                <ExtraCourseList courses={extras as any} />
+              </section>
+            ))
+          : null}
 
         <aside className="program-notes">
           <p>

@@ -16,6 +16,7 @@ import * as migration_20261026_154347_surah_names from './20261026_154347_surah_
 import * as migration_20261027_200155_arabic_lessons from './20261027_200155_arabic_lessons';
 import * as migration_20261027_200156_arabic_word_audio from './20261027_200156_arabic_word_audio';
 import * as migration_20261027_200157_lesson_audios from './20261027_200157_lesson_audios';
+import * as migration_20261027_200158_course_extras from './20261027_200158_course_extras';
 import * as migration_20261027_213000_arabic_lesson_1 from './20261027_213000_arabic_lesson_1';
 import * as migration_20261027_230000_arabic_lesson_2 from './20261027_230000_arabic_lesson_2';
 import * as migration_20261028_050000_arabic_pictures from './20261028_050000_arabic_pictures';
@@ -78,6 +79,7 @@ import * as migration_20261105_090000_arabic_lesson_52 from './20261105_090000_a
 import * as migration_20261105_100000_arabic_lesson_53 from './20261105_100000_arabic_lesson_53';
 import * as migration_20261105_110000_arabic_lesson_54 from './20261105_110000_arabic_lesson_54';
 import * as migration_20261105_120000_arabic_lesson_55 from './20261105_120000_arabic_lesson_55';
+import * as migration_20261105_130000_arabic_extra_courses from './20261105_130000_arabic_extra_courses';
 
 export const migrations = [
   {
@@ -169,6 +171,11 @@ export const migrations = [
     up: migration_20261027_200157_lesson_audios.up,
     down: migration_20261027_200157_lesson_audios.down,
     name: '20261027_200157_lesson_audios'
+  },
+  {
+    up: migration_20261027_200158_course_extras.up,
+    down: migration_20261027_200158_course_extras.down,
+    name: '20261027_200158_course_extras'
   },
   {
     up: migration_20261027_213000_arabic_lesson_1.up,
@@ -479,5 +486,10 @@ export const migrations = [
     up: migration_20261105_120000_arabic_lesson_55.up,
     down: migration_20261105_120000_arabic_lesson_55.down,
     name: '20261105_120000_arabic_lesson_55'
+  },
+  {
+    up: migration_20261105_130000_arabic_extra_courses.up,
+    down: migration_20261105_130000_arabic_extra_courses.down,
+    name: '20261105_130000_arabic_extra_courses'
   },
 ];

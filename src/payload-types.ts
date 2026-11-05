@@ -216,6 +216,18 @@ export interface Course {
    * Номер дисциплины в программе ступени (01, 02…)
    */
   order?: number | null;
+  /**
+   * Заполните, если это дополнительный курс (например, к основному курсу арабского). Он появится вкладкой рядом с основным курсом и не войдёт в список дисциплин ступени.
+   */
+  parentCourse?: (number | null) | Course;
+  /**
+   * Для дополнительного курса, например «Средний → продвинутый». Пусто — по ступени: «Начальный уровень».
+   */
+  levelNote?: string | null;
+  /**
+   * Например «12–15». Показывается, пока уроки готовятся.
+   */
+  plannedLessons?: string | null;
   bookTitleAr?: string | null;
   bookAuthor?: string | null;
   book?: (number | null) | Book;
@@ -1628,6 +1640,9 @@ export interface CoursesSelect<T extends boolean = true> {
   discipline?: T;
   status?: T;
   order?: T;
+  parentCourse?: T;
+  levelNote?: T;
+  plannedLessons?: T;
   bookTitleAr?: T;
   bookAuthor?: T;
   book?: T;
