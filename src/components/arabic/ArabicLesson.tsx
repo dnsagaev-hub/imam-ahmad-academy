@@ -185,9 +185,12 @@ export function ArabicLessonBody({
   lexicon,
   lead,
   schemes,
+  theoryLabel = 'Грамматика',
   children,
 }: {
   a: ArabicData
+  /** подпись раздела объяснения: «Грамматика» в основном курсе, «Теория» в дополнительных (задача 56) */
+  theoryLabel?: string
   /** схемы к разделам грамматики этого урока */
   schemes?: LessonSchemes
   /** цель урока — поле «Краткое описание» */
@@ -358,7 +361,8 @@ export function ArabicLessonBody({
           <h2 className="ar-h" id="grammar-h">
             <span className="ar-h-n">2</span>
             <span>
-              Грамматика{a.grammarTitle ? ': ' : ''}
+              {theoryLabel}
+              {a.grammarTitle ? ': ' : ''}
               {a.grammarTitle ? <Bidi text={a.grammarTitle} /> : null}
             </span>
           </h2>

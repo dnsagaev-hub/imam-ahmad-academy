@@ -20,7 +20,7 @@ import { stageFor, toLexEntry } from '@/lib/arabic'
 import { arabicOf, buildArabicCourse, clientTasks, isArabicLesson, lexiconUpTo } from '@/lib/arabicCourse'
 import { REGISTRATION_ENABLED } from '@/lib/config'
 import { LESSON_CATEGORIES, labelOf } from '@/lib/constants'
-import { canOpenLesson, emptyProgress, findCourseForLesson, flattenCourse, getProgress, toLeanCourse } from '@/lib/learning'
+import { canOpenLesson, emptyProgress, findCourseForLesson, flattenCourse, getProgress, isExtraCourse, toLeanCourse } from '@/lib/learning'
 import { getCurrentUser, getPayloadClient } from '@/lib/payload'
 import { getLessonBySlug, mediaUrl } from '@/lib/queries'
 import { hasRichText } from '@/lib/richText'
@@ -294,7 +294,14 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
             ) : null}
 
             {isArabic ? (
-              <ArabicLessonBody a={ar} stage={arStage} lexicon={lexicon} lead={l.excerpt} schemes={l.slug ? SCHEMES[l.slug] : undefined}>
+              <ArabicLessonBody
+                a={ar}
+                stage={arStage}
+                lexicon={lexicon}
+                lead={l.excerpt}
+                schemes={l.slug ? SCHEMES[l.slug] : undefined}
+                theoryLabel={course && isExtraCourse(course) ? 'Теория' : undefined}
+              >
                 {tasks.length ? (
                   <ArabicTasks
                     lessonId={lesson.id}
