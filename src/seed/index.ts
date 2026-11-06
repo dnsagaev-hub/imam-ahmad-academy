@@ -9,6 +9,7 @@ import { getPayload } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { installArabicExtraCourses } from './arabicExtraCourses'
+import { installArabicExtraLessons } from './arabicExtraLessons'
 import { installArabicLessons } from './arabicLessons'
 import { seedArabicDemo } from './sampleArabic'
 import { seedArticles, seedLibrary, seedProgram, seedTextLessons } from './starter'
@@ -66,6 +67,7 @@ const lessonIds = await seedTextLessons(payload, bookIds)
 await seedProgram(payload, bookIds)
 await installArabicLessons(payload)
 await installArabicExtraCourses(payload)
+await installArabicExtraLessons(payload)
 
 const exists = await payload.find({ collection: 'courses', where: { slug: { equals: 'demo-fikh-ochischeniya' } }, limit: 1 })
 
