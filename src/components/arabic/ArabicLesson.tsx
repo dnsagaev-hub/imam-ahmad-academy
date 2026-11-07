@@ -359,7 +359,7 @@ export function ArabicLessonBody({
       {a.grammar?.trim() || examples.length ? (
         <section className="card ar-sec" aria-labelledby="grammar-h">
           <h2 className="ar-h" id="grammar-h">
-            <span className="ar-h-n">2</span>
+            <span className="ar-h-n">{allWords.length ? 2 : 1}</span>
             <span>
               {theoryLabel}
               {a.grammarTitle ? ': ' : ''}
