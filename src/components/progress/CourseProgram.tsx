@@ -3,17 +3,82 @@
 import Link from 'next/link'
 
 import { CheckIcon, ChevronIcon, LockIcon, PlayIcon } from '@/components/Icons'
-import { courseState, type CourseDoc } from '@/lib/learning'
+import { courseState, isExtraCourse, type CourseDoc } from '@/lib/learning'
 
 import { useProgress, type ProgressSource } from './useProgress'
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
 
-/** Программа курса: модули и уроки с отметками «пройден / текущий / закрыт». */
+/** Программа курса: модули и уроки с отметками «пройден / текущий / закрыт» (у дополнительного курса — без модулей). */
 export function CourseProgram({ course, source }: { course: CourseDoc; source: ProgressSource }) {
   const { progress, ready, guestLimited } = useProgress(source)
   const state = courseState(course, progress)
   const showCounts = ready && !guestLimited
+  // Дополнительный курс (задача 58, слова владельца 07.11.2026): без деления на модули — просто список уроков
+  const flat = isExtraCourse(course)
+
+  const rows = (lessons: typeof state.lessons, done: number) => (
+    <ol className="lesson-list">
+      {lessons.map((l) => {
+        const locked = guestLimited ? l.number > 1 : l.state === 'locked'
+        const isDone = !guestLimited && l.state === 'done'
+        const isCurrent = guestLimited ? l.number === 1 : l.state === 'current'
+        const hasTest = Boolean((l.lesson as any).hasTest ?? l.lesson.questions?.length)
+        return (
+          <li key={String(l.lesson.id)} className={`lesson-row${locked ? ' locked' : ''}`}>
+            {isDone ? (
+              <span className="st st-done">
+                <CheckIcon />
+              </span>
+            ) : isCurrent ? (
+              <span className="st st-current">
+                <PlayIcon size={12} color="#00805F" />
+              </span>
+            ) : (
+              <span className="st st-locked">
+                <LockIcon />
+              </span>
+            )}
+            <span className="t">
+              {locked ? (
+                <span className="name">
+                  Урок {l.number}. {l.lesson.title}
+                </span>
+              ) : (
+                <Link href={`/lessons/${l.lesson.slug}`}>
+                  Урок {l.number}. {l.lesson.title}
+                </Link>
+              )}
+              <span style={{ fontSize: 13, color: 'var(--muted)' }}>
+                {[l.lesson.duration, hasTest ? 'тест' : null].filter(Boolean).join(' · ')}
+              </span>
+            </span>
+            {isDone && typeof l.score === 'number' ? <span className="score-pill">Тест: {l.score}%</span> : null}
+            {isCurrent ? (
+              <Link href={`/lessons/${l.lesson.slug}`} className="btn" style={{ minHeight: 40, padding: '0 16px', fontSize: 14 }}>
+                {l.number === 1 && !isDone && done === 0 ? 'Начать' : 'Продолжить'}
+              </Link>
+            ) : null}
+            {locked ? (
+              <span style={{ fontSize: 13, color: 'var(--muted-2)' }}>
+                {guestLimited ? 'Нужен вход' : 'Откроется после теста'}
+              </span>
+            ) : null}
+          </li>
+        )
+      })}
+    </ol>
+  )
+
+  if (flat) {
+    const done = state.lessons.filter((l) => l.state === 'done').length
+    return (
+      <>
+        {state.total ? <div className="card module module-flat">{rows(state.lessons, done)}</div> : null}
+        {!state.total ? <p className="empty">Уроки курса скоро появятся.</p> : null}
+      </>
+    )
+  }
 
   return (
     <>
@@ -44,56 +109,7 @@ export function CourseProgram({ course, source }: { course: CourseDoc; source: P
                 <ChevronIcon size={20} color="#00704F" />
               </span>
             </summary>
-            <ol className="lesson-list">
-              {lessons.map((l) => {
-                const locked = guestLimited ? l.number > 1 : l.state === 'locked'
-                const isDone = !guestLimited && l.state === 'done'
-                const isCurrent = guestLimited ? l.number === 1 : l.state === 'current'
-                const hasTest = Boolean((l.lesson as any).hasTest ?? l.lesson.questions?.length)
-                return (
-                  <li key={String(l.lesson.id)} className={`lesson-row${locked ? ' locked' : ''}`}>
-                    {isDone ? (
-                      <span className="st st-done">
-                        <CheckIcon />
-                      </span>
-                    ) : isCurrent ? (
-                      <span className="st st-current">
-                        <PlayIcon size={12} color="#00805F" />
-                      </span>
-                    ) : (
-                      <span className="st st-locked">
-                        <LockIcon />
-                      </span>
-                    )}
-                    <span className="t">
-                      {locked ? (
-                        <span className="name">
-                          Урок {l.number}. {l.lesson.title}
-                        </span>
-                      ) : (
-                        <Link href={`/lessons/${l.lesson.slug}`}>
-                          Урок {l.number}. {l.lesson.title}
-                        </Link>
-                      )}
-                      <span style={{ fontSize: 13, color: 'var(--muted)' }}>
-                        {[l.lesson.duration, hasTest ? 'тест' : null].filter(Boolean).join(' · ')}
-                      </span>
-                    </span>
-                    {isDone && typeof l.score === 'number' ? <span className="score-pill">Тест: {l.score}%</span> : null}
-                    {isCurrent ? (
-                      <Link href={`/lessons/${l.lesson.slug}`} className="btn" style={{ minHeight: 40, padding: '0 16px', fontSize: 14 }}>
-                        {l.number === 1 && !isDone && done === 0 ? 'Начать' : 'Продолжить'}
-                      </Link>
-                    ) : null}
-                    {locked ? (
-                      <span style={{ fontSize: 13, color: 'var(--muted-2)' }}>
-                        {guestLimited ? 'Нужен вход' : 'Откроется после теста'}
-                      </span>
-                    ) : null}
-                  </li>
-                )
-              })}
-            </ol>
+            {rows(lessons, done)}
           </details>
         )
       })}

@@ -1636,3 +1636,4 @@ a.sh-info-btn { text-decoration: none; }
 @media (max-width: 700px) {
   .lesson-head > .lesson-head__media { flex-basis: 100%; width: 100%; }
 }
+.module-flat .lesson-list { border-top: 0; }

@@ -56,7 +56,8 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
     ? [
         { label: 'Курсы', href: '/courses' },
         { label: course.title, href: `/courses/${course.slug}` },
-        ...(here ? [{ label: `Модуль ${here.moduleIndex + 1}` }, { label: `Урок ${here.number}` }] : []),
+        // В дополнительных курсах модулей не показываем — просто уроки (задача 58)
+        ...(here ? [...(isExtraCourse(course) ? [] : [{ label: `Модуль ${here.moduleIndex + 1}` }]), { label: `Урок ${here.number}` }] : []),
       ]
     : [{ label: 'Главная', href: '/' }, { label: labelOf(LESSON_CATEGORIES, l.category) }, { label: l.title }]
 
@@ -300,7 +301,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
                 lexicon={lexicon}
                 lead={l.excerpt}
                 schemes={l.slug ? SCHEMES[l.slug] : undefined}
-                theoryLabel={course && isExtraCourse(course) ? 'Теория' : undefined}
+                plain={Boolean(course && isExtraCourse(course))}
               >
                 {tasks.length ? (
                   <ArabicTasks
