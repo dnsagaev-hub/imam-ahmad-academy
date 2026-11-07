@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { type LexEntry, type Stage, verbForms } from '@/lib/arabic'
 import type { ArabicData } from '@/lib/arabicCourse'
 import { mediaUrl } from '@/lib/queries'
-import { wordAudioUrl } from '@/lib/wordAudio'
+import { exampleAudioMap, exampleKey, wordAudioUrl } from '@/lib/wordAudio'
 
 import type { LessonSchemes } from '@/data/arabic/schemes/types'
 
@@ -87,7 +87,7 @@ const tableRow = (line: string): string[] | null =>
       : null
 
 /** Текст грамматики: строка «## …» — подзаголовок, «арабский — перевод» — пример, остальное — абзац; в конце раздела — его схема */
-function GrammarText({ text, schemes }: { text?: string | null; schemes?: LessonSchemes }) {
+function GrammarText({ text, schemes, sounds }: { text?: string | null; schemes?: LessonSchemes; sounds: Map<string, string> }) {
   const blocks: GBlock[] = []
   let section = ''
   const closeSection = () => {
@@ -150,6 +150,7 @@ function GrammarText({ text, schemes }: { text?: string | null; schemes?: Lesson
             {b.items.map((e, j) => (
               <li key={j}>
                 <ArText className="ar ar-line" text={e.ar} />
+                <ExSay ar={e.ar} sounds={sounds} />
                 {/^\|\|.+\|\|$/.test(e.tr) ? (
                   <details className="ar-tr">
                     {/* длинная подсказка — разбор, а не перевод */}
@@ -170,6 +171,12 @@ function GrammarText({ text, schemes }: { text?: string | null; schemes?: Lesson
       )}
     </div>
   )
+}
+
+// Кнопка «Послушать» у примера, если владелец загрузил к нему запись (задача 59)
+function ExSay({ ar, sounds }: { ar: string; sounds: Map<string, string> }) {
+  const src = sounds.size ? sounds.get(exampleKey(ar)) : undefined
+  return src ? <SayButton src={src} word={ar} small /> : null
 }
 
 // Кнопка «Послушать»: своя запись владельца или готовая озвучка; если нет ни того, ни другого — кнопки нет.
@@ -210,6 +217,7 @@ export function ArabicLessonBody({
   const particles = allWords.filter((w) => !w.root?.trim() && !isSpecial(w))
   const sentences = (a.sentences ?? []).filter((s) => s.arabic?.trim())
   const examples = (a.grammarExamples ?? []).filter((s) => s.arabic?.trim())
+  const sounds = exampleAudioMap(a.exampleAudio)
   const textParas = paragraphs(a.text)
   // Несколько текстов в одном уроке (обобщающий урок): абзац «## …» — название следующего текста
   const textGroups = textParas.reduce<{ title?: string; paras: string[] }[]>((acc, p) => {
@@ -373,12 +381,13 @@ export function ArabicLessonBody({
               </>
             )}
           </h2>
-          <GrammarText text={a.grammar} schemes={schemes} />
+          <GrammarText text={a.grammar} schemes={schemes} sounds={sounds} />
           {examples.length ? (
             <ul className="ar-examples">
               {examples.map((e, i) => (
                 <li key={i}>
                   <ArText className="ar ar-line" text={e.arabic} />
+                  <ExSay ar={e.arabic} sounds={sounds} />
                   {e.translation ? <span className="ar-ex-tr">{e.translation}</span> : null}
                 </li>
               ))}

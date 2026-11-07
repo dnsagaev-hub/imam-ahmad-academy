@@ -551,6 +551,16 @@ export interface Lesson {
         }[]
       | null;
     /**
+     * Скопируйте арабскую часть строки-примера из текста урока или из «Примеров» (без перевода) и загрузите аудиофайл (mp3, m4a). На странице урока у этого примера появится кнопка «Послушать».
+     */
+    exampleAudio?:
+      | {
+          arabic: string;
+          audio: number | Media;
+          id?: string | null;
+        }[]
+      | null;
+    /**
      * Перевод ученик видит в «Ключах» и по кнопке у предложения.
      */
     sentences?:
@@ -1801,6 +1811,13 @@ export interface LessonsSelect<T extends boolean = true> {
           | {
               arabic?: T;
               translation?: T;
+              id?: T;
+            };
+        exampleAudio?:
+          | T
+          | {
+              arabic?: T;
+              audio?: T;
               id?: T;
             };
         sentences?:
