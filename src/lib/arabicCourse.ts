@@ -15,6 +15,8 @@ export type ArabicData = {
   grammarTitle?: string | null
   grammar?: string | null
   grammarExamples?: { arabic: string; translation?: string | null }[] | null
+  /** озвучка примеров владельцем (задача 59): арабский текст примера и аудиофайл */
+  exampleAudio?: { arabic?: string | null; audio?: unknown }[] | null
   sentences?: { arabic: string; translation?: string | null }[] | null
   textTitle?: string | null
   text?: string | null

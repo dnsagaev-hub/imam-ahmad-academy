@@ -17,6 +17,7 @@ import * as migration_20261027_200155_arabic_lessons from './20261027_200155_ara
 import * as migration_20261027_200156_arabic_word_audio from './20261027_200156_arabic_word_audio';
 import * as migration_20261027_200157_lesson_audios from './20261027_200157_lesson_audios';
 import * as migration_20261027_200158_course_extras from './20261027_200158_course_extras';
+import * as migration_20261027_200159_example_audio from './20261027_200159_example_audio';
 import * as migration_20261027_213000_arabic_lesson_1 from './20261027_213000_arabic_lesson_1';
 import * as migration_20261027_230000_arabic_lesson_2 from './20261027_230000_arabic_lesson_2';
 import * as migration_20261028_050000_arabic_pictures from './20261028_050000_arabic_pictures';
@@ -162,346 +163,351 @@ export const migrations = [
   {
     up: migration_20261027_200155_arabic_lessons.up,
     down: migration_20261027_200155_arabic_lessons.down,
-    name: '20261027_200155_arabic_lessons'
+    name: '20261027_200155_arabic_lessons',
   },
   {
     up: migration_20261027_200156_arabic_word_audio.up,
     down: migration_20261027_200156_arabic_word_audio.down,
-    name: '20261027_200156_arabic_word_audio'
+    name: '20261027_200156_arabic_word_audio',
   },
   {
     up: migration_20261027_200157_lesson_audios.up,
     down: migration_20261027_200157_lesson_audios.down,
-    name: '20261027_200157_lesson_audios'
+    name: '20261027_200157_lesson_audios',
   },
   {
     up: migration_20261027_200158_course_extras.up,
     down: migration_20261027_200158_course_extras.down,
-    name: '20261027_200158_course_extras'
+    name: '20261027_200158_course_extras',
+  },
+  {
+    up: migration_20261027_200159_example_audio.up,
+    down: migration_20261027_200159_example_audio.down,
+    name: '20261027_200159_example_audio',
   },
   {
     up: migration_20261027_213000_arabic_lesson_1.up,
     down: migration_20261027_213000_arabic_lesson_1.down,
-    name: '20261027_213000_arabic_lesson_1'
+    name: '20261027_213000_arabic_lesson_1',
   },
   {
     up: migration_20261027_230000_arabic_lesson_2.up,
     down: migration_20261027_230000_arabic_lesson_2.down,
-    name: '20261027_230000_arabic_lesson_2'
+    name: '20261027_230000_arabic_lesson_2',
   },
   {
     up: migration_20261028_050000_arabic_pictures.up,
     down: migration_20261028_050000_arabic_pictures.down,
-    name: '20261028_050000_arabic_pictures'
+    name: '20261028_050000_arabic_pictures',
   },
   {
     up: migration_20261028_080000_arabic_pictures_2.up,
     down: migration_20261028_080000_arabic_pictures_2.down,
-    name: '20261028_080000_arabic_pictures_2'
+    name: '20261028_080000_arabic_pictures_2',
   },
   {
     up: migration_20261028_110000_arabic_lesson_1_grammar.up,
     down: migration_20261028_110000_arabic_lesson_1_grammar.down,
-    name: '20261028_110000_arabic_lesson_1_grammar'
+    name: '20261028_110000_arabic_lesson_1_grammar',
   },
   {
     up: migration_20261028_113000_arabic_lesson_2_grammar.up,
     down: migration_20261028_113000_arabic_lesson_2_grammar.down,
-    name: '20261028_113000_arabic_lesson_2_grammar'
+    name: '20261028_113000_arabic_lesson_2_grammar',
   },
   {
     up: migration_20261028_123000_arabic_lesson_3.up,
     down: migration_20261028_123000_arabic_lesson_3.down,
-    name: '20261028_123000_arabic_lesson_3'
+    name: '20261028_123000_arabic_lesson_3',
   },
   {
     up: migration_20261028_163000_arabic_lesson_4.up,
     down: migration_20261028_163000_arabic_lesson_4.down,
-    name: '20261028_163000_arabic_lesson_4'
+    name: '20261028_163000_arabic_lesson_4',
   },
   {
     up: migration_20261028_200000_arabic_lesson_5.up,
     down: migration_20261028_200000_arabic_lesson_5.down,
-    name: '20261028_200000_arabic_lesson_5'
+    name: '20261028_200000_arabic_lesson_5',
   },
   {
     up: migration_20261028_210000_arabic_lesson_6.up,
     down: migration_20261028_210000_arabic_lesson_6.down,
-    name: '20261028_210000_arabic_lesson_6'
+    name: '20261028_210000_arabic_lesson_6',
   },
   {
     up: migration_20261028_230000_arabic_lesson_7.up,
     down: migration_20261028_230000_arabic_lesson_7.down,
-    name: '20261028_230000_arabic_lesson_7'
+    name: '20261028_230000_arabic_lesson_7',
   },
   {
     up: migration_20261029_120000_arabic_lesson_8.up,
     down: migration_20261029_120000_arabic_lesson_8.down,
-    name: '20261029_120000_arabic_lesson_8'
+    name: '20261029_120000_arabic_lesson_8',
   },
   {
     up: migration_20261029_160000_arabic_lesson_9.up,
     down: migration_20261029_160000_arabic_lesson_9.down,
-    name: '20261029_160000_arabic_lesson_9'
+    name: '20261029_160000_arabic_lesson_9',
   },
   {
     up: migration_20261029_200000_arabic_lesson_10.up,
     down: migration_20261029_200000_arabic_lesson_10.down,
-    name: '20261029_200000_arabic_lesson_10'
+    name: '20261029_200000_arabic_lesson_10',
   },
   {
     up: migration_20261029_230000_arabic_lesson_11.up,
     down: migration_20261029_230000_arabic_lesson_11.down,
-    name: '20261029_230000_arabic_lesson_11'
+    name: '20261029_230000_arabic_lesson_11',
   },
   {
     up: migration_20261030_000000_arabic_lesson_12.up,
     down: migration_20261030_000000_arabic_lesson_12.down,
-    name: '20261030_000000_arabic_lesson_12'
+    name: '20261030_000000_arabic_lesson_12',
   },
   {
     up: migration_20261030_010000_arabic_lesson_13.up,
     down: migration_20261030_010000_arabic_lesson_13.down,
-    name: '20261030_010000_arabic_lesson_13'
+    name: '20261030_010000_arabic_lesson_13',
   },
   {
     up: migration_20261030_020000_arabic_lesson_14.up,
     down: migration_20261030_020000_arabic_lesson_14.down,
-    name: '20261030_020000_arabic_lesson_14'
+    name: '20261030_020000_arabic_lesson_14',
   },
   {
     up: migration_20261030_030000_arabic_lesson_15.up,
     down: migration_20261030_030000_arabic_lesson_15.down,
-    name: '20261030_030000_arabic_lesson_15'
+    name: '20261030_030000_arabic_lesson_15',
   },
   {
     up: migration_20261030_040000_arabic_lesson_16.up,
     down: migration_20261030_040000_arabic_lesson_16.down,
-    name: '20261030_040000_arabic_lesson_16'
+    name: '20261030_040000_arabic_lesson_16',
   },
   {
     up: migration_20261030_050000_arabic_lesson_17.up,
     down: migration_20261030_050000_arabic_lesson_17.down,
-    name: '20261030_050000_arabic_lesson_17'
+    name: '20261030_050000_arabic_lesson_17',
   },
   {
     up: migration_20261030_060000_arabic_lesson_18.up,
     down: migration_20261030_060000_arabic_lesson_18.down,
-    name: '20261030_060000_arabic_lesson_18'
+    name: '20261030_060000_arabic_lesson_18',
   },
   {
     up: migration_20261030_070000_arabic_lesson_19.up,
     down: migration_20261030_070000_arabic_lesson_19.down,
-    name: '20261030_070000_arabic_lesson_19'
+    name: '20261030_070000_arabic_lesson_19',
   },
   {
     up: migration_20261030_080000_arabic_lesson_20.up,
     down: migration_20261030_080000_arabic_lesson_20.down,
-    name: '20261030_080000_arabic_lesson_20'
+    name: '20261030_080000_arabic_lesson_20',
   },
   {
     up: migration_20261031_010000_arabic_lesson_21.up,
     down: migration_20261031_010000_arabic_lesson_21.down,
-    name: '20261031_010000_arabic_lesson_21'
+    name: '20261031_010000_arabic_lesson_21',
   },
   {
     up: migration_20261031_020000_arabic_lesson_22.up,
     down: migration_20261031_020000_arabic_lesson_22.down,
-    name: '20261031_020000_arabic_lesson_22'
+    name: '20261031_020000_arabic_lesson_22',
   },
   {
     up: migration_20261031_030000_arabic_lesson_23.up,
     down: migration_20261031_030000_arabic_lesson_23.down,
-    name: '20261031_030000_arabic_lesson_23'
+    name: '20261031_030000_arabic_lesson_23',
   },
   {
     up: migration_20261031_040000_arabic_lesson_24.up,
     down: migration_20261031_040000_arabic_lesson_24.down,
-    name: '20261031_040000_arabic_lesson_24'
+    name: '20261031_040000_arabic_lesson_24',
   },
   {
     up: migration_20261031_050000_arabic_lesson_25.up,
     down: migration_20261031_050000_arabic_lesson_25.down,
-    name: '20261031_050000_arabic_lesson_25'
+    name: '20261031_050000_arabic_lesson_25',
   },
   {
     up: migration_20261031_060000_arabic_lesson_26.up,
     down: migration_20261031_060000_arabic_lesson_26.down,
-    name: '20261031_060000_arabic_lesson_26'
+    name: '20261031_060000_arabic_lesson_26',
   },
   {
     up: migration_20261101_010000_arabic_lesson_27.up,
     down: migration_20261101_010000_arabic_lesson_27.down,
-    name: '20261101_010000_arabic_lesson_27'
+    name: '20261101_010000_arabic_lesson_27',
   },
   {
     up: migration_20261101_020000_arabic_lesson_28.up,
     down: migration_20261101_020000_arabic_lesson_28.down,
-    name: '20261101_020000_arabic_lesson_28'
+    name: '20261101_020000_arabic_lesson_28',
   },
   {
     up: migration_20261101_030000_arabic_lesson_29.up,
     down: migration_20261101_030000_arabic_lesson_29.down,
-    name: '20261101_030000_arabic_lesson_29'
+    name: '20261101_030000_arabic_lesson_29',
   },
   {
     up: migration_20261101_040000_arabic_lesson_30.up,
     down: migration_20261101_040000_arabic_lesson_30.down,
-    name: '20261101_040000_arabic_lesson_30'
+    name: '20261101_040000_arabic_lesson_30',
   },
   {
     up: migration_20261101_050000_arabic_lesson_31.up,
     down: migration_20261101_050000_arabic_lesson_31.down,
-    name: '20261101_050000_arabic_lesson_31'
+    name: '20261101_050000_arabic_lesson_31',
   },
   {
     up: migration_20261101_060000_arabic_lesson_32.up,
     down: migration_20261101_060000_arabic_lesson_32.down,
-    name: '20261101_060000_arabic_lesson_32'
+    name: '20261101_060000_arabic_lesson_32',
   },
   {
     up: migration_20261102_010000_arabic_lesson_33.up,
     down: migration_20261102_010000_arabic_lesson_33.down,
-    name: '20261102_010000_arabic_lesson_33'
+    name: '20261102_010000_arabic_lesson_33',
   },
   {
     up: migration_20261102_020000_arabic_lesson_34.up,
     down: migration_20261102_020000_arabic_lesson_34.down,
-    name: '20261102_020000_arabic_lesson_34'
+    name: '20261102_020000_arabic_lesson_34',
   },
   {
     up: migration_20261102_030000_arabic_lesson_33_roots.up,
     down: migration_20261102_030000_arabic_lesson_33_roots.down,
-    name: '20261102_030000_arabic_lesson_33_roots'
+    name: '20261102_030000_arabic_lesson_33_roots',
   },
   {
     up: migration_20261102_040000_arabic_lesson_35.up,
     down: migration_20261102_040000_arabic_lesson_35.down,
-    name: '20261102_040000_arabic_lesson_35'
+    name: '20261102_040000_arabic_lesson_35',
   },
   {
     up: migration_20261102_050000_arabic_lesson_36.up,
     down: migration_20261102_050000_arabic_lesson_36.down,
-    name: '20261102_050000_arabic_lesson_36'
+    name: '20261102_050000_arabic_lesson_36',
   },
   {
     up: migration_20261102_060000_arabic_lesson_37.up,
     down: migration_20261102_060000_arabic_lesson_37.down,
-    name: '20261102_060000_arabic_lesson_37'
+    name: '20261102_060000_arabic_lesson_37',
   },
   {
     up: migration_20261102_070000_arabic_lesson_38.up,
     down: migration_20261102_070000_arabic_lesson_38.down,
-    name: '20261102_070000_arabic_lesson_38'
+    name: '20261102_070000_arabic_lesson_38',
   },
   {
     up: migration_20261102_080000_arabic_lesson_38_fix.up,
     down: migration_20261102_080000_arabic_lesson_38_fix.down,
-    name: '20261102_080000_arabic_lesson_38_fix'
+    name: '20261102_080000_arabic_lesson_38_fix',
   },
   {
     up: migration_20261102_090000_arabic_lesson_39.up,
     down: migration_20261102_090000_arabic_lesson_39.down,
-    name: '20261102_090000_arabic_lesson_39'
+    name: '20261102_090000_arabic_lesson_39',
   },
   {
     up: migration_20261102_100000_arabic_lesson_40.up,
     down: migration_20261102_100000_arabic_lesson_40.down,
-    name: '20261102_100000_arabic_lesson_40'
+    name: '20261102_100000_arabic_lesson_40',
   },
   {
     up: migration_20261103_080000_arabic_lesson_41.up,
     down: migration_20261103_080000_arabic_lesson_41.down,
-    name: '20261103_080000_arabic_lesson_41'
+    name: '20261103_080000_arabic_lesson_41',
   },
   {
     up: migration_20261103_090000_arabic_lesson_42.up,
     down: migration_20261103_090000_arabic_lesson_42.down,
-    name: '20261103_090000_arabic_lesson_42'
+    name: '20261103_090000_arabic_lesson_42',
   },
   {
     up: migration_20261103_100000_arabic_root_isha.up,
     down: migration_20261103_100000_arabic_root_isha.down,
-    name: '20261103_100000_arabic_root_isha'
+    name: '20261103_100000_arabic_root_isha',
   },
   {
     up: migration_20261103_110000_arabic_lesson_43.up,
     down: migration_20261103_110000_arabic_lesson_43.down,
-    name: '20261103_110000_arabic_lesson_43'
+    name: '20261103_110000_arabic_lesson_43',
   },
   {
     up: migration_20261103_120000_arabic_lesson_44.up,
     down: migration_20261103_120000_arabic_lesson_44.down,
-    name: '20261103_120000_arabic_lesson_44'
+    name: '20261103_120000_arabic_lesson_44',
   },
   {
     up: migration_20261103_130000_arabic_lesson_45.up,
     down: migration_20261103_130000_arabic_lesson_45.down,
-    name: '20261103_130000_arabic_lesson_45'
+    name: '20261103_130000_arabic_lesson_45',
   },
   {
     up: migration_20261103_140000_arabic_lesson_46.up,
     down: migration_20261103_140000_arabic_lesson_46.down,
-    name: '20261103_140000_arabic_lesson_46'
+    name: '20261103_140000_arabic_lesson_46',
   },
   {
     up: migration_20261104_080000_arabic_lesson_47.up,
     down: migration_20261104_080000_arabic_lesson_47.down,
-    name: '20261104_080000_arabic_lesson_47'
+    name: '20261104_080000_arabic_lesson_47',
   },
   {
     up: migration_20261104_090000_arabic_lesson_48.up,
     down: migration_20261104_090000_arabic_lesson_48.down,
-    name: '20261104_090000_arabic_lesson_48'
+    name: '20261104_090000_arabic_lesson_48',
   },
   {
     up: migration_20261104_100000_arabic_lesson_49.up,
     down: migration_20261104_100000_arabic_lesson_49.down,
-    name: '20261104_100000_arabic_lesson_49'
+    name: '20261104_100000_arabic_lesson_49',
   },
   {
     up: migration_20261104_110000_arabic_lesson_50.up,
     down: migration_20261104_110000_arabic_lesson_50.down,
-    name: '20261104_110000_arabic_lesson_50'
+    name: '20261104_110000_arabic_lesson_50',
   },
   {
     up: migration_20261105_080000_arabic_lesson_51.up,
     down: migration_20261105_080000_arabic_lesson_51.down,
-    name: '20261105_080000_arabic_lesson_51'
+    name: '20261105_080000_arabic_lesson_51',
   },
   {
     up: migration_20261105_090000_arabic_lesson_52.up,
     down: migration_20261105_090000_arabic_lesson_52.down,
-    name: '20261105_090000_arabic_lesson_52'
+    name: '20261105_090000_arabic_lesson_52',
   },
   {
     up: migration_20261105_100000_arabic_lesson_53.up,
     down: migration_20261105_100000_arabic_lesson_53.down,
-    name: '20261105_100000_arabic_lesson_53'
+    name: '20261105_100000_arabic_lesson_53',
   },
   {
     up: migration_20261105_110000_arabic_lesson_54.up,
     down: migration_20261105_110000_arabic_lesson_54.down,
-    name: '20261105_110000_arabic_lesson_54'
+    name: '20261105_110000_arabic_lesson_54',
   },
   {
     up: migration_20261105_120000_arabic_lesson_55.up,
     down: migration_20261105_120000_arabic_lesson_55.down,
-    name: '20261105_120000_arabic_lesson_55'
+    name: '20261105_120000_arabic_lesson_55',
   },
   {
     up: migration_20261105_130000_arabic_extra_courses.up,
     down: migration_20261105_130000_arabic_extra_courses.down,
-    name: '20261105_130000_arabic_extra_courses'
+    name: '20261105_130000_arabic_extra_courses',
   },
   {
     up: migration_20261106_050000_fonetika_lessons_1_3.up,
     down: migration_20261106_050000_fonetika_lessons_1_3.down,
-    name: '20261106_050000_fonetika_lessons_1_3'
+    name: '20261106_050000_fonetika_lessons_1_3',
   },
   {
     up: migration_20261107_100000_fonetika_lessons_4_15.up,
     down: migration_20261107_100000_fonetika_lessons_4_15.down,
-    name: '20261107_100000_fonetika_lessons_4_15'
+    name: '20261107_100000_fonetika_lessons_4_15',
   },
 ];

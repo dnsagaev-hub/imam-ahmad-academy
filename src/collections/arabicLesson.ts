@@ -142,6 +142,34 @@ export const ArabicLessonTab: Tab = {
                 },
               ],
             },
+            // Задача 59: своя озвучка примеров — у примера с записью на странице урока кнопка «Послушать»
+            {
+              name: 'exampleAudio',
+              label: 'Озвучка примеров',
+              labels: { singular: 'Запись примера', plural: 'Записи примеров' },
+              type: 'array',
+              admin: {
+                description:
+                  'Скопируйте арабскую часть строки-примера из текста урока или из «Примеров» (без перевода) и загрузите аудиофайл (mp3, m4a). На странице урока у этого примера появится кнопка «Послушать».',
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    { name: 'arabic', label: 'Пример (по-арабски, как в уроке)', type: 'text', required: true, admin: { rtl, width: '50%' } },
+                    {
+                      name: 'audio',
+                      label: 'Аудиофайл',
+                      type: 'upload',
+                      relationTo: 'media',
+                      required: true,
+                      filterOptions: { mimeType: { contains: 'audio' } },
+                      admin: { width: '50%' },
+                    },
+                  ],
+                },
+              ],
+            },
           ],
         },
         {

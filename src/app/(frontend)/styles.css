@@ -1637,3 +1637,6 @@ a.sh-info-btn { text-decoration: none; }
   .lesson-head > .lesson-head__media { flex-basis: 100%; width: 100%; }
 }
 .module-flat .lesson-list { border-top: 0; }
+/* Озвучка примеров (задача 59): кнопка сразу за арабским примером, перевод — справа */
+.ar-examples li:has(> .say-btn) { justify-content: flex-start; align-items: center; }
+.ar-examples li > .say-btn + * { margin-left: auto; }
