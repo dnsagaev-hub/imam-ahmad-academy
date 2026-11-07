@@ -109,7 +109,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                     планируется: <strong>{c.plannedLessons} уроков</strong>
                   </span>
                 ) : null}
-                {moduleCount ? (
+                {moduleCount && !isExtra ? (
                   <span>
                     модулей: <strong>{moduleCount}</strong>
                   </span>

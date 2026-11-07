@@ -3,7 +3,7 @@
 import Link from 'next/link'
 
 import { LockIcon } from '@/components/Icons'
-import { canOpenLesson, courseState, type CourseDoc } from '@/lib/learning'
+import { canOpenLesson, courseState, isExtraCourse, type CourseDoc } from '@/lib/learning'
 
 import { useProgress, type ProgressSource } from './useProgress'
 
@@ -58,12 +58,14 @@ export function ModuleSide({ course, lessonId, source }: { course: CourseDoc; le
   const state = courseState(course, progress)
   const here = state.lessons.find((l) => String(l.lesson.id) === String(lessonId))
   if (!here) return null
-  const list = state.lessons.filter((l) => l.moduleIndex === here.moduleIndex)
+  // Дополнительный курс (задача 58): без модулей — все уроки курса
+  const flat = isExtraCourse(course)
+  const list = flat ? state.lessons : state.lessons.filter((l) => l.moduleIndex === here.moduleIndex)
   return (
     <div className="card side-lessons" style={{ overflow: 'hidden' }}>
       <div className="side-head" style={{ padding: '18px 20px', borderBottom: '1px solid var(--line-soft)' }}>
-        <div className="side-label">Модуль {ROMAN[here.moduleIndex] ?? here.moduleIndex + 1}</div>
-        <div style={{ fontWeight: 700, fontSize: 16, color: 'var(--navy)', marginTop: 4 }}>{here.moduleTitle}</div>
+        <div className="side-label">{flat ? 'Уроки курса' : `Модуль ${ROMAN[here.moduleIndex] ?? here.moduleIndex + 1}`}</div>
+        <div style={{ fontWeight: 700, fontSize: 16, color: 'var(--navy)', marginTop: 4 }}>{flat ? course.title : here.moduleTitle}</div>
       </div>
       {list.map((m) => {
         const isHere = String(m.lesson.id) === String(lessonId)

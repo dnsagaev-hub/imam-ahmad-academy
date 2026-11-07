@@ -185,12 +185,13 @@ export function ArabicLessonBody({
   lexicon,
   lead,
   schemes,
-  theoryLabel = 'Грамматика',
+  plain = false,
   children,
 }: {
   a: ArabicData
-  /** подпись раздела объяснения: «Грамматика» в основном курсе, «Теория» в дополнительных (задача 56) */
-  theoryLabel?: string
+  /** урок дополнительного курса (задача 58, слова владельца 07.11.2026): без «Словаря урока» в начале,
+   *  заголовок раздела объяснения — только название темы, без «Грамматика» и номера */
+  plain?: boolean
   /** схемы к разделам грамматики этого урока */
   schemes?: LessonSchemes
   /** цель урока — поле «Краткое описание» */
@@ -234,7 +235,7 @@ export function ArabicLessonBody({
         <VowelToggle />
       </div>
 
-      {allWords.length ? (
+      {allWords.length && !plain ? (
         <section className="card ar-sec" id="slovar" aria-labelledby="slovar-h">
           <h2 className="ar-h" id="slovar-h">
             <span className="ar-h-n">1</span> Словарь урока
@@ -359,12 +360,18 @@ export function ArabicLessonBody({
       {a.grammar?.trim() || examples.length ? (
         <section className="card ar-sec" aria-labelledby="grammar-h">
           <h2 className="ar-h" id="grammar-h">
-            <span className="ar-h-n">{allWords.length ? 2 : 1}</span>
-            <span>
-              {theoryLabel}
-              {a.grammarTitle ? ': ' : ''}
-              {a.grammarTitle ? <Bidi text={a.grammarTitle} /> : null}
-            </span>
+            {plain ? (
+              <span>{a.grammarTitle ? <Bidi text={a.grammarTitle} /> : 'Тема урока'}</span>
+            ) : (
+              <>
+                <span className="ar-h-n">{allWords.length ? 2 : 1}</span>
+                <span>
+                  Грамматика
+                  {a.grammarTitle ? ': ' : ''}
+                  {a.grammarTitle ? <Bidi text={a.grammarTitle} /> : null}
+                </span>
+              </>
+            )}
           </h2>
           <GrammarText text={a.grammar} schemes={schemes} />
           {examples.length ? (
