@@ -85,6 +85,7 @@ import * as migration_20261105_130000_arabic_extra_courses from './20261105_1300
 import * as migration_20261106_050000_fonetika_lessons_1_3 from './20261106_050000_fonetika_lessons_1_3';
 import * as migration_20261107_100000_fonetika_lessons_4_15 from './20261107_100000_fonetika_lessons_4_15';
 import * as migration_20261108_140000_arabic_lesson_57 from './20261108_140000_arabic_lesson_57';
+import * as migration_20261108_150000_arabic_lesson_58 from './20261108_150000_arabic_lesson_58';
 
 export const migrations = [
   {
@@ -521,5 +522,10 @@ export const migrations = [
     up: migration_20261108_140000_arabic_lesson_57.up,
     down: migration_20261108_140000_arabic_lesson_57.down,
     name: '20261108_140000_arabic_lesson_57',
+  },
+  {
+    up: migration_20261108_150000_arabic_lesson_58.up,
+    down: migration_20261108_150000_arabic_lesson_58.down,
+    name: '20261108_150000_arabic_lesson_58',
   },
 ];
