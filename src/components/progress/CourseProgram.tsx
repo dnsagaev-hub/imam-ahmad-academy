@@ -3,6 +3,7 @@
 import Link from 'next/link'
 
 import { CheckIcon, ChevronIcon, LockIcon, PlayIcon } from '@/components/Icons'
+import { Bidi } from '@/components/arabic/Bidi'
 import { courseState, isExtraCourse, type CourseDoc } from '@/lib/learning'
 
 import { useProgress, type ProgressSource } from './useProgress'
@@ -42,11 +43,11 @@ export function CourseProgram({ course, source }: { course: CourseDoc; source: P
             <span className="t">
               {locked ? (
                 <span className="name">
-                  Урок {l.number}. {l.lesson.title}
+                  Урок {l.number}. <Bidi text={l.lesson.title} />
                 </span>
               ) : (
                 <Link href={`/lessons/${l.lesson.slug}`}>
-                  Урок {l.number}. {l.lesson.title}
+                  Урок {l.number}. <Bidi text={l.lesson.title} />
                 </Link>
               )}
               <span style={{ fontSize: 13, color: 'var(--muted)' }}>

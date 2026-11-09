@@ -29,7 +29,8 @@ export const arabicOf = (lesson: LessonDoc): ArabicData => ((lesson as any).arab
 
 export function isArabicLesson(lesson: LessonDoc): boolean {
   const a = arabicOf(lesson)
-  return Boolean(a.words?.length || a.sentences?.length || a.tasks?.length || a.text?.trim())
+  // Урок только с текстом объяснения (уроки доп. курсов без слов и заданий, задача 61) — тоже урок арабского
+  return Boolean(a.words?.length || a.sentences?.length || a.tasks?.length || a.text?.trim() || a.grammar?.trim() || a.grammarExamples?.length)
 }
 
 export type CourseWord = {
