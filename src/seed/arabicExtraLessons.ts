@@ -1,6 +1,7 @@
 import type { Payload, PayloadRequest } from 'payload'
 
 import fonetika from '../data/arabic/fonetika.json'
+import orfografiya from '../data/arabic/orfografiya.json'
 
 /*
  * Уроки дополнительных курсов арабского (задача 56): текст владельца (документы «Урок N»), перенесён без изменений слов.
@@ -10,13 +11,19 @@ import fonetika from '../data/arabic/fonetika.json'
 
 type ExtraModule = { course: string; module: string; planned?: { from: string; to: string }; lessons: ({ slug: string; title: string } & Record<string, unknown>)[] }
 
-export const ARABIC_EXTRA_MODULES: ExtraModule[] = [{ ...(fonetika as ExtraModule), planned: { from: '12–15', to: '15' } }]
+export const ARABIC_EXTRA_MODULES: ExtraModule[] = [
+  { ...(fonetika as ExtraModule), planned: { from: '12–15', to: '15' } },
+  // Задача 60: уроки 1–15 курса «Арабская орфография» (документы владельца 09.11.2026)
+  { ...(orfografiya as ExtraModule), planned: { from: '12–16', to: '15' } },
+]
 
 const idOf = (x: unknown) => (x && typeof x === 'object' ? (x as { id: number | string }).id : (x as number | string))
 
-export async function installArabicExtraLessons(payload: Payload, req?: Partial<PayloadRequest>) {
+/** only — адрес курса: миграция ставит уроки только своего курса, не трогая уроки других курсов, удалённые владельцем */
+export async function installArabicExtraLessons(payload: Payload, req?: Partial<PayloadRequest>, only?: string) {
   const opts = { req, overrideAccess: true } as const
   for (const m of ARABIC_EXTRA_MODULES) {
+    if (only && m.course !== only) continue
     const res = await payload.find({ collection: 'courses', where: { slug: { equals: m.course } }, limit: 1, depth: 0, ...opts })
     const course = res.docs[0] as Record<string, any> | undefined
     if (!course) continue
