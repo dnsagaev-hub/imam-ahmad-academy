@@ -1640,3 +1640,8 @@ a.sh-info-btn { text-decoration: none; }
 /* Озвучка примеров (задача 59): кнопка сразу за арабским примером, перевод — справа */
 .ar-examples li:has(> .say-btn) { justify-content: flex-start; align-items: center; }
 .ar-examples li > .say-btn + * { margin-left: auto; }
+/* Название урока с арабским (задача 61): арабская строка не налезает на русскую выше */
+.page-title:has(.ar-inline) { line-height: 1.35; }
+.page-title .ar-inline { font-size: 1em; line-height: 1.35; }
+.side-t { line-height: 1.55; }
+.side-t .ar-inline, .lesson-row .ar-inline { line-height: 1.6; }

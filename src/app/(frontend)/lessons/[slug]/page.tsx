@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { ArabicLessonBody } from '@/components/arabic/ArabicLesson'
+import { Bidi } from '@/components/arabic/Bidi'
 import { ArabicTasks } from '@/components/arabic/ArabicTasks'
 import { SCHEMES } from '@/data/arabic/schemes'
 import { Footer } from '@/components/Footer'
@@ -211,7 +212,9 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
               <span className="tag" style={{ letterSpacing: '0.14em' }}>
                 {here ? `Урок ${here.number} из ${flat.length}` : labelOf(LESSON_CATEGORIES, l.category)}
               </span>
-              <h1 className="page-title">{l.title}</h1>
+              <h1 className="page-title">
+                <Bidi text={l.title} />
+              </h1>
               {l.duration ? (
                 <p className="muted" style={{ margin: 0 }}>
                   Длительность: {l.duration}

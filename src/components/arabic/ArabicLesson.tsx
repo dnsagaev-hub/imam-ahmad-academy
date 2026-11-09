@@ -65,6 +65,8 @@ function Rich({ text }: { text: string }) {
 // «بَيْتٌ — الْبَيْتُ — дом» — арабская часть с тире внутри; строка только из арабского — пример без перевода
 function exampleLine(line: string): { ar: string; tr: string } | null {
   if (!/^[\u0600-\u06FF]/.test(line)) return null
+  // Строка без русских и латинских букв — целиком арабский пример, в том числе с кавычками: «قَالَ الْأَبُ: «…»» (задача 61)
+  if (!/[А-Яа-яЁёA-Za-z]/.test(line)) return { ar: line, tr: '' }
   const ru = line.search(/[А-Яа-яЁёA-Za-z0-9«|]/)
   if (ru < 0) return { ar: line, tr: '' }
   const m = line.slice(0, ru).match(/^(.*\S)\s+—\s+$/)

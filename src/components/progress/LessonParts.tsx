@@ -3,6 +3,7 @@
 import Link from 'next/link'
 
 import { LockIcon } from '@/components/Icons'
+import { Bidi } from '@/components/arabic/Bidi'
 import { canOpenLesson, courseState, isExtraCourse, type CourseDoc } from '@/lib/learning'
 
 import { useProgress, type ProgressSource } from './useProgress'
@@ -35,7 +36,7 @@ export function LessonGate({
         <LockIcon size={26} />
       </span>
       <h1 className="page-title" style={{ fontSize: 40 }}>
-        {here ? `Урок ${here.number}. ${here.lesson.title}` : 'Урок пока закрыт'}
+        {here ? <>Урок {here.number}. <Bidi text={here.lesson.title} /></> : 'Урок пока закрыт'}
       </h1>
       <p className="lead">Этот урок откроется после того, как вы сдадите тест предыдущего урока.</p>
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -74,7 +75,9 @@ export function ModuleSide({ course, lessonId, source }: { course: CourseDoc; le
           return (
             <div key={String(m.lesson.id)} className="off">
               <span className="n">{m.number}</span>
-              {m.lesson.title}
+              <span className="side-t">
+                <Bidi text={m.lesson.title} />
+              </span>
               <span style={{ marginLeft: 'auto' }}>
                 <LockIcon />
               </span>
@@ -83,7 +86,9 @@ export function ModuleSide({ course, lessonId, source }: { course: CourseDoc; le
         return (
           <Link key={String(m.lesson.id)} href={`/lessons/${m.lesson.slug}`} className={isHere ? 'on' : ''} aria-current={isHere ? 'page' : undefined}>
             <span className="n">{m.number}</span>
-            {m.lesson.title}
+            <span className="side-t">
+              <Bidi text={m.lesson.title} />
+            </span>
           </Link>
         )
       })}
@@ -104,7 +109,9 @@ export function LessonNav({ course, lessonId, source }: { course: CourseDoc; les
     <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 12 }}>
       {prev ? (
         <Link href={`/lessons/${prev.lesson.slug}`} className="btn btn-outline">
-          ← Урок {prev.number}. {prev.lesson.title}
+          <span>
+            ← Урок {prev.number}. <Bidi text={prev.lesson.title} />
+          </span>
         </Link>
       ) : (
         <span />
@@ -112,7 +119,9 @@ export function LessonNav({ course, lessonId, source }: { course: CourseDoc; les
       {next ? (
         nextOpen ? (
           <Link href={`/lessons/${next.lesson.slug}`} className="btn btn-outline">
-            Урок {next.number}. {next.lesson.title} →
+            <span>
+              Урок {next.number}. <Bidi text={next.lesson.title} /> →
+            </span>
           </Link>
         ) : (
           <span className="btn" style={{ background: '#EDF3F0', color: 'var(--muted-2)', cursor: 'default' }}>
