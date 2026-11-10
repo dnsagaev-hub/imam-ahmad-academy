@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { type LexEntry, type Stage, verbForms } from '@/lib/arabic'
 import type { ArabicData } from '@/lib/arabicCourse'
 import { mediaUrl } from '@/lib/queries'
-import { exampleAudioMap, exampleKey, wordAudioUrl } from '@/lib/wordAudio'
+import { exampleAudioMap, exampleAudioUrl, wordAudioUrl } from '@/lib/wordAudio'
 
 import type { LessonSchemes } from '@/data/arabic/schemes/types'
 
@@ -175,9 +175,9 @@ function GrammarText({ text, schemes, sounds }: { text?: string | null; schemes?
   )
 }
 
-// Кнопка «Послушать» у примера, если владелец загрузил к нему запись (задача 59)
+// Кнопка «Послушать» у примера: запись владельца (задача 59) или готовая озвучка (задача 51, примеры фонетики)
 function ExSay({ ar, sounds }: { ar: string; sounds: Map<string, string> }) {
-  const src = sounds.size ? sounds.get(exampleKey(ar)) : undefined
+  const src = exampleAudioUrl(ar, sounds)
   return src ? <SayButton src={src} word={ar} small /> : null
 }
 

@@ -1,4 +1,5 @@
 import audio from '../data/arabic/audio.json'
+import exampleAudio from '../data/arabic/example-audio.json'
 import { mediaUrl } from './queries'
 
 /*
@@ -37,4 +38,16 @@ export function exampleAudioMap(list: { arabic?: string | null; audio?: unknown 
     if (x.arabic?.trim() && url) map.set(exampleKey(x.arabic), url)
   }
   return map
+}
+
+/*
+ * Готовая озвучка примеров (задача 51, просьба владельца 10.11.2026: примеры курса фонетики — медленно и чётко).
+ * src/data/arabic/example-audio.json — ключ exampleKey → файл в public/arabic/examples. Своя запись владельца важнее.
+ */
+const exampleFiles = exampleAudio as Record<string, string>
+
+export function exampleAudioUrl(ar: string, own: Map<string, string>): string | undefined {
+  const k = exampleKey(ar)
+  const file = exampleFiles[k]
+  return own.get(k) ?? (file ? `/arabic/examples/${file}` : undefined)
 }
