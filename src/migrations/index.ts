@@ -97,6 +97,7 @@ import * as migration_20261109_160000_orfografiya_lessons_1_15 from './20261109_
 import * as migration_20261110_060000_arabic_lesson_66 from './20261110_060000_arabic_lesson_66';
 import * as migration_20261110_070000_arabic_lesson_67 from './20261110_070000_arabic_lesson_67';
 import * as migration_20261110_080000_arabic_lesson_68 from './20261110_080000_arabic_lesson_68';
+import * as migration_20261110_090000_arabic_lesson_69 from './20261110_090000_arabic_lesson_69';
 
 export const migrations = [
   {
@@ -593,5 +594,10 @@ export const migrations = [
     up: migration_20261110_080000_arabic_lesson_68.up,
     down: migration_20261110_080000_arabic_lesson_68.down,
     name: '20261110_080000_arabic_lesson_68',
+  },
+  {
+    up: migration_20261110_090000_arabic_lesson_69.up,
+    down: migration_20261110_090000_arabic_lesson_69.down,
+    name: '20261110_090000_arabic_lesson_69',
   },
 ];
