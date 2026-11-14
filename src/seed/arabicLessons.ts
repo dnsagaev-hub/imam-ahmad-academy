@@ -25,6 +25,8 @@ export const ARABIC_MODULES: Module[] = [module01 as Module, module02 as Module,
 // Название меняется, только если владелец его не правил.
 const OLD_MODULE_TITLES: Record<string, string> = {
   'Модуль 1. Именное предложение (уроки 1–15)': module01.module,
+  // Урок 86 сначала попал в модуль с названием «Язык науки»; название модуля 7 — «Язык фикха»
+  'Модуль 7. Язык науки (уроки 86–100)': module07.module,
 }
 
 export const ARABIC_COURSE_SLUG = 'stupen-1-01-arabic'
@@ -120,6 +122,15 @@ export async function installArabicLessons(payload: Payload, req?: Partial<Paylo
     lessons: (m.lessons ?? []).map(idOf),
   }))
   for (const m of modules) if (OLD_MODULE_TITLES[m.title]) m.title = OLD_MODULE_TITLES[m.title]
+  // Два модуля с одним названием (старое и новое имя модуля 7) сливаем в первый; уроки не теряются
+  for (let i = modules.length - 1; i > 0; i--) {
+    const first = modules.findIndex((m) => m.title === modules[i].title)
+    if (first >= 0 && first < i && modules[i].title === module07.module) {
+      const seen = new Set(modules[first].lessons.map(String))
+      modules[first].lessons.push(...modules[i].lessons.filter((id) => !seen.has(String(id))))
+      modules.splice(i, 1)
+    }
+  }
   const inCourse = new Set(modules.flatMap((m) => m.lessons.map(String)))
   for (const c of created) {
     const missing = c.ids.filter((id) => !inCourse.has(String(id)))
