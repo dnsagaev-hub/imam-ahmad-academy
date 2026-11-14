@@ -120,6 +120,7 @@ import * as migration_20261114_090000_arabic_lesson_87 from './20261114_090000_a
 import * as migration_20261114_100000_arabic_lesson_88 from './20261114_100000_arabic_lesson_88';
 import * as migration_20261114_110000_arabic_lesson_89 from './20261114_110000_arabic_lesson_89';
 import * as migration_20261114_120000_arabic_lesson_90 from './20261114_120000_arabic_lesson_90';
+import * as migration_20261114_130000_arabic_module7_merge from './20261114_130000_arabic_module7_merge';
 
 export const migrations = [
   {
@@ -731,5 +732,10 @@ export const migrations = [
     up: migration_20261114_120000_arabic_lesson_90.up,
     down: migration_20261114_120000_arabic_lesson_90.down,
     name: '20261114_120000_arabic_lesson_90',
+  },
+  {
+    up: migration_20261114_130000_arabic_module7_merge.up,
+    down: migration_20261114_130000_arabic_module7_merge.down,
+    name: '20261114_130000_arabic_module7_merge',
   },
 ];
