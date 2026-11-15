@@ -88,6 +88,7 @@ import { lesson87 } from './lesson-87'
 import { lesson88 } from './lesson-88'
 import { lesson89 } from './lesson-89'
 import { lesson90 } from './lesson-90'
+import { lesson91 } from './lesson-91'
 import type { LessonSchemes } from './types'
 
 /** Схемы к грамматике по адресу урока. Раздел, подзаголовок которого владелец переименовал, остаётся без схемы. */
@@ -182,4 +183,5 @@ export const SCHEMES: Record<string, LessonSchemes> = {
   'arabskiy-urok-88': lesson88,
   'arabskiy-urok-89': lesson89,
   'arabskiy-urok-90': lesson90,
+  'arabskiy-urok-91': lesson91,
 }
