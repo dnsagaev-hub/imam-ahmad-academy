@@ -157,6 +157,21 @@ export async function installArabicLessons(payload: Payload, req?: Partial<Paylo
   payload.logger.info('Уроки арабского добавлены в курс Тамхиди.')
 }
 
+/**
+ * Заменяет содержимое урока (слова, предложения, тексты, упражнения, тест) на пересобранное, но только если урок в базе
+ * ещё стоит в прежнем виде (по краткому описанию). Если владелец уже правил урок, ничего не делает.
+ */
+export async function replaceArabicLesson(payload: Payload, slug: string, oldExcerpt: string, req?: Partial<PayloadRequest>) {
+  const opts = { req, overrideAccess: true } as const
+  const l = ARABIC_MODULES.flatMap((m) => m.lessons).find((x) => x.slug === slug)
+  const found = await payload.find({ collection: 'lessons', where: { slug: { equals: slug } }, limit: 1, depth: 0, ...opts })
+  const doc = found.docs[0] as Record<string, any> | undefined
+  if (!l || !doc || doc.excerpt !== oldExcerpt) return
+  const next = withoutPictures(l as Record<string, any>) as Record<string, any>
+  await payload.update({ collection: 'lessons', id: doc.id, data: { excerpt: next.excerpt, arabic: next.arabic, questions: next.questions } as never, ...opts })
+  payload.logger.info(`Урок ${slug} пересобран.`)
+}
+
 /** Переносит в базу новую грамматику урока из учебника владельца (по его просьбе): тема, текст и примеры заметки. */
 export async function updateArabicGrammar(payload: Payload, slug: string, req?: Partial<PayloadRequest>) {
   const opts = { req, overrideAccess: true } as const
