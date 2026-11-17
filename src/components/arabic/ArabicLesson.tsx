@@ -33,7 +33,8 @@ const paragraphs = (text?: string | null) =>
 // Ячейка таблицы: арабское слово в начале — арабским шрифтом с подсказкой, пояснение после него — обычным: «طَالِبٌ (студент)»
 function Cell({ text }: { text: string }) {
   const m = text.match(/^([\u0600-\u06FF][\u0600-\u06FF\s]*?)(\s+[^\u0600-\u06FF].*)?$/)
-  if (!m) return <Bidi text={text} />
+  // чисто арабская ячейка из нескольких фраз («A — B») читается справа налево целиком
+  if (!m || !/[а-яё]/i.test(text)) return <Bidi text={text} />
   return (
     <>
       <ArText className="ar" text={m[1]} />
